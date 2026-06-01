@@ -1,0 +1,42 @@
+{
+  "defaults": {
+    "daily_message_quota": 20,
+    "per_recipient_daily_quota": 1,
+    "delay_min_seconds": 45,
+    "delay_max_seconds": 120
+  },
+  "reminders": {
+    "shipping": {
+      "enabled": true,
+      "days": 1,
+      "template": "{product}產品預計三個工作天({arrival_date})到貨，請留意"
+    },
+    "feedback": {
+      "enabled": true,
+      "days_after_delivery": 2,
+      "template": "{product}使用後若有回饋或問題，請協助回覆，謝謝"
+    },
+    "free_goods": {
+      "enabled": true,
+      "template": "{product}贈品提醒，請協助確認是否已收到並完成後續使用安排"
+    },
+    "usage": {
+      "enabled": true,
+      "template": "{product}使用提醒：請依照適應症與建議劑量使用，如有疑問請回覆確認"
+    },
+    "activity_followup": {
+      "enabled": true,
+      "lookback_days": 14,
+      "template": "{medical_unit}{activity_type}活動後續追蹤提醒，產品：{products}"
+    },
+    "repurchase": {
+      "enabled": true,
+      "days_after_sale": 30,
+      "template": "{product}回購提醒，若需要補貨或安排後續服務，請回覆確認"
+    },
+    "app": {
+      "enabled": true,
+      "template": "免費下載 高峰健康御守"
+    }
+  }
+}

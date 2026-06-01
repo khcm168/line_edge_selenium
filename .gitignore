@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+edge-profile/
+screenshots/
+.env
+data/logs/
+data/snapshots/
+data/tasks/
+data/test_tmp/
+data/handoff/
