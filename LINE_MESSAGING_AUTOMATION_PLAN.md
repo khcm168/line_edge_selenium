@@ -9,6 +9,9 @@ Build a stable, expandable Selenium automation layer for LINE Edge extension fri
 The PSR-style workflow now lives in:
 
 - `app/line_batch.py` for LINE preview/send task execution.
+- `app/line_draft_builder.py` for scenario-based `LINE_Drafts` generation.
+- `app/approved_draft_sender.py` for sheet-approved live sends.
+- `app/scenario_engine.py`, `app/ai_drafter.py`, and `app/sheet_gateway.py` for the hybrid draft/review layer.
 - `app/shipping_notice.py` for `DY2` shipping notice task generation.
 - `automations/10_LINE_Message_Test/` for controlled LINE target previews.
 - `automations/20_Shipping_Notice_Schedule/` for preview-only scheduled task generation.
@@ -23,6 +26,15 @@ Current proven behavior:
 - Open a matched chat.
 - Send text through the LINE composer, using DOM input fields when available and Chrome DevTools coordinate typing as fallback.
 - Run multiple sends in one browser session without quitting/relogging.
+- Build all manual scenario types as review-only drafts in `LINE_Drafts`.
+- Append generation, skip, error, and send records to the workbook `log` sheet.
+- Live-send only rows approved in `LINE_Drafts` with `Status=approved` and `Send_Mode=live`.
+
+For the current scenario workflow, see:
+
+- `docs/line-bot-scenario-reference.md`
+- `docs/line-messaging-runbook.md`
+- `docs/google-sheet-dy2-reference.md`
 
 ## Current Files
 

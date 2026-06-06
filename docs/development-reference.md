@@ -8,6 +8,9 @@ Main modules:
 
 - `app.line_batch`: preview/send runner for a task JSON file.
 - `app.handoff_worker`: persistent single-owner worker. Use this when multiple scripts need to submit jobs without overlapping browser clicks.
+- `app.line_draft_builder`: builds `LINE_Drafts` rows from all manual scenario types and appends workbook `log` rows.
+- `app.approved_draft_sender`: previews or sends only `LINE_Drafts` rows with `Status=approved` and `Send_Mode=live`.
+- `app.scenario_engine`, `app.ai_drafter`, and `app.sheet_gateway`: scenario detection, constrained AI rewrite, and Google Sheets write helpers.
 - `app.line_client`: Edge/LINE session creation, login, and friend-list readiness.
 - `app.line_messaging`: search, candidate collection, chat opening, composer detection, and message sending.
 - `app.line_matcher`: friend/group match policies.
@@ -20,6 +23,8 @@ Important data files:
 - `data/tasks/*.json`: generated or hand-written task files.
 - `data/logs/*.jsonl`: audit records.
 - `data/snapshots/*.json` and `.png`: UI state captured for matches, sends, skips, and failures.
+- `LINE_Drafts`: Google Sheet review queue for scenario-generated LINE drafts.
+- `log`: Google Sheet execution ledger required by the operating manual.
 
 ## Known-Good Commands
 
@@ -39,6 +44,18 @@ Generate all reminder previews:
 
 ```powershell
 .\.venv\Scripts\python.exe -m app.reminder_builder --date 2026-06-01 --types all --max-rows 20
+```
+
+Generate all scenario drafts without writing Sheets:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.line_draft_builder --date 2026-06-06 --source-json data\fixtures\line_sources_sample.json --no-write --no-ai
+```
+
+Generate all scenario drafts into `LINE_Drafts`:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.line_draft_builder --types all --max-per-type 10
 ```
 
 Start persistent handoff worker:

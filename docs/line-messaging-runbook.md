@@ -9,16 +9,69 @@ For implementation details and lessons learned from live Selenium tests, see `do
 3. Run LINE preview against the controlled test targets.
 4. Only then run a live test with `--send`, and only for approved targets.
 
+For scenario drafts, use the sheet-review flow:
+
+1. Build drafts into `LINE_Drafts`.
+2. Human reviews the draft text and risk flags in the sheet.
+3. Human sets `Status=approved` and `Send_Mode=live`.
+4. Run the approved sender preview.
+5. Live-send only with `--send-approved`.
+
 ## Commands
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests
+.\.venv\Scripts\python.exe -m app.line_draft_builder --date 2026-06-06 --source-json data\fixtures\line_sources_sample.json --no-write --no-ai
 automations\10_LINE_Message_Test\preview.cmd
 automations\20_Shipping_Notice_Schedule\run_preview.cmd --max-rows 10
 automations\30_Reminder_Builder\run_preview.cmd --types all --max-rows 20
 ```
 
-For live Google Sheets reads, copy `.env.example` to `.env`, set `GOOGLE_APPLICATION_CREDENTIALS` or `SERVICE_ACCOUNT_FILE`, and share `地區會議資料V8.0 beta` with that service account. The workflow also accepts `SPREADSHEET_ID` from `psr-aios-v1` as an alias for `LINE_SOURCE_SPREADSHEET_ID`.
+For live Google Sheets reads, copy `.env.example` to `.env`, set `GOOGLE_APPLICATION_CREDENTIALS` or `SERVICE_ACCOUNT_FILE`, and share `地區會議資料V8.0 beta` with that service account. The workflow also accepts `SPREADSHEET_ID` from `psr-aios-v1` as an alias for `LINE_SOURCE_SPREADSHEET_ID`. The service account now needs read/write access because the scenario workflow creates or updates `LINE_Drafts` and appends rows to `log`.
+
+## Scenario Draft Builder
+
+Build all scenario drafts from Google Sheets and append `LINE_Drafts` plus `log`:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.line_draft_builder --types all --max-per-type 10
+```
+
+Build deterministic template drafts without OpenAI:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.line_draft_builder --types all --no-ai --max-per-type 10
+```
+
+Run locally against the sample fixture without writing Sheets:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.line_draft_builder --date 2026-06-06 --source-json data\fixtures\line_sources_sample.json --no-write --no-ai
+```
+
+OpenAI rewriting is controlled by `LINE_AI_ENABLED`, `OPENAI_API_KEY`, and `OPENAI_MODEL`. If OpenAI is disabled or unavailable, the builder falls back to the approved scenario templates and records the fallback in the draft result.
+
+## Approved Draft Sender
+
+Preview approved rows without opening LINE:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.approved_draft_sender --max-rows 10
+```
+
+Write approved rows to a local task JSON for inspection:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.approved_draft_sender --write-tasks data\tasks\approved_line_drafts.json --max-rows 10
+```
+
+Live-send approved rows:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.approved_draft_sender --send-approved --max-rows 10
+```
+
+Rows are skipped unless all are true: `Status=approved`, `Send_Mode=live`, message is nonblank, `Sent_At` is blank, risk is not high, privacy/overclaim flags are absent, and LINE matching is unambiguous. Group sends are blocked unless the `Line_Query` is listed in `LINE_ALLOWED_GROUP_TARGETS`.
 
 ## Manual Approval Mode
 
