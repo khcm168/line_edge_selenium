@@ -26,12 +26,15 @@ DEFAULT_SPREADSHEET_ID = "1eTnZppbhu7fpwdFTrnFoQmxchylsZus0Sw4j1t61Zzo"
 DEFAULT_SPREADSHEET_TITLE = "地區會議資料V8.0 beta"
 DEFAULT_DY2_TAB = "DY2"
 DEFAULT_ACTS_TAB = "Acts"
+DEFAULT_DRAFT_SHEET = "LINE_Drafts"
+DEFAULT_LOG_SHEET = "log"
 DEFAULT_LOG_DIR = ROOT / "data" / "logs"
 DEFAULT_SNAPSHOT_DIR = ROOT / "data" / "snapshots"
 DEFAULT_TASK_DIR = ROOT / "data" / "tasks"
 DEFAULT_RULES_PATH = ROOT / "data" / "reminder_rules.json"
 DEFAULT_ALLOWED_LIVE_TARGETS = ("洪啓明", "P103003", "001N1備份區", "Ya.ping")
 DEFAULT_ALLOWED_GROUP_TARGETS = ("001N1備份區",)
+DEFAULT_OPENAI_MODEL = "gpt-4.1-mini"
 
 
 def load_environment() -> None:
@@ -45,6 +48,8 @@ class Settings:
     source_workbook_title: str
     dy2_tab_name: str
     acts_tab_name: str
+    draft_sheet_name: str
+    sheet_log_name: str
     google_credentials_path: Path
     log_dir: Path
     snapshot_dir: Path
@@ -52,6 +57,8 @@ class Settings:
     reminder_rules_path: Path
     allowed_live_targets: tuple[str, ...]
     allowed_group_targets: tuple[str, ...]
+    openai_model: str
+    ai_enabled: bool
 
     @classmethod
     def from_env(cls, *, require_google: bool = False) -> "Settings":
@@ -80,6 +87,8 @@ class Settings:
             ),
             dy2_tab_name=os.getenv("LINE_DY2_TAB", DEFAULT_DY2_TAB),
             acts_tab_name=os.getenv("LINE_ACTS_TAB", DEFAULT_ACTS_TAB),
+            draft_sheet_name=os.getenv("LINE_DRAFT_SHEET", DEFAULT_DRAFT_SHEET),
+            sheet_log_name=os.getenv("LINE_LOG_SHEET", DEFAULT_LOG_SHEET),
             google_credentials_path=Path(credentials) if credentials else Path(),
             log_dir=Path(os.getenv("LINE_LOG_DIR", DEFAULT_LOG_DIR)),
             snapshot_dir=Path(os.getenv("LINE_SNAPSHOT_DIR", DEFAULT_SNAPSHOT_DIR)),
@@ -95,6 +104,8 @@ class Settings:
                 os.getenv("LINE_ALLOWED_GROUP_TARGETS"),
                 DEFAULT_ALLOWED_GROUP_TARGETS,
             ),
+            openai_model=os.getenv("OPENAI_MODEL", DEFAULT_OPENAI_MODEL),
+            ai_enabled=_bool_env(os.getenv("LINE_AI_ENABLED"), True),
         )
 
 
@@ -102,3 +113,9 @@ def _split_env(value: str | None, default: tuple[str, ...]) -> tuple[str, ...]:
     if not value:
         return default
     return tuple(item.strip() for item in value.split(",") if item.strip())
+
+
+def _bool_env(value: str | None, default: bool) -> bool:
+    if value is None or value.strip() == "":
+        return default
+    return value.strip().casefold() in {"1", "true", "yes", "y", "on"}

@@ -18,7 +18,7 @@ except (ImportError, ModuleNotFoundError):
     Credentials = None
 
 
-SHEETS_SCOPES = ("https://www.googleapis.com/auth/spreadsheets.readonly",)
+SHEETS_SCOPES = ("https://www.googleapis.com/auth/spreadsheets",)
 DY2_COLUMNS = {
     "product": 0,
     "sales_date": 8,

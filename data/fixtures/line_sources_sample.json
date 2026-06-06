@@ -1,0 +1,35 @@
+{
+  "DY2": [
+    ["product", "customer_name", "sales_date", "customer_id", "new_product_flag", "usage_education_needed", "price_change"],
+    ["A+HA", "Sample Clinic", "2026-06-06", "P100", "Y", "Y", "Y"]
+  ],
+  "Bridge_Logic": [
+    ["product", "customer_id", "interval_days"],
+    ["Q10HA", "P101", "35"]
+  ],
+  "marketing": [
+    ["event_name", "customer_id", "status"],
+    ["Doctor Day", "P102", "approved"]
+  ],
+  "推薦": [
+    ["customer_id", "referral_event"],
+    ["P103", "referred colleague"]
+  ],
+  "adr": [
+    ["customer_id", "created_date"],
+    ["P104", "2026-06-06"]
+  ],
+  "LOST_Recovery": [
+    ["product", "customer_id", "interval_days"],
+    ["iMuso", "P105", "60"]
+  ],
+  "Line": [
+    ["customer_id", "last_topic", "last_contact_date"],
+    ["P106", "HA usage", ""],
+    ["P107", "", "2026-05-01"]
+  ],
+  "Acts": [
+    ["", "", "activity_date", "", "medical_unit", "", "product"],
+    ["", "", "2026-06-01", "", "Sample Clinic B", "", "A+HA"]
+  ]
+}

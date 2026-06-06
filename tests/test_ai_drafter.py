@@ -1,0 +1,84 @@
+import unittest
+
+from app.ai_drafter import constrained_rewrite
+from app.scenario_engine import ScenarioDraft
+
+
+class FakeProvider:
+    def __init__(self, response=None, error=None):
+        self.response = response or {}
+        self.error = error
+
+    def rewrite(self, draft):
+        if self.error:
+            raise self.error
+        return self.response
+
+
+def sample_draft(message="醫師您好，這是安全範本。"):
+    return ScenarioDraft(
+        draft_id="draft1",
+        created_at="2026-06-06T09:00:00+08:00",
+        trigger_type="usage_reminder",
+        source_sheets=("DY2",),
+        source_refs={"tab": "DY2", "row": 2},
+        customer_id="P100",
+        customer_name="Clinic A",
+        line_query="P100",
+        product="A+HA",
+        signal_summary="usage signal",
+        draft_message=message,
+    )
+
+
+class AiDrafterTest(unittest.TestCase):
+    def test_accepts_structured_provider_response(self):
+        review = constrained_rewrite(
+            sample_draft(),
+            model="test-model",
+            provider=FakeProvider(
+                {
+                    "message": "醫師您好，這是一則更自然但仍安全的提醒。",
+                    "risk_level": "low",
+                    "safety_flags": ["human_review_required"],
+                    "rationale": "polished",
+                }
+            ),
+        )
+
+        self.assertTrue(review.used_ai)
+        self.assertEqual(review.risk_level, "low")
+        self.assertIn("更自然", review.message)
+
+    def test_falls_back_when_provider_fails(self):
+        review = constrained_rewrite(
+            sample_draft("原始範本"),
+            model="test-model",
+            provider=FakeProvider(error=RuntimeError("offline")),
+        )
+
+        self.assertFalse(review.used_ai)
+        self.assertEqual(review.message, "原始範本")
+        self.assertIn("ai_fallback", review.safety_flags)
+        self.assertIn("offline", review.error_message)
+
+    def test_flags_medical_overclaim(self):
+        review = constrained_rewrite(
+            sample_draft(),
+            model="test-model",
+            provider=FakeProvider(
+                {
+                    "message": "醫師您好，這個產品保證有效。",
+                    "risk_level": "low",
+                    "safety_flags": [],
+                    "rationale": "",
+                }
+            ),
+        )
+
+        self.assertEqual(review.risk_level, "high")
+        self.assertIn("medical_overclaim_risk", review.safety_flags)
+
+
+if __name__ == "__main__":
+    unittest.main()
