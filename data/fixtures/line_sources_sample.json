@@ -31,5 +31,16 @@
   "Acts": [
     ["", "", "activity_date", "", "medical_unit", "", "product"],
     ["", "", "2026-06-01", "", "Sample Clinic B", "", "A+HA"]
+  ],
+  "List": [
+    ["customer_id", "Line暱稱", "Line風格"],
+    ["P100", "Dr. Lin LINE", "正式、簡短"],
+    ["P101", "Dr. Chen LINE", "親切提醒"],
+    ["P102", "Clinic Promo Contact", "活潑但專業"],
+    ["P103", "Referral Contact", "感謝、自然"],
+    ["P104", "New Clinic Contact", "溫暖、簡短"],
+    ["P105", "Recovery Contact", "低壓力關心"],
+    ["P106", "Topic Contact", "接續上次話題"],
+    ["P107", "Relationship Contact", "輕量問候"]
   ]
 }

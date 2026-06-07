@@ -1,5 +1,7 @@
 import unittest
+import json
 
+import app.ai_drafter as ai_drafter
 from app.ai_drafter import constrained_rewrite
 from app.scenario_engine import ScenarioDraft
 
@@ -15,6 +17,20 @@ class FakeProvider:
         return self.response
 
 
+class FakeOllamaResponse:
+    def __init__(self, payload):
+        self.payload = payload
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        return False
+
+    def read(self):
+        return json.dumps(self.payload, ensure_ascii=False).encode("utf-8")
+
+
 def sample_draft(message="醫師您好，這是安全範本。"):
     return ScenarioDraft(
         draft_id="draft1",
@@ -28,6 +44,8 @@ def sample_draft(message="醫師您好，這是安全範本。"):
         product="A+HA",
         signal_summary="usage signal",
         draft_message=message,
+        line_contact="Clinic A LINE",
+        line_message_style="warm",
     )
 
 
@@ -78,6 +96,62 @@ class AiDrafterTest(unittest.TestCase):
 
         self.assertEqual(review.risk_level, "high")
         self.assertIn("medical_overclaim_risk", review.safety_flags)
+
+    def test_ollama_provider_parses_json_response(self):
+        original = ai_drafter.request.urlopen
+
+        def fake_urlopen(http_request, timeout):
+            return FakeOllamaResponse(
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "message": "醫師您好，這邊用簡短方式提醒您確認資料。",
+                                "risk_level": "low",
+                                "safety_flags": ["human_review_required"],
+                                "rationale": "matched style",
+                            },
+                            ensure_ascii=False,
+                        )
+                    }
+                }
+            )
+
+        ai_drafter.request.urlopen = fake_urlopen
+        try:
+            review = constrained_rewrite(
+                sample_draft(),
+                model="unused-openai-model",
+                ai_provider="ollama",
+                ollama_model="local-test",
+            )
+        finally:
+            ai_drafter.request.urlopen = original
+
+        self.assertTrue(review.used_ai)
+        self.assertEqual(review.risk_level, "low")
+        self.assertIn("簡短", review.message)
+
+    def test_ollama_provider_falls_back_on_error(self):
+        original = ai_drafter.request.urlopen
+
+        def fake_urlopen(http_request, timeout):
+            raise RuntimeError("ollama offline")
+
+        ai_drafter.request.urlopen = fake_urlopen
+        try:
+            review = constrained_rewrite(
+                sample_draft("template text"),
+                model="unused-openai-model",
+                ai_provider="ollama",
+                ollama_model="local-test",
+            )
+        finally:
+            ai_drafter.request.urlopen = original
+
+        self.assertFalse(review.used_ai)
+        self.assertEqual(review.message, "template text")
+        self.assertIn("ollama offline", review.error_message)
 
 
 if __name__ == "__main__":

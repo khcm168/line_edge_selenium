@@ -15,7 +15,9 @@ def draft(**overrides):
         source_refs={"tab": "adr", "row": 2},
         customer_id="P100",
         customer_name="Clinic A",
-        line_query="P100",
+        line_query="Clinic A LINE",
+        line_contact="Clinic A LINE",
+        line_message_style="warm",
         product="",
         signal_summary="new customer",
         draft_message="您好，這是一則已審核訊息。",
@@ -38,13 +40,18 @@ class ApprovedDraftSenderTest(unittest.TestCase):
         selection = select_approved_drafts(rows)
 
         self.assertEqual(len(selection.approved), 1)
-        self.assertEqual(selection.approved[0].task.query, "P100")
+        self.assertEqual(selection.approved[0].task.query, "Clinic A LINE")
+        self.assertEqual(selection.approved[0].task.customer_id, "P100")
+        self.assertEqual(selection.approved[0].task.line_contact, "Clinic A LINE")
         self.assertEqual(selection.approved[0].task.match_policy, "unique_contains_friend")
         self.assertEqual(len(selection.skipped), 4)
 
     def test_allows_known_group_targets_only(self):
         blocked = draft(line_query="001N1備份區")
         allowed = draft(draft_id="draft2", line_query="001N1備份區")
+
+        blocked = replace(blocked, line_contact=blocked.line_query)
+        allowed = replace(allowed, line_contact=allowed.line_query)
 
         self.assertEqual(skip_reason(blocked, allowed_group_targets=()), "group target blocked")
         selection = select_approved_drafts(
@@ -55,6 +62,12 @@ class ApprovedDraftSenderTest(unittest.TestCase):
         self.assertEqual(len(selection.approved), 1)
         self.assertTrue(selection.approved[0].task.allow_group)
         self.assertEqual(selection.approved[0].task.match_policy, "unique_contains_group")
+
+    def test_blocks_rows_without_line_contact_even_when_approved(self):
+        self.assertEqual(
+            skip_reason(draft(line_query="P100", line_contact="")),
+            "missing eligible line contact",
+        )
 
     def test_blocks_privacy_and_overclaim_flags(self):
         self.assertEqual(

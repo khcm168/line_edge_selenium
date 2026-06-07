@@ -26,6 +26,7 @@ DEFAULT_SPREADSHEET_ID = "1eTnZppbhu7fpwdFTrnFoQmxchylsZus0Sw4j1t61Zzo"
 DEFAULT_SPREADSHEET_TITLE = "地區會議資料V8.0 beta"
 DEFAULT_DY2_TAB = "DY2"
 DEFAULT_ACTS_TAB = "Acts"
+DEFAULT_LIST_TAB = "List"
 DEFAULT_DRAFT_SHEET = "LINE_Drafts"
 DEFAULT_LOG_SHEET = "log"
 DEFAULT_LOG_DIR = ROOT / "data" / "logs"
@@ -35,6 +36,9 @@ DEFAULT_RULES_PATH = ROOT / "data" / "reminder_rules.json"
 DEFAULT_ALLOWED_LIVE_TARGETS = ("洪啓明", "P103003", "001N1備份區", "Ya.ping")
 DEFAULT_ALLOWED_GROUP_TARGETS = ("001N1備份區",)
 DEFAULT_OPENAI_MODEL = "gpt-4.1-mini"
+DEFAULT_AI_PROVIDER = "ollama"
+DEFAULT_OLLAMA_BASE_URL = "http://127.0.0.1:11434"
+DEFAULT_OLLAMA_MODEL = "llama3.1:8b"
 
 
 def load_environment() -> None:
@@ -48,6 +52,7 @@ class Settings:
     source_workbook_title: str
     dy2_tab_name: str
     acts_tab_name: str
+    list_tab_name: str
     draft_sheet_name: str
     sheet_log_name: str
     google_credentials_path: Path
@@ -58,6 +63,9 @@ class Settings:
     allowed_live_targets: tuple[str, ...]
     allowed_group_targets: tuple[str, ...]
     openai_model: str
+    ai_provider: str
+    ollama_base_url: str
+    ollama_model: str
     ai_enabled: bool
 
     @classmethod
@@ -87,6 +95,7 @@ class Settings:
             ),
             dy2_tab_name=os.getenv("LINE_DY2_TAB", DEFAULT_DY2_TAB),
             acts_tab_name=os.getenv("LINE_ACTS_TAB", DEFAULT_ACTS_TAB),
+            list_tab_name=os.getenv("LINE_LIST_TAB", DEFAULT_LIST_TAB),
             draft_sheet_name=os.getenv("LINE_DRAFT_SHEET", DEFAULT_DRAFT_SHEET),
             sheet_log_name=os.getenv("LINE_LOG_SHEET", DEFAULT_LOG_SHEET),
             google_credentials_path=Path(credentials) if credentials else Path(),
@@ -105,6 +114,9 @@ class Settings:
                 DEFAULT_ALLOWED_GROUP_TARGETS,
             ),
             openai_model=os.getenv("OPENAI_MODEL", DEFAULT_OPENAI_MODEL),
+            ai_provider=os.getenv("LINE_AI_PROVIDER", DEFAULT_AI_PROVIDER).strip().casefold(),
+            ollama_base_url=os.getenv("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL).rstrip("/"),
+            ollama_model=os.getenv("OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL),
             ai_enabled=_bool_env(os.getenv("LINE_AI_ENABLED"), True),
         )
 

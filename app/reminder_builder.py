@@ -5,10 +5,12 @@ from datetime import date
 
 from app.audit import append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
+from app.line_profile import parse_line_profiles
 from app.reminder_rules import ReminderRules, normalize_types, write_default_rules
 from app.sheet_source import (
     fetch_acts_values,
     fetch_dy2_values,
+    fetch_list_values,
     load_values_from_json,
     parse_acts_rows,
     parse_dy2_rows,
@@ -23,10 +25,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-rows", type=int, default=0, help="Limit generated task count.")
     parser.add_argument("--dy2-json", help="Read DY2 values from local JSON instead of Google Sheets.")
     parser.add_argument("--acts-json", help="Read Acts values from local JSON instead of Google Sheets.")
+    parser.add_argument("--list-json", help="Read List values from local JSON instead of Google Sheets.")
     parser.add_argument("--write-default-rules", action="store_true", help="Create data/reminder_rules.json if absent.")
     args = parser.parse_args(argv)
 
-    settings = Settings.from_env(require_google=not (args.dy2_json and args.acts_json))
+    settings = Settings.from_env(require_google=not (args.dy2_json and args.acts_json and args.list_json))
     settings.log_dir.mkdir(parents=True, exist_ok=True)
     settings.task_dir.mkdir(parents=True, exist_ok=True)
     if args.write_default_rules:
@@ -38,6 +41,8 @@ def main(argv: list[str] | None = None) -> int:
 
     dy2_values = load_values_from_json(args.dy2_json) if args.dy2_json else fetch_dy2_values(settings)
     acts_values = load_values_from_json(args.acts_json) if args.acts_json else fetch_acts_values(settings)
+    list_values = load_values_from_json(args.list_json) if args.list_json else fetch_list_values(settings)
+    line_profiles = parse_line_profiles(list_values)
     dy2_rows = parse_dy2_rows(dy2_values, tab_name=settings.dy2_tab_name)
     acts_rows = parse_acts_rows(acts_values, tab_name=settings.acts_tab_name)
     tasks = build_reminder_tasks(
@@ -47,6 +52,7 @@ def main(argv: list[str] | None = None) -> int:
         reminder_types=reminder_types,
         rules=rules,
         max_rows=args.max_rows,
+        line_profiles=line_profiles,
     )
 
     type_label = "all" if args.types == "all" else "_".join(reminder_types)

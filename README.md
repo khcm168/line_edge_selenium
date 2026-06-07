@@ -78,7 +78,7 @@ automations\20_Shipping_Notice_Schedule\run_preview.cmd --max-rows 10
 automations\30_Reminder_Builder\run_preview.cmd --types all --max-rows 20
 ```
 
-The new workflow is preview-only by default. Live sends require `--send` and are limited to approved test targets unless `LINE_ALLOWED_LIVE_TARGETS` is changed deliberately.
+The new workflow is preview-only by default. Live sends require `--send` and a nonblank `Line暱稱` for the task `Customer_ID` in the `List` sheet. Group sends still require `LINE_ALLOWED_GROUP_TARGETS`.
 
 Reference docs:
 

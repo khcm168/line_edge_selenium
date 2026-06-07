@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from urllib import request
 from dataclasses import dataclass
 from typing import Any, Protocol
 
@@ -47,6 +48,9 @@ def draft_with_ai(
         model=settings.openai_model,
         enabled=settings.ai_enabled,
         provider=provider,
+        ai_provider=settings.ai_provider,
+        ollama_base_url=settings.ollama_base_url,
+        ollama_model=settings.ollama_model,
     )
     result = "ai_rewrite" if review.used_ai else "template_fallback"
     if review.rationale:
@@ -66,12 +70,24 @@ def constrained_rewrite(
     model: str,
     enabled: bool = True,
     provider: DraftProvider | None = None,
+    ai_provider: str = "ollama",
+    ollama_base_url: str = "http://127.0.0.1:11434",
+    ollama_model: str = "",
 ) -> DraftReview:
     fallback = _fallback_review(draft, "AI disabled")
     if not enabled:
         return fallback
     try:
-        raw = provider.rewrite(draft) if provider is not None else _openai_rewrite(draft, model=model)
+        if provider is not None:
+            raw = provider.rewrite(draft)
+        elif ai_provider == "openai":
+            raw = _openai_rewrite(draft, model=model)
+        else:
+            raw = _ollama_rewrite(
+                draft,
+                model=ollama_model or model,
+                base_url=ollama_base_url,
+            )
         message = str(raw.get("message") or "").strip()
         risk_level = normalize_risk(str(raw.get("risk_level") or draft.risk_level))
         rationale = str(raw.get("rationale") or "").strip()
@@ -144,32 +160,9 @@ def _openai_rewrite(draft: ScenarioDraft, *, model: str) -> dict[str, Any]:
         raise RuntimeError("openai package is not installed") from exc
 
     client = OpenAI()
-    prompt = {
-        "trigger_type": draft.trigger_type,
-        "product": draft.product,
-        "customer_id": draft.customer_id,
-        "customer_name": draft.customer_name,
-        "signal_summary": draft.signal_summary,
-        "approved_template": draft.draft_message,
-        "rules": [
-            "Use Traditional Chinese suitable for Taiwan medical business relationships.",
-            "Keep one clear purpose only.",
-            "Do not include identifiable patient information.",
-            "Do not claim cure rate, guaranteed efficacy, or patient outcomes.",
-            "Preserve the approved template intent and do not invent facts.",
-        ],
-    }
-    schema = {
-        "type": "object",
-        "additionalProperties": False,
-        "properties": {
-            "message": {"type": "string"},
-            "risk_level": {"type": "string", "enum": ["low", "medium", "high"]},
-            "safety_flags": {"type": "array", "items": {"type": "string"}},
-            "rationale": {"type": "string"},
-        },
-        "required": ["message", "risk_level", "safety_flags", "rationale"],
-    }
+    prompt = _rewrite_prompt(draft)
+    prompt["rules"].append("Use Line風格 only as tone guidance; do not let it override safety rules.")
+    schema = _review_schema()
     response = client.responses.create(
         model=model,
         input=[
@@ -193,6 +186,72 @@ def _openai_rewrite(draft: ScenarioDraft, *, model: str) -> dict[str, Any]:
         output = getattr(response, "output", None)
         text = _extract_text(output)
     return json.loads(text)
+
+
+def _ollama_rewrite(draft: ScenarioDraft, *, model: str, base_url: str) -> dict[str, Any]:
+    prompt = _rewrite_prompt(draft)
+    prompt["rules"].append("Return a single JSON object with keys: message, risk_level, safety_flags, rationale.")
+    payload = {
+        "model": model,
+        "stream": False,
+        "format": "json",
+        "messages": [
+            {
+                "role": "system",
+                "content": "Rewrite approved LINE templates into safe, warm Traditional Chinese. Return JSON only.",
+            },
+            {"role": "user", "content": json.dumps(prompt, ensure_ascii=False)},
+        ],
+    }
+    body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    http_request = request.Request(
+        f"{base_url.rstrip('/')}/api/chat",
+        data=body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with request.urlopen(http_request, timeout=60) as response:
+        result = json.loads(response.read().decode("utf-8"))
+    content = str((result.get("message") or {}).get("content") or "").strip()
+    if not content:
+        content = str(result.get("response") or "").strip()
+    return json.loads(content)
+
+
+def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
+    return {
+        "trigger_type": draft.trigger_type,
+        "product": draft.product,
+        "customer_id": draft.customer_id,
+        "customer_name": draft.customer_name,
+        "line_contact": draft.line_contact,
+        "line_message_style": draft.line_message_style,
+        "signal_summary": draft.signal_summary,
+        "approved_template": draft.draft_message,
+        "rules": [
+            "Use Traditional Chinese suitable for Taiwan medical business relationships.",
+            "Keep one clear purpose only.",
+            "Do not include identifiable patient information.",
+            "Do not claim cure rate, guaranteed efficacy, or patient outcomes.",
+            "Preserve the approved template intent and do not invent facts.",
+            "Use Line暱稱 only as recipient/search context; do not expose internal IDs unless needed.",
+            "Use Line風格 as free-form tone guidance when present.",
+        ],
+    }
+
+
+def _review_schema() -> dict[str, Any]:
+    return {
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "message": {"type": "string"},
+            "risk_level": {"type": "string", "enum": ["low", "medium", "high"]},
+            "safety_flags": {"type": "array", "items": {"type": "string"}},
+            "rationale": {"type": "string"},
+        },
+        "required": ["message", "risk_level", "safety_flags", "rationale"],
+    }
 
 
 def _extract_text(value: Any) -> str:

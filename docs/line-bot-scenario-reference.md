@@ -42,7 +42,8 @@ When a sheet is missing, a trigger logs `skipped: source sheet not available`. W
 - The scenario engine chooses the trigger and approved template first.
 - AI receives only minimal business context.
 - The output must include message, risk level, safety flags, and rationale.
-- If OpenAI is unavailable or returns invalid output, the approved template is used.
+- Local Ollama is the default provider; OpenAI is opt-in with `LINE_AI_PROVIDER=openai`.
+- If AI is unavailable or returns invalid output, the approved template is used.
 - Medical overclaim and patient privacy terms raise the risk to high and block live send.
 
 ## Output Sheets

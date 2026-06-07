@@ -133,6 +133,8 @@ class SheetGateway:
         existing = [str(value).strip() for value in worksheet.row_values(1)]
         if not any(existing):
             update_values(worksheet, "A1", [list(headers)])
+        elif list(headers[: len(existing)]) == existing and len(existing) < len(headers):
+            update_values(worksheet, "A1", [list(headers)])
         elif existing[: len(headers)] != list(headers):
             raise RuntimeError(
                 f"Sheet {title!r} header mismatch. Expected first columns: {', '.join(headers)}"

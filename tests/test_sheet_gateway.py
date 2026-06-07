@@ -115,6 +115,39 @@ class SheetGatewayTest(unittest.TestCase):
 
         self.assertEqual(worksheet.values[0], ["Wrong", "Header"])
 
+    def test_existing_legacy_draft_header_is_extended(self):
+        spreadsheet = FakeSpreadsheet()
+        worksheet = FakeWorksheet("LINE_Drafts")
+        worksheet.values = [[
+            "Draft_ID",
+            "Created_At",
+            "Trigger_Type",
+            "Source_Sheets",
+            "Source_Refs",
+            "Customer_ID",
+            "Customer_Name",
+            "Line_Query",
+            "Product",
+            "Signal_Summary",
+            "Draft_Message",
+            "Risk_Level",
+            "Safety_Flags",
+            "Status",
+            "Send_Mode",
+            "Approved_By",
+            "Approved_At",
+            "Sent_At",
+            "Result",
+            "Error_Message",
+        ]]
+        spreadsheet.sheets["LINE_Drafts"] = worksheet
+        gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
+
+        gateway.ensure_draft_sheet()
+
+        self.assertIn("Line_Contact", worksheet.values[0])
+        self.assertIn("Line_Message_Style", worksheet.values[0])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,7 +13,7 @@ Safe first command:
 preview.cmd
 ```
 
-Live sending is blocked unless `--send` is passed and the target is in `LINE_ALLOWED_LIVE_TARGETS`.
+Live sending is blocked unless `--send` is passed and the task has `Customer_ID` plus `Line暱稱` from the `List` sheet. Group sends still require `LINE_ALLOWED_GROUP_TARGETS`.
 
 Manual approval mode opens the matched chat and stops before typing:
 

@@ -7,6 +7,7 @@ from pathlib import Path
 
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
+from app.line_profile import is_line_contact_eligible
 from app.line_batch import _run_task
 from app.line_client import LineClient
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
@@ -171,10 +172,16 @@ def select_approved_drafts(
             match_policy=_match_policy(row.draft, allowed_group_targets),
             message=row.draft.draft_message,
             allow_group=row.draft.line_query in allowed_group_targets,
+            customer_id=row.draft.customer_id,
+            line_contact=row.draft.line_contact,
+            line_message_style=row.draft.line_message_style,
             source={
                 "draft_id": row.draft.draft_id,
                 "trigger_type": row.draft.trigger_type,
                 "source_refs": row.draft.source_refs,
+                "customer_id": row.draft.customer_id,
+                "line_contact": row.draft.line_contact,
+                "line_message_style": row.draft.line_message_style,
             },
             reminder_type=row.draft.trigger_type,
             due_date="",
@@ -196,6 +203,8 @@ def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] 
         return "already sent"
     if not draft.line_query.strip():
         return "missing line query"
+    if not is_line_contact_eligible(draft.customer_id, draft.line_contact):
+        return "missing eligible line contact"
     if not draft.draft_message.strip():
         return "blank message"
     flags = {flag.casefold() for flag in draft.safety_flags}

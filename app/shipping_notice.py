@@ -5,7 +5,8 @@ from datetime import date
 
 from app.audit import append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
-from app.sheet_source import fetch_dy2_values, load_values_from_json, parse_dy2_rows
+from app.line_profile import parse_line_profiles
+from app.sheet_source import fetch_dy2_values, fetch_list_values, load_values_from_json, parse_dy2_rows
 from app.task_builder import build_shipping_notice_tasks, write_tasks
 
 
@@ -15,20 +16,24 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--days", type=int, default=1, help="Window after date; default today+tomorrow.")
     parser.add_argument("--max-rows", type=int, default=0, help="Limit generated task count.")
     parser.add_argument("--source-json", help="Read DY2 values from local JSON instead of Google Sheets.")
+    parser.add_argument("--list-json", help="Read List values from local JSON instead of Google Sheets.")
     args = parser.parse_args(argv)
 
-    settings = Settings.from_env(require_google=not bool(args.source_json))
+    settings = Settings.from_env(require_google=not bool(args.source_json and args.list_json))
     settings.log_dir.mkdir(parents=True, exist_ok=True)
     settings.task_dir.mkdir(parents=True, exist_ok=True)
 
     run_date = date.fromisoformat(args.date)
     values = load_values_from_json(args.source_json) if args.source_json else fetch_dy2_values(settings)
+    list_values = load_values_from_json(args.list_json) if args.list_json else fetch_list_values(settings)
+    line_profiles = parse_line_profiles(list_values)
     rows = parse_dy2_rows(values, tab_name=settings.dy2_tab_name)
     tasks = build_shipping_notice_tasks(
         rows,
         today=run_date,
         days=args.days,
         max_rows=args.max_rows,
+        line_profiles=line_profiles,
     )
     task_path = settings.task_dir / f"shipping_notice_{run_date.isoformat()}.json"
     write_tasks(task_path, tasks)

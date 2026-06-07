@@ -37,7 +37,7 @@ Build all scenario drafts from Google Sheets and append `LINE_Drafts` plus `log`
 .\.venv\Scripts\python.exe -m app.line_draft_builder --types all --max-per-type 10
 ```
 
-Build deterministic template drafts without OpenAI:
+Build deterministic template drafts without AI rewriting:
 
 ```powershell
 .\.venv\Scripts\python.exe -m app.line_draft_builder --types all --no-ai --max-per-type 10
@@ -49,7 +49,7 @@ Run locally against the sample fixture without writing Sheets:
 .\.venv\Scripts\python.exe -m app.line_draft_builder --date 2026-06-06 --source-json data\fixtures\line_sources_sample.json --no-write --no-ai
 ```
 
-OpenAI rewriting is controlled by `LINE_AI_ENABLED`, `OPENAI_API_KEY`, and `OPENAI_MODEL`. If OpenAI is disabled or unavailable, the builder falls back to the approved scenario templates and records the fallback in the draft result.
+AI rewriting defaults to local Ollama and is controlled by `LINE_AI_ENABLED`, `LINE_AI_PROVIDER`, `OLLAMA_BASE_URL`, and `OLLAMA_MODEL`. Set `LINE_AI_PROVIDER=openai` with `OPENAI_API_KEY` and `OPENAI_MODEL` only when OpenAI should be used. If AI is disabled or unavailable, the builder falls back to the approved scenario templates and records the fallback in the draft result.
 
 ## Approved Draft Sender
 
@@ -105,7 +105,7 @@ For live send after visual confirmation:
 .\.venv\Scripts\python.exe -m app.handoff_worker --submit --send --tasks data\tasks\manual_test_2_contacts.json
 ```
 
-Generated reminder batches are marked `manual_required=true`, so they cannot be sent live by accident. Use them for preview and manual chat-open approval; keep live sends to the controlled smoke targets unless the allowlist and rule file are deliberately changed.
+Generated reminder batches are marked `manual_required=true`, so they cannot be sent live by accident. Use them for preview and manual chat-open approval; live eligibility comes from `Customer_ID` plus `Line暱稱` in the `List` sheet.
 
 Stop the worker:
 
@@ -123,7 +123,7 @@ automations\20_Shipping_Notice_Schedule\install_preview_task.cmd 09:00
 
 ## Live Send Gate
 
-Live sends require `--send`, a non-empty message, an unambiguous match, writable audit logs, snapshots, quota allowance, no `manual_required` flag, and an allowed target. The default workflow is preview only.
+Live sends require `--send`, a non-empty message, an unambiguous match, writable audit logs, snapshots, quota allowance, no `manual_required` flag, and `Customer_ID` plus `Line_Contact` from the `List` sheet. The default workflow is preview only.
 
 ## Reminder Builder
 

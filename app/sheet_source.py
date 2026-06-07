@@ -74,6 +74,10 @@ def fetch_acts_values(settings: Settings) -> list[list[str]]:
     return fetch_tab_values(settings, settings.acts_tab_name)
 
 
+def fetch_list_values(settings: Settings) -> list[list[str]]:
+    return fetch_tab_values(settings, settings.list_tab_name)
+
+
 def fetch_tab_values(settings: Settings, tab_name: str) -> list[list[str]]:
     if gspread is None or Credentials is None:
         raise RuntimeError(
