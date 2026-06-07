@@ -27,8 +27,8 @@ The script:
 Do not put LINE credentials in source files. If a later automation script needs login, pass them through environment variables:
 
 ```powershell
-$env:LINE_EMAIL="kevin@top-pharm.com.tw"
-$env:LINE_PASSWORD="0178JmLut"
+$env:LINE_EMAIL="your-line-email@example.com"
+$env:LINE_PASSWORD="your-line-password"
 ```
 
 Before any script submits LINE credentials, confirm the action in chat.
