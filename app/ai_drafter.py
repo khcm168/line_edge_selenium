@@ -91,7 +91,8 @@ def constrained_rewrite(
         message = str(raw.get("message") or "").strip()
         risk_level = normalize_risk(str(raw.get("risk_level") or draft.risk_level))
         rationale = str(raw.get("rationale") or "").strip()
-        flags = tuple(str(item).strip() for item in raw.get("safety_flags", []) if str(item).strip())
+        flags_raw = raw.get("safety_flags") or []
+        flags = tuple(str(item).strip() for item in flags_raw if str(item).strip())
         if not message:
             return _fallback_review(draft, "AI returned blank message")
         risk_level, flags = validate_message(message, requested_risk=risk_level, requested_flags=flags)
