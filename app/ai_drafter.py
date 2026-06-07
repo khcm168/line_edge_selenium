@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Any, Protocol
 
 from app.config import Settings
+from app.message_style import resolve_message_style
 from app.scenario_engine import ScenarioDraft
 
 
@@ -20,6 +21,15 @@ HIGH_RISK_TERMS = (
     "guaranteed",
 )
 PATIENT_PRIVACY_TERMS = ("病人姓名", "身分證", "病歷號", "電話號碼")
+
+
+ALLOWED_SAFETY_FLAGS = {
+    "human_review_required",
+    "manual_review_required",
+    "message_too_long",
+    "medical_overclaim_risk",
+    "patient_privacy_risk",
+}
 
 
 class DraftProvider(Protocol):
@@ -95,7 +105,7 @@ def constrained_rewrite(
         risk_level = normalize_risk(str(raw.get("risk_level") or draft.risk_level))
         rationale = str(raw.get("rationale") or "").strip()
         flags_raw = raw.get("safety_flags") or []
-        flags = tuple(str(item).strip() for item in flags_raw if str(item).strip())
+        flags = normalize_safety_flags(flags_raw)
         if not message:
             return _fallback_review(draft, "AI returned blank message")
         risk_level, flags = validate_message(message, requested_risk=risk_level, requested_flags=flags)
@@ -111,6 +121,17 @@ def normalize_risk(value: str) -> str:
     if normalized in {"low", "medium", "high"}:
         return normalized
     return "medium"
+
+
+def normalize_safety_flags(values: Any) -> tuple[str, ...]:
+    if isinstance(values, str):
+        values = [values]
+    normalized = []
+    for item in values or []:
+        flag = str(item).strip().casefold().replace(" ", "_").replace("-", "_")
+        if flag in ALLOWED_SAFETY_FLAGS:
+            normalized.append(flag)
+    return tuple(dict.fromkeys(normalized))
 
 
 def validate_message(
@@ -229,13 +250,20 @@ def _ollama_rewrite(
 
 
 def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
+    style = resolve_message_style(draft.line_message_style)
     return {
         "trigger_type": draft.trigger_type,
         "product": draft.product,
         "customer_id": draft.customer_id,
         "customer_name": draft.customer_name,
         "line_contact": draft.line_contact,
-        "line_message_style": draft.line_message_style,
+        "line_message_style_raw": draft.line_message_style,
+        "message_style": {
+            "code": style.code,
+            "label": style.label,
+            "rules": list(style.rules),
+            "avoid": list(style.avoid),
+        },
         "signal_summary": draft.signal_summary,
         "approved_template": draft.draft_message,
         "rules": [
@@ -244,8 +272,9 @@ def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
             "Do not include identifiable patient information.",
             "Do not claim cure rate, guaranteed efficacy, or patient outcomes.",
             "Preserve the approved template intent and do not invent facts.",
+            "Use the resolved message_style rules exactly; do not invent a new tone category.",
+            "safety_flags must use only: human_review_required, manual_review_required, message_too_long, medical_overclaim_risk, patient_privacy_risk.",
             "Use Line暱稱 only as recipient/search context; do not expose internal IDs unless needed.",
-            "Use Line風格 as free-form tone guidance when present.",
         ],
     }
 
@@ -257,7 +286,10 @@ def _review_schema() -> dict[str, Any]:
         "properties": {
             "message": {"type": "string"},
             "risk_level": {"type": "string", "enum": ["low", "medium", "high"]},
-            "safety_flags": {"type": "array", "items": {"type": "string"}},
+            "safety_flags": {
+                "type": "array",
+                "items": {"type": "string", "enum": sorted(ALLOWED_SAFETY_FLAGS)},
+            },
             "rationale": {"type": "string"},
         },
         "required": ["message", "risk_level", "safety_flags", "rationale"],
