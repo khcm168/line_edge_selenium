@@ -51,6 +51,7 @@ def draft_with_ai(
         ai_provider=settings.ai_provider,
         ollama_base_url=settings.ollama_base_url,
         ollama_model=settings.ollama_model,
+        ollama_timeout_seconds=settings.ollama_timeout_seconds,
     )
     result = "ai_rewrite" if review.used_ai else "template_fallback"
     if review.rationale:
@@ -73,6 +74,7 @@ def constrained_rewrite(
     ai_provider: str = "ollama",
     ollama_base_url: str = "http://127.0.0.1:11434",
     ollama_model: str = "",
+    ollama_timeout_seconds: int = 180,
 ) -> DraftReview:
     fallback = _fallback_review(draft, "AI disabled")
     if not enabled:
@@ -87,6 +89,7 @@ def constrained_rewrite(
                 draft,
                 model=ollama_model or model,
                 base_url=ollama_base_url,
+                timeout_seconds=ollama_timeout_seconds,
             )
         message = str(raw.get("message") or "").strip()
         risk_level = normalize_risk(str(raw.get("risk_level") or draft.risk_level))
@@ -189,7 +192,13 @@ def _openai_rewrite(draft: ScenarioDraft, *, model: str) -> dict[str, Any]:
     return json.loads(text)
 
 
-def _ollama_rewrite(draft: ScenarioDraft, *, model: str, base_url: str) -> dict[str, Any]:
+def _ollama_rewrite(
+    draft: ScenarioDraft,
+    *,
+    model: str,
+    base_url: str,
+    timeout_seconds: int,
+) -> dict[str, Any]:
     prompt = _rewrite_prompt(draft)
     prompt["rules"].append("Return a single JSON object with keys: message, risk_level, safety_flags, rationale.")
     payload = {
@@ -211,7 +220,7 @@ def _ollama_rewrite(draft: ScenarioDraft, *, model: str, base_url: str) -> dict[
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    with request.urlopen(http_request, timeout=60) as response:
+    with request.urlopen(http_request, timeout=timeout_seconds) as response:
         result = json.loads(response.read().decode("utf-8"))
     content = str((result.get("message") or {}).get("content") or "").strip()
     if not content:

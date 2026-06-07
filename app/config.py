@@ -38,7 +38,8 @@ DEFAULT_ALLOWED_GROUP_TARGETS = ("001N1備份區",)
 DEFAULT_OPENAI_MODEL = "gpt-4.1-mini"
 DEFAULT_AI_PROVIDER = "ollama"
 DEFAULT_OLLAMA_BASE_URL = "http://127.0.0.1:11434"
-DEFAULT_OLLAMA_MODEL = "llama3.1:8b"
+DEFAULT_OLLAMA_MODEL = "gemma4:latest"
+DEFAULT_OLLAMA_TIMEOUT_SECONDS = 180
 
 
 def load_environment() -> None:
@@ -66,6 +67,7 @@ class Settings:
     ai_provider: str
     ollama_base_url: str
     ollama_model: str
+    ollama_timeout_seconds: int
     ai_enabled: bool
 
     @classmethod
@@ -117,6 +119,10 @@ class Settings:
             ai_provider=os.getenv("LINE_AI_PROVIDER", DEFAULT_AI_PROVIDER).strip().casefold(),
             ollama_base_url=os.getenv("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL).rstrip("/"),
             ollama_model=os.getenv("OLLAMA_MODEL", DEFAULT_OLLAMA_MODEL),
+            ollama_timeout_seconds=_int_env(
+                os.getenv("OLLAMA_TIMEOUT_SECONDS"),
+                DEFAULT_OLLAMA_TIMEOUT_SECONDS,
+            ),
             ai_enabled=_bool_env(os.getenv("LINE_AI_ENABLED"), True),
         )
 
@@ -131,3 +137,12 @@ def _bool_env(value: str | None, default: bool) -> bool:
     if value is None or value.strip() == "":
         return default
     return value.strip().casefold() in {"1", "true", "yes", "y", "on"}
+
+
+def _int_env(value: str | None, default: int) -> int:
+    if value is None or value.strip() == "":
+        return default
+    try:
+        return int(value)
+    except ValueError:
+        return default

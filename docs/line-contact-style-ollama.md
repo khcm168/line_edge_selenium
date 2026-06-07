@@ -44,7 +44,8 @@ Default `.env` values:
 LINE_AI_ENABLED=true
 LINE_AI_PROVIDER=ollama
 OLLAMA_BASE_URL=http://127.0.0.1:11434
-OLLAMA_MODEL=llama3.1:8b
+OLLAMA_MODEL=gemma4:latest
+OLLAMA_TIMEOUT_SECONDS=180
 ```
 
 Start Ollama locally and make sure the configured model is installed before running AI drafting. To opt into OpenAI instead:
