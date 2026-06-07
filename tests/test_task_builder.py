@@ -1,6 +1,7 @@
 import unittest
 from datetime import date
 
+from app.line_profile import LineProfile
 from app.reminder_rules import ReminderRules
 from app.sheet_source import parse_dy2_rows
 from app.task_builder import build_reminder_tasks, build_shipping_notice_tasks, build_test_tasks
@@ -32,6 +33,31 @@ class TaskBuilderTest(unittest.TestCase):
         self.assertFalse(tasks[0].allow_group)
         self.assertEqual(tasks[0].source["tab"], "DY2")
         self.assertEqual(tasks[0].reminder_type, "shipping")
+
+    def test_shipping_tasks_use_line_contact_when_profile_exists(self):
+        rows = parse_dy2_rows(
+            [
+                ["product", "", "", "", "", "", "", "", "sales_date"] + [""] * 20 + ["customer_id"],
+                ["A+HA", "", "", "", "", "", "", "", "2026/5/29"] + [""] * 20 + ["P104062"],
+            ]
+        )
+
+        tasks = build_shipping_notice_tasks(
+            rows,
+            today=date(2026, 5, 29),
+            line_profiles={
+                "P104062": LineProfile(
+                    customer_id="P104062",
+                    line_contact="Dr. Wu LINE",
+                    line_message_style="formal",
+                )
+            },
+        )
+
+        self.assertEqual(tasks[0].query, "Dr. Wu LINE")
+        self.assertEqual(tasks[0].customer_id, "P104062")
+        self.assertEqual(tasks[0].line_contact, "Dr. Wu LINE")
+        self.assertEqual(tasks[0].line_message_style, "formal")
 
     def test_build_all_reminder_tasks_from_dy2_and_acts(self):
         dy2_rows = parse_dy2_rows(

@@ -70,7 +70,7 @@ Submit manual-approval work to the worker:
 .\.venv\Scripts\python.exe -m app.handoff_worker --submit --manual-approve --tasks data\tasks\<task-file>.json
 ```
 
-Live sends require `--send` and are allowed only for targets in `LINE_ALLOWED_LIVE_TARGETS`.
+Live sends require `--send` and a nonblank `Line暱稱` for the task `Customer_ID` in the `List` sheet. Group sends still require `LINE_ALLOWED_GROUP_TARGETS`.
 
 ## Browser Session Rules
 
@@ -117,7 +117,7 @@ Preview mode is the default. A task is live only when all are true:
 - Command includes `--send`.
 - Message is non-empty.
 - Match is unambiguous.
-- Target is included in `LINE_ALLOWED_LIVE_TARGETS`.
+- The task has `Customer_ID` plus `Line_Contact` from the `List` sheet.
 - Group sends have `allow_group=true`.
 - Task does not have `manual_required=true`.
 - Audit and snapshot writing are available.

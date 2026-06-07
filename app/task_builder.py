@@ -6,6 +6,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+from app.line_profile import LineProfile, apply_line_profile
 from app.reminder_rules import ReminderRules
 from app.sheet_source import (
     ActivityRow,
@@ -35,6 +36,9 @@ class MessageTask:
     match_policy: str
     message: str
     allow_group: bool = False
+    customer_id: str = ""
+    line_contact: str = ""
+    line_message_style: str = ""
     source: dict[str, Any] | None = None
     reminder_type: str = ""
     due_date: str = ""
@@ -64,25 +68,35 @@ def build_shipping_notice_tasks(
     today: date,
     days: int = 1,
     max_rows: int = 0,
+    line_profiles: dict[str, LineProfile] | None = None,
 ) -> list[MessageTask]:
     selected = filter_shipping_window(rows, today=today, days=days)
     if max_rows > 0:
         selected = selected[:max_rows]
-    return [
-        MessageTask(
+    profiles = line_profiles or {}
+    tasks = []
+    for row in selected:
+        query, line_contact, line_message_style = apply_line_profile(
+            customer_id=row.code,
+            fallback_query=row.code,
+            profiles=profiles,
+        )
+        tasks.append(MessageTask(
             action="send_message",
-            query=row.code,
+            query=query,
             match_policy="unique_contains_friend",
             message=build_shipping_message(row),
             allow_group=False,
+            customer_id=row.code,
+            line_contact=line_contact,
+            line_message_style=line_message_style,
             source=row_source(row),
             reminder_type="shipping",
             due_date=row.sales_date.isoformat(),
             quota_key=f"shipping:{row.code}:{row.sales_date.isoformat()}",
             manual_required=True,
-        )
-        for row in selected
-    ]
+        ))
+    return tasks
 
 
 def build_reminder_tasks(
@@ -93,22 +107,24 @@ def build_reminder_tasks(
     reminder_types: tuple[str, ...],
     rules: ReminderRules,
     max_rows: int = 0,
+    line_profiles: dict[str, LineProfile] | None = None,
 ) -> list[MessageTask]:
     tasks: list[MessageTask] = []
+    profiles = line_profiles or {}
     if "shipping" in reminder_types:
-        tasks.extend(_build_shipping(dy2_rows, today=today, rules=rules))
+        tasks.extend(_build_shipping(dy2_rows, today=today, rules=rules, line_profiles=profiles))
     if "feedback" in reminder_types:
-        tasks.extend(_build_dy2_offset_reminders(dy2_rows, today=today, rules=rules, reminder_type="feedback"))
+        tasks.extend(_build_dy2_offset_reminders(dy2_rows, today=today, rules=rules, reminder_type="feedback", line_profiles=profiles))
     if "free_goods" in reminder_types:
-        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="free_goods"))
+        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="free_goods", line_profiles=profiles))
     if "usage" in reminder_types:
-        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="usage"))
+        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="usage", line_profiles=profiles))
     if "activity_followup" in reminder_types:
         tasks.extend(_build_activity_followups(acts_rows, today=today, rules=rules))
     if "repurchase" in reminder_types:
-        tasks.extend(_build_dy2_offset_reminders(dy2_rows, today=today, rules=rules, reminder_type="repurchase"))
+        tasks.extend(_build_dy2_offset_reminders(dy2_rows, today=today, rules=rules, reminder_type="repurchase", line_profiles=profiles))
     if "app" in reminder_types:
-        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="app"))
+        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="app", line_profiles=profiles))
     if max_rows > 0:
         return tasks[:max_rows]
     return tasks
@@ -119,11 +135,12 @@ def _build_shipping(
     *,
     today: date,
     rules: ReminderRules,
+    line_profiles: dict[str, LineProfile],
 ) -> list[MessageTask]:
     if not rules.enabled("shipping"):
         return []
     days = int(rules.reminder("shipping").get("days", 1))
-    return build_shipping_notice_tasks(rows, today=today, days=days)
+    return build_shipping_notice_tasks(rows, today=today, days=days, line_profiles=line_profiles)
 
 
 def _build_dy2_same_day_reminders(
@@ -132,6 +149,7 @@ def _build_dy2_same_day_reminders(
     today: date,
     rules: ReminderRules,
     reminder_type: str,
+    line_profiles: dict[str, LineProfile],
 ) -> list[MessageTask]:
     if not rules.enabled(reminder_type):
         return []
@@ -140,7 +158,7 @@ def _build_dy2_same_day_reminders(
         return []
     selected = filter_shipping_window(rows, today=today, days=0)
     return [
-        _shipment_task(row, reminder_type, template, today)
+        _shipment_task(row, reminder_type, template, today, line_profiles)
         for row in selected
     ]
 
@@ -151,6 +169,7 @@ def _build_dy2_offset_reminders(
     today: date,
     rules: ReminderRules,
     reminder_type: str,
+    line_profiles: dict[str, LineProfile],
 ) -> list[MessageTask]:
     if not rules.enabled(reminder_type):
         return []
@@ -169,7 +188,7 @@ def _build_dy2_offset_reminders(
             row for row in rows if row.sales_date.toordinal() + offset == today.toordinal()
         ]
     return [
-        _shipment_task(row, reminder_type, template, today)
+        _shipment_task(row, reminder_type, template, today, line_profiles)
         for row in selected
     ]
 
@@ -224,8 +243,14 @@ def _shipment_task(
     reminder_type: str,
     template: str,
     today: date,
+    line_profiles: dict[str, LineProfile],
 ) -> MessageTask:
     arrival = add_business_days(row.sales_date, 3)
+    query, line_contact, line_message_style = apply_line_profile(
+        customer_id=row.code,
+        fallback_query=row.code,
+        profiles=line_profiles,
+    )
     message = template.format(
         product=row.product,
         sales_date=row.sales_date.isoformat(),
@@ -234,10 +259,13 @@ def _shipment_task(
     )
     return MessageTask(
         action="send_message",
-        query=row.code,
+        query=query,
         match_policy="unique_contains_friend",
         message=message,
         allow_group=False,
+        customer_id=row.code,
+        line_contact=line_contact,
+        line_message_style=line_message_style,
         source=row_source(row),
         reminder_type=reminder_type,
         due_date=today.isoformat(),
@@ -265,6 +293,9 @@ def read_tasks(path: str | Path) -> list[MessageTask]:
             match_policy=item["match_policy"],
             message=item["message"],
             allow_group=bool(item.get("allow_group", False)),
+            customer_id=str(item.get("customer_id") or ""),
+            line_contact=str(item.get("line_contact") or ""),
+            line_message_style=str(item.get("line_message_style") or ""),
             source=item.get("source") or {},
             reminder_type=str(item.get("reminder_type") or ""),
             due_date=str(item.get("due_date") or ""),

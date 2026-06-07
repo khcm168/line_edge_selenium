@@ -6,6 +6,7 @@ from pathlib import Path
 
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
+from app.line_profile import is_line_contact_eligible
 from app.line_client import LineClient
 from app.line_messaging import open_chat, resolve_match, send_message
 from app.task_builder import MessageTask, build_test_tasks, read_tasks, write_tasks
@@ -249,7 +250,6 @@ def _validate_live_scope(
 ) -> None:
     if not send:
         return
-    allowed = set(settings.allowed_live_targets)
     for task in tasks:
         if not task.message.strip():
             raise ValueError(f"Refusing live send with blank message: {task.query}")
@@ -257,9 +257,9 @@ def _validate_live_scope(
             raise ValueError(
                 f"Live send target {task.query!r} requires manual approval workflow."
             )
-        if task.query not in allowed:
+        if not is_line_contact_eligible(task.customer_id, task.line_contact):
             raise ValueError(
-                f"Live send target {task.query!r} is not in LINE_ALLOWED_LIVE_TARGETS."
+                f"Live send target {task.query!r} is missing eligible Line contact for Customer_ID {task.customer_id!r}."
             )
 
 

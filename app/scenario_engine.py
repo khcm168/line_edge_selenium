@@ -6,6 +6,7 @@ from dataclasses import dataclass, replace
 from datetime import date, datetime, timedelta, timezone
 from typing import Any, Callable
 
+from app.line_profile import LineProfile, apply_line_profile, parse_line_profiles
 from app.sheet_source import add_business_days, parse_sheet_date
 
 
@@ -53,6 +54,8 @@ DRAFT_HEADERS = (
     "Sent_At",
     "Result",
     "Error_Message",
+    "Line_Contact",
+    "Line_Message_Style",
 )
 
 LOG_HEADERS = (
@@ -116,6 +119,8 @@ class ScenarioDraft:
     product: str
     signal_summary: str
     draft_message: str
+    line_contact: str = ""
+    line_message_style: str = ""
     risk_level: str = "low"
     safety_flags: tuple[str, ...] = ("human_review_required",)
     status: str = DRAFT_STATUS_PENDING
@@ -142,6 +147,19 @@ class ScenarioDraft:
             safety_flags=safety_flags or self.safety_flags,
             result=self.result if result is None else result,
             error_message=self.error_message if error_message is None else error_message,
+        )
+
+    def with_line_profile(self, profiles: dict[str, LineProfile]) -> "ScenarioDraft":
+        line_query, line_contact, line_message_style = apply_line_profile(
+            customer_id=self.customer_id,
+            fallback_query=self.line_query,
+            profiles=profiles,
+        )
+        return replace(
+            self,
+            line_query=line_query,
+            line_contact=line_contact,
+            line_message_style=line_message_style,
         )
 
 
@@ -175,6 +193,7 @@ def build_scenario_drafts(
     drafts: list[ScenarioDraft] = []
     events: list[ScenarioEvent] = []
     created_at = taipei_now_iso()
+    line_profiles = parse_line_profiles(sources.get("List") or [])
 
     detectors: dict[str, Callable[[dict[str, list[list[str]]], date, str], list[ScenarioDraft]]] = {
         "logistics": _detect_logistics,
@@ -221,6 +240,8 @@ def build_scenario_drafts(
             continue
         if max_per_type > 0:
             detected = detected[:max_per_type]
+        if line_profiles:
+            detected = [draft.with_line_profile(line_profiles) for draft in detected]
         if detected:
             drafts.extend(detected)
             events.extend(
@@ -252,6 +273,8 @@ def draft_to_row(draft: ScenarioDraft) -> list[str]:
         "Customer_ID": draft.customer_id,
         "Customer_Name": draft.customer_name,
         "Line_Query": draft.line_query,
+        "Line_Contact": draft.line_contact,
+        "Line_Message_Style": draft.line_message_style,
         "Product": draft.product,
         "Signal_Summary": draft.signal_summary,
         "Draft_Message": draft.draft_message,
@@ -317,6 +340,8 @@ def draft_from_row(row: dict[str, str]) -> ScenarioDraft:
         customer_id=row.get("Customer_ID", ""),
         customer_name=row.get("Customer_Name", ""),
         line_query=row.get("Line_Query", ""),
+        line_contact=row.get("Line_Contact", ""),
+        line_message_style=row.get("Line_Message_Style", ""),
         product=row.get("Product", ""),
         signal_summary=row.get("Signal_Summary", ""),
         draft_message=row.get("Draft_Message", ""),

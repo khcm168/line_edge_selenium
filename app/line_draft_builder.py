@@ -18,7 +18,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--types", default="all", help="Comma-separated trigger types, or all.")
     parser.add_argument("--max-per-type", type=int, default=0, help="Limit generated draft count per trigger type.")
     parser.add_argument("--source-json", help="Read source tabs from local JSON mapping instead of Google Sheets.")
-    parser.add_argument("--no-ai", action="store_true", help="Use deterministic templates without OpenAI rewrite.")
+    parser.add_argument("--no-ai", action="store_true", help="Use deterministic templates without AI rewrite.")
     parser.add_argument("--no-write", action="store_true", help="Build and audit locally without writing Sheets.")
     args = parser.parse_args(argv)
 
@@ -26,7 +26,7 @@ def main(argv: list[str] | None = None) -> int:
     settings.log_dir.mkdir(parents=True, exist_ok=True)
     run_date = date.fromisoformat(args.date)
     trigger_types = normalize_trigger_types(args.types)
-    source_tabs = source_tabs_for(trigger_types)
+    source_tabs = source_tabs_for(trigger_types, list_tab_name=settings.list_tab_name)
 
     gateway = None if args.source_json else SheetGateway.from_settings(settings)
     sources = load_sources_from_json(args.source_json) if args.source_json else gateway.fetch_sources(source_tabs)
@@ -87,12 +87,14 @@ def normalize_trigger_types(value: str) -> tuple[str, ...]:
     return selected
 
 
-def source_tabs_for(trigger_types: tuple[str, ...]) -> tuple[str, ...]:
+def source_tabs_for(trigger_types: tuple[str, ...], *, list_tab_name: str = "List") -> tuple[str, ...]:
     tabs: list[str] = []
     for trigger_type in trigger_types:
         for tab in SOURCE_CANDIDATES.get(trigger_type, ()):
             if tab not in tabs:
                 tabs.append(tab)
+    if list_tab_name and list_tab_name not in tabs:
+        tabs.append(list_tab_name)
     return tuple(tabs)
 
 
