@@ -9,7 +9,7 @@ This workflow uses the `List` sheet as the live-send eligibility source.
 | Sheet | Chinese name | Internal key | Purpose |
 | --- | --- | --- | --- |
 | `List` | `Line暱稱` | `line_contact` | LINE search name/contact for the customer |
-| `List` | `Line風格` | `line_message_style` | Free-form tone guidance for draft rewriting |
+| `List` | `Line風格` | `line_message_style` | Human-friendly style label mapped to the controlled message style vocabulary |
 
 The code also needs a customer identifier in the same `List` row. Accepted headers include `Customer_ID`, `customer_id`, `customer_code`, `code`, `代號`, and `客戶代號`.
 
@@ -56,7 +56,21 @@ OPENAI_MODEL=gpt-4.1-mini
 OPENAI_API_KEY=...
 ```
 
-The AI prompt receives `line_contact` and `line_message_style`. `Line風格` is tone guidance only; safety rules still block patient privacy risk, medical overclaims, blank messages, and high-risk drafts.
+The AI prompt receives `line_contact`, the raw `line_message_style`, and a resolved controlled style profile. `Line風格` is not passed as open-ended tone prose; it is mapped to one of these style codes before drafting:
+
+```text
+formal_brief, warm_brief, friendly_reminder, professional_active,
+gratitude_natural, low_pressure_care, continue_topic, neutral_professional
+```
+
+Safety flags are also normalized to the controlled safety vocabulary:
+
+```text
+human_review_required, manual_review_required, message_too_long,
+medical_overclaim_risk, patient_privacy_risk
+```
+
+Safety rules still block patient privacy risk, medical overclaims, blank messages, and high-risk drafts.
 
 ## Safe Run Order
 

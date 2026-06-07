@@ -2,7 +2,7 @@ import unittest
 import json
 
 import app.ai_drafter as ai_drafter
-from app.ai_drafter import constrained_rewrite
+from app.ai_drafter import constrained_rewrite, normalize_safety_flags
 from app.scenario_engine import ScenarioDraft
 
 
@@ -152,6 +152,18 @@ class AiDrafterTest(unittest.TestCase):
         self.assertFalse(review.used_ai)
         self.assertEqual(review.message, "template text")
         self.assertIn("ollama offline", review.error_message)
+
+    def test_safety_flags_ignore_tone_labels(self):
+        flags = normalize_safety_flags(["Warm Tone", "human_review_required", "General Info Sharing"])
+
+        self.assertEqual(flags, ("human_review_required",))
+
+    def test_prompt_uses_resolved_message_style(self):
+        prompt = ai_drafter._rewrite_prompt(sample_draft())
+
+        self.assertEqual(prompt["line_message_style_raw"], "warm")
+        self.assertEqual(prompt["message_style"]["code"], "warm_brief")
+        self.assertIn("rules", prompt["message_style"])
 
 
 if __name__ == "__main__":
