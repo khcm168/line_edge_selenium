@@ -11,7 +11,7 @@
     ["event_name", "customer_id", "status"],
     ["Doctor Day", "P102", "approved"]
   ],
-  "推薦": [
+  "cases": [
     ["customer_id", "referral_event"],
     ["P103", "referred colleague"]
   ],
@@ -33,14 +33,14 @@
     ["", "", "2026-06-01", "", "Sample Clinic B", "", "A+HA"]
   ],
   "List": [
-    ["customer_id", "Line暱稱", "Line風格"],
-    ["P100", "Dr. Lin LINE", "正式、簡短"],
+    ["customer_id", "LINE暱稱", "LINE風格"],
+    ["P100", "Dr. Lin LINE", "正式簡短"],
     ["P101", "Dr. Chen LINE", "親切提醒"],
-    ["P102", "Clinic Promo Contact", "活潑但專業"],
-    ["P103", "Referral Contact", "感謝、自然"],
-    ["P104", "New Clinic Contact", "溫暖、簡短"],
-    ["P105", "Recovery Contact", "低壓力關心"],
-    ["P106", "Topic Contact", "接續上次話題"],
-    ["P107", "Relationship Contact", "輕量問候"]
+    ["P102", "Clinic Promo Contact", "專業主動"],
+    ["P103", "Referral Contact", "自然感謝"],
+    ["P104", "New Clinic Contact", "溫暖簡短"],
+    ["P105", "Recovery Contact", "低壓關心"],
+    ["P106", "Topic Contact", "延續話題"],
+    ["P107", "Relationship Contact", "中性專業"]
   ]
 }

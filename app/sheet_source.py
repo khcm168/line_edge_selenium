@@ -194,7 +194,8 @@ def add_business_days(start: date, days: int) -> date:
 
 def build_shipping_message(row: ShipmentRow) -> str:
     arrival = add_business_days(row.sales_date, 3)
-    return SHIPPING_NOTICE_TEMPLATE.format(
+    template = "{product} 預計三個工作天（{arrival_date}）到貨，先跟您提醒，請再留意一下。"
+    return template.format(
         product=row.product,
         arrival_date=arrival.isoformat(),
         sales_date=row.sales_date.isoformat(),

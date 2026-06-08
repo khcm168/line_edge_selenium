@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 from datetime import date
 
 from app.audit import append_jsonl, build_audit_record, utc_stamp
@@ -27,6 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--acts-json", help="Read Acts values from local JSON instead of Google Sheets.")
     parser.add_argument("--list-json", help="Read List values from local JSON instead of Google Sheets.")
     parser.add_argument("--write-default-rules", action="store_true", help="Create data/reminder_rules.json if absent.")
+    parser.add_argument("--no-ai", action="store_true", help="Use fixed templates without Ollama personalization.")
     args = parser.parse_args(argv)
 
     settings = Settings.from_env(require_google=not (args.dy2_json and args.acts_json and args.list_json))
@@ -53,6 +55,7 @@ def main(argv: list[str] | None = None) -> int:
         rules=rules,
         max_rows=args.max_rows,
         line_profiles=line_profiles,
+        ai_settings=replace(settings, ai_enabled=False) if args.no_ai else settings,
     )
 
     type_label = "all" if args.types == "all" else "_".join(reminder_types)
@@ -71,6 +74,9 @@ def main(argv: list[str] | None = None) -> int:
                 "acts_tab": settings.acts_tab_name,
                 "date": run_date.isoformat(),
                 "types": list(reminder_types),
+                "ai_enabled": not args.no_ai and settings.ai_enabled,
+                "ai_provider": settings.ai_provider,
+                "ollama_model": settings.ollama_model,
                 "task_file": str(task_path),
             },
         ),

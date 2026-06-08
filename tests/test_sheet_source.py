@@ -46,7 +46,10 @@ class SheetSourceTest(unittest.TestCase):
             ]
         )[0]
 
-        self.assertEqual(build_shipping_message(row), "A+HA產品預計三個工作天(2026-06-03)到貨，請留意")
+        self.assertEqual(
+            build_shipping_message(row),
+            "A+HA 預計三個工作天（2026-06-03）到貨，先跟您提醒，請再留意一下。",
+        )
 
     def test_business_days_skip_weekends(self):
         self.assertEqual(add_business_days(date(2026, 5, 29), 3), date(2026, 6, 3))

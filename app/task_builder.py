@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from app.ai_drafter import DraftProvider, constrained_rewrite
+from app.config import Settings
 from app.line_profile import LineProfile, apply_line_profile
 from app.reminder_rules import ReminderRules
+from app.scenario_engine import ScenarioDraft
 from app.sheet_source import (
     ActivityRow,
     ShipmentRow,
@@ -69,6 +72,8 @@ def build_shipping_notice_tasks(
     days: int = 1,
     max_rows: int = 0,
     line_profiles: dict[str, LineProfile] | None = None,
+    ai_settings: Settings | None = None,
+    draft_provider: DraftProvider | None = None,
 ) -> list[MessageTask]:
     selected = filter_shipping_window(rows, today=today, days=days)
     if max_rows > 0:
@@ -81,21 +86,42 @@ def build_shipping_notice_tasks(
             fallback_query=row.code,
             profiles=profiles,
         )
-        tasks.append(MessageTask(
-            action="send_message",
-            query=query,
-            match_policy="unique_contains_friend",
-            message=build_shipping_message(row),
-            allow_group=False,
+        source = row_source(row)
+        message, source = _personalize_message(
+            base_message=build_shipping_message(row),
+            trigger_type="shipping",
+            source_sheets=(row.source_tab,),
+            source_refs=source,
             customer_id=row.code,
+            customer_name=line_contact,
+            line_query=query,
+            product=row.product,
+            signal_summary=(
+                f"{row.product} shipping notice; sale date {row.sales_date.isoformat()}; "
+                f"arrival estimate {add_business_days(row.sales_date, 3).isoformat()}."
+            ),
             line_contact=line_contact,
             line_message_style=line_message_style,
-            source=row_source(row),
-            reminder_type="shipping",
-            due_date=row.sales_date.isoformat(),
-            quota_key=f"shipping:{row.code}:{row.sales_date.isoformat()}",
-            manual_required=True,
-        ))
+            settings=ai_settings,
+            provider=draft_provider,
+        )
+        tasks.append(
+            MessageTask(
+                action="send_message",
+                query=query,
+                match_policy="unique_contains_friend",
+                message=message,
+                allow_group=False,
+                customer_id=row.code,
+                line_contact=line_contact,
+                line_message_style=line_message_style,
+                source=source,
+                reminder_type="shipping",
+                due_date=row.sales_date.isoformat(),
+                quota_key=f"shipping:{row.code}:{row.sales_date.isoformat()}",
+                manual_required=True,
+            )
+        )
     return tasks
 
 
@@ -108,23 +134,93 @@ def build_reminder_tasks(
     rules: ReminderRules,
     max_rows: int = 0,
     line_profiles: dict[str, LineProfile] | None = None,
+    ai_settings: Settings | None = None,
+    draft_provider: DraftProvider | None = None,
 ) -> list[MessageTask]:
     tasks: list[MessageTask] = []
     profiles = line_profiles or {}
     if "shipping" in reminder_types:
-        tasks.extend(_build_shipping(dy2_rows, today=today, rules=rules, line_profiles=profiles))
+        tasks.extend(
+            _build_shipping(
+                dy2_rows,
+                today=today,
+                rules=rules,
+                line_profiles=profiles,
+                ai_settings=ai_settings,
+                draft_provider=draft_provider,
+            )
+        )
     if "feedback" in reminder_types:
-        tasks.extend(_build_dy2_offset_reminders(dy2_rows, today=today, rules=rules, reminder_type="feedback", line_profiles=profiles))
+        tasks.extend(
+            _build_dy2_offset_reminders(
+                dy2_rows,
+                today=today,
+                rules=rules,
+                reminder_type="feedback",
+                line_profiles=profiles,
+                ai_settings=ai_settings,
+                draft_provider=draft_provider,
+            )
+        )
     if "free_goods" in reminder_types:
-        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="free_goods", line_profiles=profiles))
+        tasks.extend(
+            _build_dy2_same_day_reminders(
+                dy2_rows,
+                today=today,
+                rules=rules,
+                reminder_type="free_goods",
+                line_profiles=profiles,
+                ai_settings=ai_settings,
+                draft_provider=draft_provider,
+            )
+        )
     if "usage" in reminder_types:
-        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="usage", line_profiles=profiles))
+        tasks.extend(
+            _build_dy2_same_day_reminders(
+                dy2_rows,
+                today=today,
+                rules=rules,
+                reminder_type="usage",
+                line_profiles=profiles,
+                ai_settings=ai_settings,
+                draft_provider=draft_provider,
+            )
+        )
     if "activity_followup" in reminder_types:
-        tasks.extend(_build_activity_followups(acts_rows, today=today, rules=rules))
+        tasks.extend(
+            _build_activity_followups(
+                acts_rows,
+                today=today,
+                rules=rules,
+                line_profiles=profiles,
+                ai_settings=ai_settings,
+                draft_provider=draft_provider,
+            )
+        )
     if "repurchase" in reminder_types:
-        tasks.extend(_build_dy2_offset_reminders(dy2_rows, today=today, rules=rules, reminder_type="repurchase", line_profiles=profiles))
+        tasks.extend(
+            _build_dy2_offset_reminders(
+                dy2_rows,
+                today=today,
+                rules=rules,
+                reminder_type="repurchase",
+                line_profiles=profiles,
+                ai_settings=ai_settings,
+                draft_provider=draft_provider,
+            )
+        )
     if "app" in reminder_types:
-        tasks.extend(_build_dy2_same_day_reminders(dy2_rows, today=today, rules=rules, reminder_type="app", line_profiles=profiles))
+        tasks.extend(
+            _build_dy2_same_day_reminders(
+                dy2_rows,
+                today=today,
+                rules=rules,
+                reminder_type="app",
+                line_profiles=profiles,
+                ai_settings=ai_settings,
+                draft_provider=draft_provider,
+            )
+        )
     if max_rows > 0:
         return tasks[:max_rows]
     return tasks
@@ -136,11 +232,20 @@ def _build_shipping(
     today: date,
     rules: ReminderRules,
     line_profiles: dict[str, LineProfile],
+    ai_settings: Settings | None,
+    draft_provider: DraftProvider | None,
 ) -> list[MessageTask]:
     if not rules.enabled("shipping"):
         return []
     days = int(rules.reminder("shipping").get("days", 1))
-    return build_shipping_notice_tasks(rows, today=today, days=days, line_profiles=line_profiles)
+    return build_shipping_notice_tasks(
+        rows,
+        today=today,
+        days=days,
+        line_profiles=line_profiles,
+        ai_settings=ai_settings,
+        draft_provider=draft_provider,
+    )
 
 
 def _build_dy2_same_day_reminders(
@@ -150,6 +255,8 @@ def _build_dy2_same_day_reminders(
     rules: ReminderRules,
     reminder_type: str,
     line_profiles: dict[str, LineProfile],
+    ai_settings: Settings | None,
+    draft_provider: DraftProvider | None,
 ) -> list[MessageTask]:
     if not rules.enabled(reminder_type):
         return []
@@ -158,7 +265,15 @@ def _build_dy2_same_day_reminders(
         return []
     selected = filter_shipping_window(rows, today=today, days=0)
     return [
-        _shipment_task(row, reminder_type, template, today, line_profiles)
+        _shipment_task(
+            row,
+            reminder_type,
+            template,
+            today,
+            line_profiles,
+            ai_settings,
+            draft_provider,
+        )
         for row in selected
     ]
 
@@ -170,6 +285,8 @@ def _build_dy2_offset_reminders(
     rules: ReminderRules,
     reminder_type: str,
     line_profiles: dict[str, LineProfile],
+    ai_settings: Settings | None,
+    draft_provider: DraftProvider | None,
 ) -> list[MessageTask]:
     if not rules.enabled(reminder_type):
         return []
@@ -180,7 +297,10 @@ def _build_dy2_offset_reminders(
     if reminder_type == "feedback":
         offset = int(rule.get("days_after_delivery", 2))
         selected = [
-            row for row in rows if add_business_days(row.sales_date, 3).toordinal() + offset == today.toordinal()
+            row
+            for row in rows
+            if add_business_days(row.sales_date, 3).toordinal() + offset
+            == today.toordinal()
         ]
     else:
         offset = int(rule.get("days_after_sale", 30))
@@ -188,7 +308,15 @@ def _build_dy2_offset_reminders(
             row for row in rows if row.sales_date.toordinal() + offset == today.toordinal()
         ]
     return [
-        _shipment_task(row, reminder_type, template, today, line_profiles)
+        _shipment_task(
+            row,
+            reminder_type,
+            template,
+            today,
+            line_profiles,
+            ai_settings,
+            draft_provider,
+        )
         for row in selected
     ]
 
@@ -198,6 +326,9 @@ def _build_activity_followups(
     *,
     today: date,
     rules: ReminderRules,
+    line_profiles: dict[str, LineProfile],
+    ai_settings: Settings | None,
+    draft_provider: DraftProvider | None,
 ) -> list[MessageTask]:
     reminder_type = "activity_followup"
     if not rules.enabled(reminder_type):
@@ -213,7 +344,12 @@ def _build_activity_followups(
     )
     tasks = []
     for row in selected:
-        products = "、".join(row.products)
+        query, line_contact, line_message_style = apply_line_profile(
+            customer_id=row.medical_unit,
+            fallback_query=row.medical_unit,
+            profiles=line_profiles,
+        )
+        products = ", ".join(row.products)
         message = template.format(
             medical_unit=row.medical_unit,
             activity_type=row.activity_type,
@@ -221,14 +357,36 @@ def _build_activity_followups(
             activity_date=row.activity_date.isoformat(),
             lecturer=row.lecturer,
         )
+        source = activity_source(row)
+        message, source = _personalize_message(
+            base_message=message,
+            trigger_type=reminder_type,
+            source_sheets=(row.source_tab,),
+            source_refs=source,
+            customer_id=row.medical_unit,
+            customer_name=line_contact or row.medical_unit,
+            line_query=query,
+            product=products,
+            signal_summary=(
+                f"{row.medical_unit} {row.activity_type}; activity date "
+                f"{row.activity_date.isoformat()}; products {products}."
+            ),
+            line_contact=line_contact,
+            line_message_style=line_message_style,
+            settings=ai_settings,
+            provider=draft_provider,
+        )
         tasks.append(
             MessageTask(
                 action="send_message",
-                query=row.medical_unit,
+                query=query,
                 match_policy="unique_contains_friend",
                 message=message,
                 allow_group=False,
-                source=activity_source(row),
+                customer_id=row.medical_unit,
+                line_contact=line_contact,
+                line_message_style=line_message_style,
+                source=source,
                 reminder_type=reminder_type,
                 due_date=today.isoformat(),
                 quota_key=f"{reminder_type}:{row.medical_unit}:{row.activity_date.isoformat()}",
@@ -244,6 +402,8 @@ def _shipment_task(
     template: str,
     today: date,
     line_profiles: dict[str, LineProfile],
+    ai_settings: Settings | None,
+    draft_provider: DraftProvider | None,
 ) -> MessageTask:
     arrival = add_business_days(row.sales_date, 3)
     query, line_contact, line_message_style = apply_line_profile(
@@ -251,11 +411,30 @@ def _shipment_task(
         fallback_query=row.code,
         profiles=line_profiles,
     )
-    message = template.format(
+    base_message = template.format(
         product=row.product,
         sales_date=row.sales_date.isoformat(),
         arrival_date=arrival.isoformat(),
         code=row.code,
+    )
+    source = row_source(row)
+    message, source = _personalize_message(
+        base_message=base_message,
+        trigger_type=reminder_type,
+        source_sheets=(row.source_tab,),
+        source_refs=source,
+        customer_id=row.code,
+        customer_name=line_contact,
+        line_query=query,
+        product=row.product,
+        signal_summary=(
+            f"{row.product} {reminder_type}; sale date {row.sales_date.isoformat()}; "
+            f"arrival estimate {arrival.isoformat()}."
+        ),
+        line_contact=line_contact,
+        line_message_style=line_message_style,
+        settings=ai_settings,
+        provider=draft_provider,
     )
     return MessageTask(
         action="send_message",
@@ -266,12 +445,71 @@ def _shipment_task(
         customer_id=row.code,
         line_contact=line_contact,
         line_message_style=line_message_style,
-        source=row_source(row),
+        source=source,
         reminder_type=reminder_type,
         due_date=today.isoformat(),
         quota_key=f"{reminder_type}:{row.code}:{today.isoformat()}",
         manual_required=True,
     )
+
+
+def _personalize_message(
+    *,
+    base_message: str,
+    trigger_type: str,
+    source_sheets: tuple[str, ...],
+    source_refs: dict[str, Any],
+    customer_id: str,
+    customer_name: str,
+    line_query: str,
+    product: str,
+    signal_summary: str,
+    line_contact: str,
+    line_message_style: str,
+    settings: Settings | None,
+    provider: DraftProvider | None,
+) -> tuple[str, dict[str, Any]]:
+    source = dict(source_refs)
+    if settings is None:
+        return base_message, source
+
+    draft = ScenarioDraft(
+        draft_id=f"task:{trigger_type}:{customer_id}:{datetime.now(timezone.utc).isoformat()}",
+        created_at=datetime.now(timezone.utc).isoformat(),
+        trigger_type=trigger_type,
+        source_sheets=source_sheets,
+        source_refs=source_refs,
+        customer_id=customer_id,
+        customer_name=customer_name,
+        line_query=line_query,
+        product=product,
+        signal_summary=signal_summary,
+        draft_message=base_message,
+        line_contact=line_contact,
+        line_message_style=line_message_style,
+    )
+    review = constrained_rewrite(
+        draft,
+        model=settings.openai_model,
+        enabled=settings.ai_enabled,
+        provider=provider,
+        ai_provider=settings.ai_provider,
+        ollama_base_url=settings.ollama_base_url,
+        ollama_model=settings.ollama_model,
+        ollama_timeout_seconds=settings.ollama_timeout_seconds,
+    )
+    source["message_draft"] = {
+        "result": "ai_rewrite" if review.used_ai else "template_fallback",
+        "risk_level": review.risk_level,
+        "safety_flags": list(review.safety_flags),
+        "rationale": review.rationale,
+        "error_message": review.error_message,
+        "model": settings.ollama_model if settings.ai_provider == "ollama" else settings.openai_model,
+        "provider": settings.ai_provider,
+        "line_nickname": line_contact,
+        "line_style": line_message_style,
+    }
+    return review.message, source
 
 
 def write_tasks(path: str | Path, tasks: list[MessageTask]) -> Path:

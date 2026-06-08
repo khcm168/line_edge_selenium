@@ -14,7 +14,7 @@ class MessageStyle:
 STYLE_VOCABULARY: tuple[MessageStyle, ...] = (
     MessageStyle(
         code="formal_brief",
-        label="正式、簡短",
+        label="正式簡短",
         rules=(
             "Use respectful professional wording.",
             "Keep the message to two or three concise sentences.",
@@ -24,7 +24,7 @@ STYLE_VOCABULARY: tuple[MessageStyle, ...] = (
     ),
     MessageStyle(
         code="warm_brief",
-        label="溫暖、簡短",
+        label="溫暖簡短",
         rules=(
             "Sound warm and considerate without becoming casual.",
             "Keep the message short and easy to reply to.",
@@ -44,7 +44,7 @@ STYLE_VOCABULARY: tuple[MessageStyle, ...] = (
     ),
     MessageStyle(
         code="professional_active",
-        label="活潑但專業",
+        label="專業主動",
         rules=(
             "Use energetic wording while staying businesslike.",
             "Keep the message focused on one useful update.",
@@ -54,7 +54,7 @@ STYLE_VOCABULARY: tuple[MessageStyle, ...] = (
     ),
     MessageStyle(
         code="gratitude_natural",
-        label="感謝、自然",
+        label="自然感謝",
         rules=(
             "Lead with sincere thanks.",
             "Keep the wording conversational but respectful.",
@@ -64,7 +64,7 @@ STYLE_VOCABULARY: tuple[MessageStyle, ...] = (
     ),
     MessageStyle(
         code="low_pressure_care",
-        label="低壓力關心",
+        label="低壓關心",
         rules=(
             "Sound caring and low pressure.",
             "Make it easy for the recipient to respond later.",
@@ -74,7 +74,7 @@ STYLE_VOCABULARY: tuple[MessageStyle, ...] = (
     ),
     MessageStyle(
         code="continue_topic",
-        label="接續上次話題",
+        label="延續話題",
         rules=(
             "Briefly connect to the previous topic.",
             "Do not over-explain context the recipient already knows.",
@@ -100,14 +100,13 @@ def resolve_message_style(raw_style: str) -> MessageStyle:
     if not text:
         return _style("neutral_professional")
     matches = (
-        ("warm_brief", ("溫暖", "warm")),
-        ("professional_active", ("活潑", "active", "energetic")),
+        ("warm_brief", ("溫暖", "溫和", "warm")),
+        ("professional_active", ("專業主動", "主動", "active", "energetic")),
         ("formal_brief", ("正式", "formal")),
-        ("warm_brief", ("溫暖", "warm")),
         ("friendly_reminder", ("親切", "提醒", "friendly", "reminder")),
         ("gratitude_natural", ("感謝", "自然", "thanks", "gratitude")),
-        ("low_pressure_care", ("低壓力", "關心", "low_pressure", "care")),
-        ("continue_topic", ("接續", "上次", "話題", "continue", "topic")),
+        ("low_pressure_care", ("低壓", "關心", "low_pressure", "care")),
+        ("continue_topic", ("延續", "話題", "continue", "topic")),
     )
     for code, keywords in matches:
         if any(keyword in text for keyword in keywords):

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 from datetime import date
 
 from app.audit import append_jsonl, build_audit_record, utc_stamp
@@ -17,6 +18,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-rows", type=int, default=0, help="Limit generated task count.")
     parser.add_argument("--source-json", help="Read DY2 values from local JSON instead of Google Sheets.")
     parser.add_argument("--list-json", help="Read List values from local JSON instead of Google Sheets.")
+    parser.add_argument("--no-ai", action="store_true", help="Use fixed templates without Ollama personalization.")
     args = parser.parse_args(argv)
 
     settings = Settings.from_env(require_google=not bool(args.source_json and args.list_json))
@@ -34,6 +36,7 @@ def main(argv: list[str] | None = None) -> int:
         days=args.days,
         max_rows=args.max_rows,
         line_profiles=line_profiles,
+        ai_settings=replace(settings, ai_enabled=False) if args.no_ai else settings,
     )
     task_path = settings.task_dir / f"shipping_notice_{run_date.isoformat()}.json"
     write_tasks(task_path, tasks)
@@ -50,6 +53,9 @@ def main(argv: list[str] | None = None) -> int:
                 "tab": settings.dy2_tab_name,
                 "date": run_date.isoformat(),
                 "days": args.days,
+                "ai_enabled": not args.no_ai and settings.ai_enabled,
+                "ai_provider": settings.ai_provider,
+                "ollama_model": settings.ollama_model,
                 "task_file": str(task_path),
             },
         ),

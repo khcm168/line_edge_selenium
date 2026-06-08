@@ -3,9 +3,9 @@ from __future__ import annotations
 import json
 import os
 import re
-from urllib import request
 from dataclasses import dataclass
 from typing import Any, Protocol
+from urllib import request
 
 from app.config import Settings
 from app.message_style import resolve_message_style
@@ -14,13 +14,13 @@ from app.scenario_engine import ScenarioDraft
 
 HIGH_RISK_TERMS = (
     "治癒",
-    "療效保證",
+    "痊癒",
     "保證有效",
-    "治療成功",
+    "療效保證",
     " cure ",
     "guaranteed",
 )
-PATIENT_PRIVACY_TERMS = ("病人姓名", "身分證", "病歷號", "電話號碼")
+PATIENT_PRIVACY_TERMS = ("病患姓名", "病歷", "診斷", "個案資料")
 
 
 ALLOWED_SAFETY_FLAGS = {
@@ -104,11 +104,14 @@ def constrained_rewrite(
         message = str(raw.get("message") or "").strip()
         risk_level = normalize_risk(str(raw.get("risk_level") or draft.risk_level))
         rationale = str(raw.get("rationale") or "").strip()
-        flags_raw = raw.get("safety_flags") or []
-        flags = normalize_safety_flags(flags_raw)
+        flags = normalize_safety_flags(raw.get("safety_flags") or [])
         if not message:
             return _fallback_review(draft, "AI returned blank message")
-        risk_level, flags = validate_message(message, requested_risk=risk_level, requested_flags=flags)
+        risk_level, flags = validate_message(
+            message,
+            requested_risk=risk_level,
+            requested_flags=flags,
+        )
         if "human_review_required" not in flags:
             flags = flags + ("human_review_required",)
         return DraftReview(message, risk_level, flags, rationale, True)
@@ -186,8 +189,7 @@ def _openai_rewrite(draft: ScenarioDraft, *, model: str) -> dict[str, Any]:
 
     client = OpenAI()
     prompt = _rewrite_prompt(draft)
-    prompt["rules"].append("Use Line風格 only as tone guidance; do not let it override safety rules.")
-    schema = _review_schema()
+    prompt["rules"].append("Use LINE風格 only as tone guidance; do not let it override safety rules.")
     response = client.responses.create(
         model=model,
         input=[
@@ -202,14 +204,13 @@ def _openai_rewrite(draft: ScenarioDraft, *, model: str) -> dict[str, Any]:
                 "type": "json_schema",
                 "name": "line_draft_review",
                 "strict": True,
-                "schema": schema,
+                "schema": _review_schema(),
             }
         },
     )
     text = getattr(response, "output_text", "") or ""
     if not text:
-        output = getattr(response, "output", None)
-        text = _extract_text(output)
+        text = _extract_text(getattr(response, "output", None))
     return json.loads(text)
 
 
@@ -256,7 +257,9 @@ def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
         "product": draft.product,
         "customer_id": draft.customer_id,
         "customer_name": draft.customer_name,
-        "line_contact": draft.line_contact,
+        "line_query": draft.line_query,
+        "line_nickname": draft.line_contact,
+        "line_style_raw": draft.line_message_style,
         "line_message_style_raw": draft.line_message_style,
         "message_style": {
             "code": style.code,
@@ -272,9 +275,9 @@ def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
             "Do not include identifiable patient information.",
             "Do not claim cure rate, guaranteed efficacy, or patient outcomes.",
             "Preserve the approved template intent and do not invent facts.",
-            "Use the resolved message_style rules exactly; do not invent a new tone category.",
+            "Reference LINE暱稱 only to make the wording feel personally addressed; do not expose internal IDs unless needed.",
+            "Use the resolved LINE風格 rules exactly; do not invent a new tone category.",
             "safety_flags must use only: human_review_required, manual_review_required, message_too_long, medical_overclaim_risk, patient_privacy_risk.",
-            "Use Line暱稱 only as recipient/search context; do not expose internal IDs unless needed.",
         ],
     }
 
@@ -307,4 +310,4 @@ def _extract_text(value: Any) -> str:
 
 
 def _sentences(message: str) -> list[str]:
-    return [part for part in re.split(r"[。！？!?]+", message) if part.strip()]
+    return [part for part in re.split(r"[。！？!?；;\n]+", message) if part.strip()]

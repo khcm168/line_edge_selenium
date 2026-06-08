@@ -28,34 +28,34 @@ DEFAULT_RULES: dict[str, Any] = {
         "shipping": {
             "enabled": True,
             "days": 1,
-            "template": "{product}產品預計三個工作天({arrival_date})到貨，請留意",
+            "template": "{product} 預計三個工作天（{arrival_date}）到貨，先跟您提醒，請再留意一下。",
         },
         "feedback": {
             "enabled": True,
             "days_after_delivery": 2,
-            "template": "{product}使用後若有回饋或問題，請協助回覆，謝謝",
+            "template": "{product} 應該已經收到一陣子了，想跟您確認使用上是否都順利；若有需要，我也可以再補充簡短說明。",
         },
         "free_goods": {
             "enabled": True,
-            "template": "{product}贈品提醒，請協助確認是否已收到並完成後續使用安排",
+            "template": "{product} 贈品或搭配品項想再跟您確認一下，方便的話請幫我看是否已經收到、數量是否正確。",
         },
         "usage": {
             "enabled": True,
-            "template": "{product}使用提醒：請依照適應症與建議劑量使用，如有疑問請回覆確認",
+            "template": "{product} 使用上小提醒：建議依照既有建議方式持續觀察狀態；若想要我整理重點給您，我可以再補一版簡短說明。",
         },
         "activity_followup": {
             "enabled": True,
             "lookback_days": 14,
-            "template": "{medical_unit}{activity_type}活動後續追蹤提醒，產品：{products}",
+            "template": "謝謝 {medical_unit} 近期參與 {activity_type}。想跟您簡單追蹤後續狀況，也確認 {products} 是否有需要我再補充資料。",
         },
         "repurchase": {
             "enabled": True,
             "days_after_sale": 30,
-            "template": "{product}回購提醒，若需要補貨或安排後續服務，請回覆確認",
+            "template": "{product} 先前購買到現在約一個月，想關心目前庫存是否還足夠；若需要，我可以協助確認下一次備貨。",
         },
         "app": {
             "enabled": True,
-            "template": "免費下載 高峰健康御守",
+            "template": "小提醒：若您方便，也可以透過 App 查看相關紀錄或更新資訊；有任何操作問題我再協助您。",
         },
     },
 }

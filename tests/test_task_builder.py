@@ -1,10 +1,21 @@
 import unittest
 from datetime import date
 
+from app.config import Settings
 from app.line_profile import LineProfile
 from app.reminder_rules import ReminderRules
 from app.sheet_source import parse_dy2_rows
 from app.task_builder import build_reminder_tasks, build_shipping_notice_tasks, build_test_tasks
+
+
+class FakeDraftProvider:
+    def rewrite(self, draft):
+        return {
+            "message": f"{draft.line_contact}您好，{draft.product} 已依照{draft.line_message_style}風格提醒。",
+            "risk_level": "low",
+            "safety_flags": ["human_review_required"],
+            "rationale": "used line profile",
+        }
 
 
 class TaskBuilderTest(unittest.TestCase):
@@ -58,6 +69,33 @@ class TaskBuilderTest(unittest.TestCase):
         self.assertEqual(tasks[0].customer_id, "P104062")
         self.assertEqual(tasks[0].line_contact, "Dr. Wu LINE")
         self.assertEqual(tasks[0].line_message_style, "formal")
+
+    def test_shipping_tasks_can_use_ai_personalization_with_line_profile(self):
+        rows = parse_dy2_rows(
+            [
+                ["product", "", "", "", "", "", "", "", "sales_date"] + [""] * 20 + ["customer_id"],
+                ["A+HA", "", "", "", "", "", "", "", "2026/5/29"] + [""] * 20 + ["P104062"],
+            ]
+        )
+
+        tasks = build_shipping_notice_tasks(
+            rows,
+            today=date(2026, 5, 29),
+            line_profiles={
+                "P104062": LineProfile(
+                    customer_id="P104062",
+                    line_contact="王醫師",
+                    line_message_style="親切提醒",
+                )
+            },
+            ai_settings=Settings.from_env(require_google=False),
+            draft_provider=FakeDraftProvider(),
+        )
+
+        self.assertEqual(tasks[0].message, "王醫師您好，A+HA 已依照親切提醒風格提醒。")
+        self.assertEqual(tasks[0].source["message_draft"]["result"], "ai_rewrite")
+        self.assertEqual(tasks[0].source["message_draft"]["line_nickname"], "王醫師")
+        self.assertEqual(tasks[0].source["message_draft"]["line_style"], "親切提醒")
 
     def test_build_all_reminder_tasks_from_dy2_and_acts(self):
         dy2_rows = parse_dy2_rows(
