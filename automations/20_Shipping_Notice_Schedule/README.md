@@ -16,6 +16,12 @@ run_preview.cmd --date 2026-05-31 --max-rows 10
 
 This command only writes local task and audit files. It does not open LINE and does not send.
 
+To also append the generated AI message text into `LINE_Drafts` for sheet review:
+
+```powershell
+run_preview.cmd --date 2026-06-08 --max-rows 20 --write-drafts
+```
+
 After reviewing the task file, open the matched chat without sending:
 
 ```powershell

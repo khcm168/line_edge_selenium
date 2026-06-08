@@ -512,6 +512,48 @@ def _personalize_message(
     return review.message, source
 
 
+def tasks_to_drafts(
+    tasks: list[MessageTask],
+    *,
+    created_at: str | None = None,
+) -> tuple[ScenarioDraft, ...]:
+    timestamp = created_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    drafts: list[ScenarioDraft] = []
+    for index, task in enumerate(tasks, start=1):
+        source = task.source or {}
+        message_draft = source.get("message_draft") if isinstance(source.get("message_draft"), dict) else {}
+        source_tab = str(source.get("tab") or "")
+        source_row = str(source.get("row") or index)
+        product = str(source.get("product") or "")
+        result = str(message_draft.get("result") or "template")
+        rationale = str(message_draft.get("rationale") or "")
+        drafts.append(
+            ScenarioDraft(
+                draft_id=f"{task.reminder_type}:{task.customer_id}:{task.due_date}:{source_row}",
+                created_at=timestamp,
+                trigger_type=task.reminder_type or "shipping",
+                source_sheets=(source_tab,) if source_tab else (),
+                source_refs=source,
+                customer_id=task.customer_id,
+                customer_name=task.line_contact or task.query,
+                line_query=task.query,
+                product=product,
+                signal_summary=(
+                    f"{task.reminder_type or 'shipping'} task from {source_tab or 'task'} "
+                    f"row {source_row}; due {task.due_date}."
+                ),
+                draft_message=task.message,
+                line_contact=task.line_contact,
+                line_message_style=task.line_message_style,
+                risk_level=str(message_draft.get("risk_level") or "low"),
+                safety_flags=tuple(message_draft.get("safety_flags") or ("human_review_required",)),
+                result=f"{result}: {rationale}" if rationale else result,
+                error_message=str(message_draft.get("error_message") or ""),
+            )
+        )
+    return tuple(drafts)
+
+
 def write_tasks(path: str | Path, tasks: list[MessageTask]) -> Path:
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)

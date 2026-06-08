@@ -27,6 +27,12 @@ automations\20_Shipping_Notice_Schedule\run_preview.cmd --max-rows 10
 automations\30_Reminder_Builder\run_preview.cmd --types all --max-rows 20
 ```
 
+To inspect generated shipping notice quality in `LINE_Drafts`, add `--write-drafts`:
+
+```powershell
+automations\20_Shipping_Notice_Schedule\run_preview.cmd --date 2026-06-08 --max-rows 20 --write-drafts
+```
+
 For live Google Sheets reads, copy `.env.example` to `.env`, set `GOOGLE_APPLICATION_CREDENTIALS` or `SERVICE_ACCOUNT_FILE`, and share `地區會議資料V8.0 beta` with that service account. The workflow also accepts `SPREADSHEET_ID` from `psr-aios-v1` as an alias for `LINE_SOURCE_SPREADSHEET_ID`. The service account now needs read/write access because the scenario workflow creates or updates `LINE_Drafts` and appends rows to `log`.
 
 ## Scenario Draft Builder

@@ -5,7 +5,7 @@ from app.config import Settings
 from app.line_profile import LineProfile
 from app.reminder_rules import ReminderRules
 from app.sheet_source import parse_dy2_rows
-from app.task_builder import build_reminder_tasks, build_shipping_notice_tasks, build_test_tasks
+from app.task_builder import MessageTask, build_reminder_tasks, build_shipping_notice_tasks, build_test_tasks, tasks_to_drafts
 
 
 class FakeDraftProvider:
@@ -96,6 +96,44 @@ class TaskBuilderTest(unittest.TestCase):
         self.assertEqual(tasks[0].source["message_draft"]["result"], "ai_rewrite")
         self.assertEqual(tasks[0].source["message_draft"]["line_nickname"], "王醫師")
         self.assertEqual(tasks[0].source["message_draft"]["line_style"], "親切提醒")
+
+    def test_converts_message_tasks_to_line_drafts(self):
+        drafts = tasks_to_drafts(
+            [
+                MessageTask(
+                    action="send_message",
+                    query="Dr. Wu",
+                    match_policy="unique_contains_friend",
+                    message="Shipping notice text",
+                    customer_id="P100",
+                    line_contact="Dr. Wu",
+                    line_message_style="friendly",
+                    source={
+                        "tab": "DY2",
+                        "row": 12,
+                        "product": "A+HA",
+                        "message_draft": {
+                            "result": "ai_rewrite",
+                            "risk_level": "low",
+                            "safety_flags": ["human_review_required"],
+                            "rationale": "matched style",
+                        },
+                    },
+                    reminder_type="shipping",
+                    due_date="2026-06-08",
+                    manual_required=True,
+                )
+            ],
+            created_at="2026-06-08T10:00:00+08:00",
+        )
+
+        self.assertEqual(len(drafts), 1)
+        self.assertEqual(drafts[0].draft_id, "shipping:P100:2026-06-08:12")
+        self.assertEqual(drafts[0].draft_message, "Shipping notice text")
+        self.assertEqual(drafts[0].line_contact, "Dr. Wu")
+        self.assertEqual(drafts[0].line_message_style, "friendly")
+        self.assertEqual(drafts[0].risk_level, "low")
+        self.assertEqual(drafts[0].result, "ai_rewrite: matched style")
 
     def test_build_all_reminder_tasks_from_dy2_and_acts(self):
         dy2_rows = parse_dy2_rows(
