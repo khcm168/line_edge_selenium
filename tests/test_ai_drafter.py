@@ -158,6 +158,24 @@ class AiDrafterTest(unittest.TestCase):
 
         self.assertEqual(flags, ("human_review_required",))
 
+    def test_falls_back_on_unexpected_script_characters(self):
+        review = constrained_rewrite(
+            sample_draft("Dr. Wu您好，A+HA 預計三個工作天到貨。"),
+            model="test-model",
+            provider=FakeProvider(
+                {
+                    "message": "Dr. Wu您好，A+HA 預計三個工作天送ถึง。",
+                    "risk_level": "low",
+                    "safety_flags": ["human_review_required"],
+                    "rationale": "contains unexpected script",
+                }
+            ),
+        )
+
+        self.assertFalse(review.used_ai)
+        self.assertEqual(review.message, "Dr. Wu您好，A+HA 預計三個工作天到貨。")
+        self.assertIn("unexpected script", review.error_message)
+
     def test_prompt_uses_resolved_message_style(self):
         prompt = ai_drafter._rewrite_prompt(sample_draft())
 

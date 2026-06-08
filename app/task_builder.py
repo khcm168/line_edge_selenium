@@ -470,8 +470,9 @@ def _personalize_message(
     provider: DraftProvider | None,
 ) -> tuple[str, dict[str, Any]]:
     source = dict(source_refs)
+    draft_message = _addressed_fallback_message(base_message, line_contact)
     if settings is None:
-        return base_message, source
+        return draft_message, source
 
     draft = ScenarioDraft(
         draft_id=f"task:{trigger_type}:{customer_id}:{datetime.now(timezone.utc).isoformat()}",
@@ -484,7 +485,7 @@ def _personalize_message(
         line_query=line_query,
         product=product,
         signal_summary=signal_summary,
-        draft_message=base_message,
+        draft_message=draft_message,
         line_contact=line_contact,
         line_message_style=line_message_style,
     )
@@ -510,6 +511,15 @@ def _personalize_message(
         "line_style": line_message_style,
     }
     return review.message, source
+
+
+def _addressed_fallback_message(message: str, line_contact: str) -> str:
+    contact = line_contact.strip()
+    if not contact:
+        return message
+    if message.startswith(contact):
+        return message
+    return f"{contact}您好，{message}"
 
 
 def tasks_to_drafts(

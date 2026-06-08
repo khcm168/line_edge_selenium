@@ -107,6 +107,8 @@ def constrained_rewrite(
         flags = normalize_safety_flags(raw.get("safety_flags") or [])
         if not message:
             return _fallback_review(draft, "AI returned blank message")
+        if _has_unexpected_script(message):
+            return _fallback_review(draft, "AI returned unexpected script characters")
         risk_level, flags = validate_message(
             message,
             requested_risk=risk_level,
@@ -307,6 +309,18 @@ def _extract_text(value: Any) -> str:
     if isinstance(value, dict):
         return _extract_text(value.get("content", "")) or str(value.get("text", ""))
     return ""
+
+
+def _has_unexpected_script(message: str) -> bool:
+    for char in message:
+        code = ord(char)
+        if 0x0E00 <= code <= 0x0E7F:
+            return True
+        if 0x0900 <= code <= 0x097F:
+            return True
+        if 0x3040 <= code <= 0x30FF:
+            return True
+    return False
 
 
 def _sentences(message: str) -> list[str]:

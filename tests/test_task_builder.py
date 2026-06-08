@@ -135,6 +135,32 @@ class TaskBuilderTest(unittest.TestCase):
         self.assertEqual(drafts[0].risk_level, "low")
         self.assertEqual(drafts[0].result, "ai_rewrite: matched style")
 
+    def test_template_fallback_keeps_line_contact_greeting(self):
+        rows = parse_dy2_rows(
+            [
+                ["product", "", "", "", "", "", "", "", "sales_date"] + [""] * 20 + ["customer_id"],
+                ["A+HA", "", "", "", "", "", "", "", "2026/5/29"] + [""] * 20 + ["P104062"],
+            ]
+        )
+
+        settings = Settings.from_env(require_google=False)
+        settings = settings.__class__(**{**settings.__dict__, "ai_enabled": False})
+        tasks = build_shipping_notice_tasks(
+            rows,
+            today=date(2026, 5, 29),
+            line_profiles={
+                "P104062": LineProfile(
+                    customer_id="P104062",
+                    line_contact="Dr. Wu",
+                    line_message_style="friendly",
+                )
+            },
+            ai_settings=settings,
+        )
+
+        self.assertTrue(tasks[0].message.startswith("Dr. Wu您好，"))
+        self.assertEqual(tasks[0].source["message_draft"]["result"], "template_fallback")
+
     def test_build_all_reminder_tasks_from_dy2_and_acts(self):
         dy2_rows = parse_dy2_rows(
             [
