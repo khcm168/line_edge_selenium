@@ -45,9 +45,11 @@ def main(argv: list[str] | None = None) -> int:
         event for event in result.events if event.draft_status != "generated"
     )
 
+    draft_count = 0
+    log_count = 0
     if gateway is not None and not args.no_write:
-        gateway.append_drafts(drafts)
-        gateway.append_log_events(log_events)
+        draft_count = gateway.append_drafts(drafts)
+        log_count = gateway.append_log_events(log_events)
 
     audit_path = settings.log_dir / f"line_draft_builder_{utc_stamp()}.jsonl"
     append_jsonl(
@@ -55,7 +57,7 @@ def main(argv: list[str] | None = None) -> int:
         build_audit_record(
             action="build_line_drafts",
             status="preview" if args.no_write else "written",
-            detail=f"generated {len(drafts)} drafts; logged {len(log_events)} events",
+            detail=f"generated {len(drafts)} drafts; wrote {draft_count} new drafts; logged {log_count} events",
             source={
                 "spreadsheet_id": settings.source_spreadsheet_id,
                 "draft_sheet": settings.draft_sheet_name,
@@ -63,15 +65,20 @@ def main(argv: list[str] | None = None) -> int:
                 "types": list(trigger_types),
                 "source_tabs": list(source_tabs),
                 "source_json": args.source_json or "",
+                "generated_draft_count": len(drafts),
+                "draft_count": draft_count,
+                "log_count": log_count,
             },
         ),
     )
-    print(f"draft_count={len(drafts)}")
+    print(f"generated_draft_count={len(drafts)}")
     print(f"event_count={len(log_events)}")
     print(f"audit={audit_path}")
     if args.no_write:
         print("sheets_written=false")
     else:
+        print(f"draft_count={draft_count}")
+        print(f"log_count={log_count}")
         print(f"draft_sheet={settings.draft_sheet_name}")
         print(f"log_sheet={settings.sheet_log_name}")
     return 0

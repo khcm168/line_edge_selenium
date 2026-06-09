@@ -37,11 +37,13 @@ For live Google Sheets reads, copy `.env.example` to `.env`, set `GOOGLE_APPLICA
 
 ## Scenario Draft Builder
 
-Build all scenario drafts from Google Sheets and append `LINE_Drafts` plus `log`:
+Build all scenario drafts from Google Sheets and append missing `LINE_Drafts` rows plus `log`:
 
 ```powershell
 .\.venv\Scripts\python.exe -m app.line_draft_builder --types all --max-per-type 10
 ```
+
+`LINE_Drafts` writes are keyed by `Draft_ID`; rerunning the builder skips draft IDs that are already present so pending-review rows are not duplicated. Review decisions in existing rows remain the source of truth.
 
 Build deterministic template drafts without AI rewriting:
 

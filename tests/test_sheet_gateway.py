@@ -90,6 +90,25 @@ class SheetGatewayTest(unittest.TestCase):
         self.assertEqual(spreadsheet.sheets["log"].values[0][0], "Timestamp")
         self.assertEqual(spreadsheet.sheets["log"].values[1][2], "new_customer")
 
+    def test_append_drafts_skips_existing_draft_ids(self):
+        spreadsheet = FakeSpreadsheet()
+        gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
+
+        self.assertEqual(gateway.append_drafts([sample_draft()]), 1)
+        self.assertEqual(gateway.append_drafts([sample_draft()]), 0)
+
+        self.assertEqual(len(spreadsheet.sheets["LINE_Drafts"].values), 2)
+        self.assertEqual(spreadsheet.sheets["LINE_Drafts"].values[1][0], "draft1")
+
+    def test_append_drafts_deduplicates_ids_within_batch(self):
+        spreadsheet = FakeSpreadsheet()
+        gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
+
+        self.assertEqual(gateway.append_drafts([sample_draft(), sample_draft()]), 1)
+
+        self.assertEqual(len(spreadsheet.sheets["LINE_Drafts"].values), 2)
+        self.assertEqual(spreadsheet.sheets["LINE_Drafts"].values[1][0], "draft1")
+
     def test_reads_and_updates_draft_rows(self):
         spreadsheet = FakeSpreadsheet()
         gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")

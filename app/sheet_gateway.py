@@ -69,8 +69,22 @@ class SheetGateway:
         if not drafts:
             return 0
         worksheet = self.ensure_draft_sheet()
-        worksheet.append_rows([draft_to_row(draft) for draft in drafts], value_input_option="USER_ENTERED")
-        return len(drafts)
+        existing_ids = {
+            row.draft.draft_id
+            for row in self.read_draft_rows()
+            if row.draft.draft_id
+        }
+        pending_rows = []
+        batch_ids = set()
+        for draft in drafts:
+            if draft.draft_id and (draft.draft_id in existing_ids or draft.draft_id in batch_ids):
+                continue
+            pending_rows.append(draft_to_row(draft))
+            if draft.draft_id:
+                batch_ids.add(draft.draft_id)
+        if pending_rows:
+            worksheet.append_rows(pending_rows, value_input_option="USER_ENTERED")
+        return len(pending_rows)
 
     def append_log_events(self, events: list[ScenarioEvent] | tuple[ScenarioEvent, ...]) -> int:
         if not events:
