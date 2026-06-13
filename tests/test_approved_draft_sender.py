@@ -79,6 +79,33 @@ class ApprovedDraftSenderTest(unittest.TestCase):
             "high risk blocked",
         )
 
+    def test_image_drafts_require_catalog_identity_and_hash(self):
+        self.assertEqual(
+            skip_reason(draft(message_kind="image", draft_message="")),
+            "missing material id",
+        )
+        self.assertEqual(
+            skip_reason(
+                draft(
+                    message_kind="image_text",
+                    material_id="MAT-001",
+                    image_path="001.jpg",
+                )
+            ),
+            "missing material hash",
+        )
+        self.assertEqual(
+            skip_reason(
+                draft(
+                    message_kind="image_text",
+                    material_id="MAT-001",
+                    image_path="001.jpg",
+                    material_sha256="a" * 64,
+                )
+            ),
+            "",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

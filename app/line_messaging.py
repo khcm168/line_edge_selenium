@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import time
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from selenium.common.exceptions import StaleElementReferenceException
@@ -10,6 +12,187 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 from app.line_client import SEARCH_INPUT_SELECTOR
 from app.line_matcher import LineCandidate, MatchDecision, apply_match_policy
+
+
+FILE_INPUT_SELECTOR = "input[type='file']"
+
+
+@dataclass(frozen=True)
+class ImageUploadResult:
+    input_selector: str
+    preview_detected: bool
+    explicit_submit_required: bool
+
+
+def _attachment_state(driver: Any) -> dict[str, bool]:
+    state = driver.execute_script(
+        """
+        const visible = (el) => {
+          if (!el) return false;
+          const style = window.getComputedStyle(el);
+          const rect = el.getBoundingClientRect();
+          return style.display !== 'none' && style.visibility !== 'hidden'
+            && rect.width > 0 && rect.height > 0;
+        };
+        const roots = [...document.querySelectorAll(
+          '[role="dialog"], [aria-modal="true"], .modal, .dialog'
+        )].filter(visible);
+        const scope = roots.length ? roots : [document];
+        const nodes = scope.flatMap(root => [...root.querySelectorAll('*')]);
+        const labels = nodes
+          .filter(visible)
+          .map(el => (
+            el.getAttribute('aria-label')
+            || el.getAttribute('title')
+            || el.textContent
+            || ''
+          ).trim());
+        const explicitSubmit = labels.some(label =>
+          /^(send|傳送|发送|送信)$/i.test(label)
+        );
+        const preview = nodes.some(el => {
+          if (!visible(el)) return false;
+          if (el.tagName === 'IMG') {
+            const src = el.getAttribute('src') || '';
+            return src.startsWith('blob:') || src.startsWith('data:');
+          }
+          return /file selected|已選擇|已选择/i.test(
+            `${el.getAttribute('aria-label') || ''} ${el.textContent || ''}`
+          );
+        });
+        return { preview, explicitSubmit };
+        """
+    )
+    return {
+        "preview": bool(state and state.get("preview")),
+        "explicit_submit": bool(state and state.get("explicitSubmit")),
+    }
+
+
+def wait_for_attachment_state(
+    driver: Any,
+    *,
+    timeout_seconds: float = 10.0,
+) -> dict[str, bool]:
+    deadline = time.monotonic() + timeout_seconds
+    last_state = {"preview": False, "explicit_submit": False}
+    while time.monotonic() < deadline:
+        last_state = _attachment_state(driver)
+        if last_state["preview"] or last_state["explicit_submit"]:
+            return last_state
+        time.sleep(0.2)
+    return last_state
+
+
+def upload_image(
+    driver: Any,
+    image_path: str | Path,
+    *,
+    timeout_seconds: float = 10.0,
+) -> ImageUploadResult:
+    resolved = Path(image_path).expanduser().resolve()
+    if not resolved.is_file():
+        raise FileNotFoundError(f"LINE image file does not exist: {resolved}")
+
+    inputs = driver.find_elements(By.CSS_SELECTOR, FILE_INPUT_SELECTOR)
+    if not inputs:
+        driver.execute_script(
+            """
+            const visible = (el) => {
+              if (!el) return false;
+              const style = window.getComputedStyle(el);
+              const rect = el.getBoundingClientRect();
+              return style.display !== 'none' && style.visibility !== 'hidden'
+                && rect.width > 0 && rect.height > 0;
+            };
+            const candidates = [...document.querySelectorAll(
+              'button, [role="button"], [aria-label], [title]'
+            )].filter(visible);
+            const target = candidates.find(el => {
+              const label = (
+                el.getAttribute('aria-label')
+                || el.getAttribute('title')
+                || el.textContent
+                || ''
+              ).trim();
+              return /send file|attach|attachment|傳送檔案|傳送文件|附件|ファイル/i.test(label);
+            });
+            if (!target) return false;
+            target.click();
+            return true;
+            """
+        )
+        deadline = time.monotonic() + timeout_seconds
+        while time.monotonic() < deadline:
+            inputs = driver.find_elements(By.CSS_SELECTOR, FILE_INPUT_SELECTOR)
+            if inputs:
+                break
+            time.sleep(0.2)
+
+    if not inputs:
+        raise RuntimeError("LINE file input did not become available")
+
+    inputs[-1].send_keys(str(resolved))
+    state = wait_for_attachment_state(driver, timeout_seconds=timeout_seconds)
+    return ImageUploadResult(
+        input_selector=FILE_INPUT_SELECTOR,
+        preview_detected=state["preview"],
+        explicit_submit_required=state["explicit_submit"],
+    )
+
+
+def submit_image_attachment(
+    driver: Any,
+    upload: ImageUploadResult,
+    *,
+    timeout_seconds: float = 10.0,
+) -> str:
+    if not upload.explicit_submit_required:
+        return "file_input_auto_submit"
+
+    clicked = driver.execute_script(
+        """
+        const visible = (el) => {
+          if (!el) return false;
+          const style = window.getComputedStyle(el);
+          const rect = el.getBoundingClientRect();
+          return style.display !== 'none' && style.visibility !== 'hidden'
+            && rect.width > 0 && rect.height > 0;
+        };
+        const roots = [...document.querySelectorAll(
+          '[role="dialog"], [aria-modal="true"], .modal, .dialog'
+        )].filter(visible);
+        const scope = roots.length ? roots : [document];
+        const candidates = scope.flatMap(root => [...root.querySelectorAll(
+          'button, [role="button"], [aria-label], [title]'
+        )]).filter(visible);
+        const target = candidates.find(el => {
+          const label = (
+            el.getAttribute('aria-label')
+            || el.getAttribute('title')
+            || el.textContent
+            || ''
+          ).trim();
+          return /^(send|傳送|发送|送信)$/i.test(label);
+        });
+        if (!target) return false;
+        target.click();
+        return true;
+        """
+    )
+    if not clicked:
+        raise RuntimeError("LINE image submit control disappeared before submission")
+
+    deadline = time.monotonic() + timeout_seconds
+    while time.monotonic() < deadline:
+        state = _attachment_state(driver)
+        if not state["preview"] and not state["explicit_submit"]:
+            return "explicit_attachment_submit"
+        time.sleep(0.2)
+
+    raise TimeoutError(
+        "LINE image submission state is uncertain; submission was not retried"
+    )
 
 
 RESULT_SELECTOR = ".friendlistItem-module__item__1tuZn"

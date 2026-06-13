@@ -209,8 +209,17 @@ def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] 
         return "missing line query"
     if not is_line_contact_eligible(draft.customer_id, draft.line_contact):
         return "missing eligible line contact"
-    if not draft.draft_message.strip():
+    if draft.message_kind not in {"text", "image", "image_text"}:
+        return "unsupported message kind"
+    if draft.message_kind in {"text", "image_text"} and not draft.draft_message.strip():
         return "blank message"
+    if draft.message_kind in {"image", "image_text"}:
+        if not draft.material_id.strip():
+            return "missing material id"
+        if not draft.image_path.strip():
+            return "missing image path"
+        if not draft.material_sha256.strip():
+            return "missing material hash"
     flags = {flag.casefold() for flag in draft.safety_flags}
     if draft.risk_level.casefold() == "high" or "medical_overclaim_risk" in flags or "patient_privacy_risk" in flags:
         return "high risk blocked"

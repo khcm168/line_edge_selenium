@@ -8,9 +8,21 @@ from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stam
 from app.config import Settings
 from app.line_profile import is_line_contact_eligible
 from app.line_client import LineClient
-from app.line_messaging import open_chat, resolve_match, send_message
+from app.line_messaging import (
+    open_chat,
+    resolve_match,
+    send_message,
+    submit_image_attachment,
+    upload_image,
+)
+from app.material_catalog import load_catalog, resolve_material_path
 from app.task_builder import MessageTask, build_test_tasks, read_tasks, write_tasks
 from app.ui_health import check_composer
+
+
+IMAGE_MESSAGE_KINDS = {"image", "image_text"}
+TEXT_MESSAGE_KINDS = {"text", "image_text"}
+MESSAGE_KINDS = IMAGE_MESSAGE_KINDS | TEXT_MESSAGE_KINDS
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -105,6 +117,7 @@ def _run_task(
     audit_path: Path,
     snapshot_writer: SnapshotWriter,
 ) -> str:
+    material = _resolve_task_material(task, settings)
     decision = resolve_match(
         client.driver,
         query=task.query,
@@ -116,6 +129,7 @@ def _run_task(
         label=f"match_{task.query}",
         payload={
             "task": asdict(task),
+            "material": material,
             "decision": decision,
             "visible_text": client.visible_text()[:3000],
         },
@@ -141,11 +155,16 @@ def _run_task(
 
     if manual_approve:
         open_chat(client.driver, decision)
-        health = check_composer(client.driver)
+        health = (
+            check_composer(client.driver)
+            if task.message_kind in TEXT_MESSAGE_KINDS
+            else None
+        )
         approval_snapshot = snapshot_writer.write(
             label=f"manual_approval_{task.query}",
             payload={
                 "task": asdict(task),
+                "material": material,
                 "decision": decision,
                 "visible_text": client.visible_text()[:3000],
                 "note": "Manual approval mode opened the matched chat and stopped before typing or sending.",
@@ -161,7 +180,10 @@ def _run_task(
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
-                detail=f"opened matched chat; no text typed and no message sent; {health.status}",
+                detail=(
+                    "opened matched chat; no text typed and no message sent"
+                    + (f"; {health.status}" if health else "")
+                ),
                 source=task.source,
                 candidates=list(decision.candidates),
                 selected=decision.selected,
@@ -191,8 +213,12 @@ def _run_task(
         return "preview_matched"
 
     open_chat(client.driver, decision)
-    health = check_composer(client.driver)
-    if not health.ok:
+    health = (
+        check_composer(client.driver)
+        if task.message_kind in TEXT_MESSAGE_KINDS
+        else None
+    )
+    if health is not None and not health.ok:
         failure_snapshot = snapshot_writer.write(
             label=f"composer_missing_{task.query}",
             payload={
@@ -218,12 +244,59 @@ def _run_task(
             ),
         )
         raise RuntimeError(health.detail)
-    method = send_message(client.driver, task.message)
+    methods: list[str] = []
+    evidence = {"pre_send": str(snapshot)}
+    if task.message_kind in TEXT_MESSAGE_KINDS:
+        methods.append(f"text:{send_message(client.driver, task.message)}")
+    if task.message_kind in IMAGE_MESSAGE_KINDS:
+        upload = upload_image(client.driver, material["resolved_path"])
+        upload_snapshot = snapshot_writer.write(
+            label=f"image_uploaded_{task.query}",
+            payload={
+                "task": asdict(task),
+                "material": material,
+                "upload": upload,
+                "selected": decision.selected,
+            },
+            driver=client.driver,
+        )
+        evidence["post_upload"] = str(upload_snapshot)
+        append_jsonl(
+            audit_path,
+            build_audit_record(
+                action="upload_image",
+                status="attachment_ready",
+                query=task.query,
+                policy=task.match_policy,
+                message=task.message,
+                detail=(
+                    f"preview_detected={upload.preview_detected}; "
+                    f"explicit_submit_required={upload.explicit_submit_required}"
+                ),
+                source={
+                    **(task.source or {}),
+                    "material": material,
+                    "evidence": dict(evidence),
+                },
+                selected=decision.selected,
+                snapshot=upload_snapshot,
+            ),
+        )
+        methods.append(
+            f"image:{submit_image_attachment(client.driver, upload)}"
+        )
+    method = ",".join(methods)
     send_snapshot = snapshot_writer.write(
         label=f"sent_{task.query}",
-        payload={"task": asdict(task), "method": method},
+        payload={
+            "task": asdict(task),
+            "material": material,
+            "method": method,
+            "selected": decision.selected,
+        },
         driver=client.driver,
     )
+    evidence["post_send"] = str(send_snapshot)
     append_jsonl(
         audit_path,
         build_audit_record(
@@ -233,7 +306,11 @@ def _run_task(
             policy=task.match_policy,
             message=task.message,
             detail=f"sent via {method}",
-            source=task.source,
+            source={
+                **(task.source or {}),
+                "material": material,
+                "evidence": evidence,
+            },
             selected=decision.selected,
             snapshot=send_snapshot,
         ),
@@ -251,8 +328,14 @@ def _validate_live_scope(
     if not send:
         return
     for task in tasks:
-        if not task.message.strip():
+        if task.message_kind not in MESSAGE_KINDS:
+            raise ValueError(
+                f"Unsupported LINE message_kind {task.message_kind!r}: {task.query}"
+            )
+        if task.message_kind in TEXT_MESSAGE_KINDS and not task.message.strip():
             raise ValueError(f"Refusing live send with blank message: {task.query}")
+        if task.message_kind in IMAGE_MESSAGE_KINDS:
+            _resolve_task_material(task, settings)
         if task.manual_required:
             raise ValueError(
                 f"Live send target {task.query!r} requires manual approval workflow."
@@ -261,6 +344,45 @@ def _validate_live_scope(
             raise ValueError(
                 f"Live send target {task.query!r} is missing eligible Line contact for Customer_ID {task.customer_id!r}."
             )
+
+
+def _resolve_task_material(task: MessageTask, settings: Settings) -> dict[str, str]:
+    if task.message_kind not in IMAGE_MESSAGE_KINDS:
+        return {}
+    if not task.material_id.strip():
+        raise ValueError(f"Picture task is missing material_id: {task.query}")
+
+    catalog = load_catalog(settings.material_catalog_path)
+    record = catalog.by_id().get(task.material_id)
+    if record is None:
+        raise ValueError(f"Unknown LINE material_id: {task.material_id}")
+    if not record.is_live_eligible:
+        raise ValueError(
+            f"LINE material {record.material_id} is not approved and sendable"
+        )
+    if task.material_sha256 and task.material_sha256 != record.sha256:
+        raise ValueError(
+            f"Task hash does not match catalog for {record.material_id}"
+        )
+    if task.image_path:
+        requested_name = Path(task.image_path).name.casefold()
+        if requested_name != record.filename.casefold():
+            raise ValueError(
+                f"Task image_path does not match catalog for {record.material_id}"
+            )
+
+    resolved = resolve_material_path(
+        record,
+        material_root=settings.material_root,
+        verify_hash=True,
+    )
+    return {
+        "material_id": record.material_id,
+        "filename": record.filename,
+        "sha256": record.sha256,
+        "duplicate_of": record.duplicate_of,
+        "resolved_path": str(resolved),
+    }
 
 
 if __name__ == "__main__":
