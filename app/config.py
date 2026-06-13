@@ -29,9 +29,11 @@ DEFAULT_ACTS_TAB = "Acts"
 DEFAULT_LIST_TAB = "List"
 DEFAULT_DRAFT_SHEET = "LINE_Drafts"
 DEFAULT_LOG_SHEET = "log"
+DEFAULT_MATERIAL_SHEET = "LINE_Material"
 DEFAULT_LOG_DIR = ROOT / "data" / "logs"
 DEFAULT_SNAPSHOT_DIR = ROOT / "data" / "snapshots"
 DEFAULT_TASK_DIR = ROOT / "data" / "tasks"
+DEFAULT_MATERIAL_CATALOG = ROOT / "data" / "line_material_catalog.json"
 DEFAULT_RULES_PATH = ROOT / "data" / "reminder_rules.json"
 DEFAULT_ALLOWED_LIVE_TARGETS = ("洪啓明", "P103003", "001N1備份區", "Ya.ping")
 DEFAULT_ALLOWED_GROUP_TARGETS = ("001N1備份區",)
@@ -56,6 +58,9 @@ class Settings:
     list_tab_name: str
     draft_sheet_name: str
     sheet_log_name: str
+    material_sheet_name: str
+    material_root: Path
+    material_catalog_path: Path
     google_credentials_path: Path
     log_dir: Path
     snapshot_dir: Path
@@ -69,6 +74,8 @@ class Settings:
     ollama_model: str
     ollama_timeout_seconds: int
     ai_enabled: bool
+    response_watcher_enabled: bool
+    response_watch_groups: tuple[str, ...]
 
     @classmethod
     def from_env(cls, *, require_google: bool = False) -> "Settings":
@@ -100,6 +107,14 @@ class Settings:
             list_tab_name=os.getenv("LINE_LIST_TAB", DEFAULT_LIST_TAB),
             draft_sheet_name=os.getenv("LINE_DRAFT_SHEET", DEFAULT_DRAFT_SHEET),
             sheet_log_name=os.getenv("LINE_LOG_SHEET", DEFAULT_LOG_SHEET),
+            material_sheet_name=os.getenv(
+                "LINE_MATERIAL_SHEET",
+                DEFAULT_MATERIAL_SHEET,
+            ),
+            material_root=Path(os.getenv("LINE_MATERIAL_ROOT", "")),
+            material_catalog_path=Path(
+                os.getenv("LINE_MATERIAL_CATALOG", DEFAULT_MATERIAL_CATALOG)
+            ),
             google_credentials_path=Path(credentials) if credentials else Path(),
             log_dir=Path(os.getenv("LINE_LOG_DIR", DEFAULT_LOG_DIR)),
             snapshot_dir=Path(os.getenv("LINE_SNAPSHOT_DIR", DEFAULT_SNAPSHOT_DIR)),
@@ -124,6 +139,14 @@ class Settings:
                 DEFAULT_OLLAMA_TIMEOUT_SECONDS,
             ),
             ai_enabled=_bool_env(os.getenv("LINE_AI_ENABLED"), True),
+            response_watcher_enabled=_bool_env(
+                os.getenv("LINE_RESPONSE_WATCHER_ENABLED"),
+                False,
+            ),
+            response_watch_groups=_split_env(
+                os.getenv("LINE_RESPONSE_WATCH_GROUPS"),
+                DEFAULT_ALLOWED_GROUP_TARGETS,
+            ),
         )
 
 

@@ -166,6 +166,10 @@ class SheetGatewayTest(unittest.TestCase):
 
         self.assertIn("Line_Contact", worksheet.values[0])
         self.assertIn("Line_Message_Style", worksheet.values[0])
+        self.assertIn("Material_ID", worksheet.values[0])
+        self.assertIn("Image_Path", worksheet.values[0])
+        self.assertIn("Message_Kind", worksheet.values[0])
+        self.assertIn("Material_SHA256", worksheet.values[0])
 
 
 if __name__ == "__main__":

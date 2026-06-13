@@ -1,0 +1,5437 @@
+{
+  "records": [
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白聚醣的作用」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片1.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-001",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "b565b739aab7276d2e45d5ea22062b2231929939d7860cb58d9e5f49b3f1cf87",
+      "test_result": "not_tested",
+      "topic": "蛋白聚醣的作用",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白聚醣的作用」，主題為蛋白聚醣的作用。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片2.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-002",
+      "product": "品牌/全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "398e09eee634fc8e241b07b4ecb972f1221a796355028612d4412ec6b1de89e5",
+      "test_result": "not_tested",
+      "topic": "開場動畫",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「開場動畫」，主題為開場動畫。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「企業願景與永續責任」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片3.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-003",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "80ca595a7e822a3d6e305268994a965639606cbb4ee70aad79eba7823dcd1be3",
+      "test_result": "not_tested",
+      "topic": "企業願景與永續責任",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「企業願景與永續責任」，主題為企業願景與永續責任。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「全方位行動力簡報封面」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片4.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-004",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "88e71b96cfc5f3a5acbb1ff50fee92a8a698f8d28ea8c378428208981857e0ab",
+      "test_result": "not_tested",
+      "topic": "全方位行動力簡報封面",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「全方位行動力簡報封面」，主題為全方位行動力簡報封面。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「高峰藥品的使命與獎項」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片5.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-005",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "d3b60d04daf2803b7f523c673412ac62fd51db00a37d27fb52bfbe71907a14e9",
+      "test_result": "not_tested",
+      "topic": "高峰藥品的使命與獎項",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「高峰藥品的使命與獎項」，主題為高峰藥品的使命與獎項。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「取之於社會用之於社會」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片6.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-006",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "7405b1516c59d4631c814cf1b789525c7d64179fd38913dc5ebb53736fb1ffaf",
+      "test_result": "not_tested",
+      "topic": "取之於社會用之於社會",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「取之於社會用之於社會」，主題為取之於社會用之於社會。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「公益活動與社會責任」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片7.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-007",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "a29de50d89b6746d0f6629e175cb015c8781fad2b782cbefd623dc76ac9199d3",
+      "test_result": "not_tested",
+      "topic": "公益活動與社會責任",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「公益活動與社會責任」，主題為公益活動與社會責任。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「員工旅遊與團隊文化」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片8.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-008",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "85fc7b5b8547552069a59134de6753e0047bb9649be00058642dcc37fc6a6054",
+      "test_result": "not_tested",
+      "topic": "員工旅遊與團隊文化",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「員工旅遊與團隊文化」，主題為員工旅遊與團隊文化。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「複方療法的專家」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片9.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-009",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "b0182ad686738ca8a7d0c12acdd23983c153ea1254ae95dd8a7a5a55688e02da",
+      "test_result": "not_tested",
+      "topic": "複方療法的專家",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「複方療法的專家」，主題為複方療法的專家。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「產品線總覽」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片10.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-010",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c29ee13073afa43f1a45d33e94e48b96c482cfc8f96ebda97c749c7c08821cb8",
+      "test_result": "not_tested",
+      "topic": "產品線總覽",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「產品線總覽」，主題為產品線總覽。"
+    },
+    {
+      "audience": "醫療專業人員與合作夥伴",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「如何選擇適合的產品」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片11.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-011",
+      "product": "品牌/全產品",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c8639a7168a758c1780e1dcad06e28fa69a764f4b50953bb4503aeb68e7bf0e0",
+      "test_result": "not_tested",
+      "topic": "如何選擇適合的產品",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「如何選擇適合的產品」，主題為如何選擇適合的產品。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片12.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-012",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "7722219bc489668842f4812304b0cbda0b5696d84387bea5eb60d6b6381aabde",
+      "test_result": "not_tested",
+      "topic": "潤送止痛、修護軟骨、潤滑關節",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「潤送止痛、修護軟骨、潤滑關節」，主題為潤送止痛、修護軟骨、潤滑關節。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「退化性關節炎分級與建議」的重點，可作為醫療專業人員的簡短參考。若您有需要，我再把 全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片13.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-013",
+      "product": "全產品",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "40e8193d1fba23a01097ea6d506b64f8cb6c1980ae3c8acba4214dd086411ae4",
+      "test_result": "not_tested",
+      "topic": "退化性關節炎分級與建議",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「退化性關節炎分級與建議」，主題為退化性關節炎分級與建議。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片14.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-014",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "a586b7e5d91c24b2a8c79c5942ce0f2bb62ad4ab89140a87181ac2ee85979836",
+      "test_result": "not_tested",
+      "topic": "美白抗皺、消除疲痛、增強肌耐力",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「美白抗皺、消除疲痛、增強肌耐力」，主題為美白抗皺、消除疲痛、增強肌耐力。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片15.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-015",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "ec2237ec56c31d4876b1adb945abca8be50a25595fbedb1bdcbe3d3196254276",
+      "test_result": "not_tested",
+      "topic": "全素可食、關節照護、脫手自如",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「全素可食、關節照護、脫手自如」，主題為全素可食、關節照護、脫手自如。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片16.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-016",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "1cb764156e2fdb6546d530e57a41fc40b6b8e97fff888fb25400544de044437a",
+      "test_result": "not_tested",
+      "topic": "愛屋及烏、照顧寵物家人",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「愛屋及烏、照顧寵物家人」，主題為愛屋及烏、照顧寵物家人。"
+    },
+    {
+      "audience": "家醫科、耳鼻喉科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片17.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-017",
+      "product": "GOODHA/TOPHA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "132b3854906a8ca49b69091668176e21c4e53339f1e320825efbcb1aa16f60b7",
+      "test_result": "not_tested",
+      "topic": "預防感冒、調節過敏、增強免疫力",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「預防感冒、調節過敏、增強免疫力」，主題為預防感冒、調節過敏、增強免疫力。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片18.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-018",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "0581ea1864038df422f0c5c4eea57ca93cf41a023c65da8a53423698c7a513ce",
+      "test_result": "not_tested",
+      "topic": "使用經驗分享",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「使用經驗分享」，主題為使用經驗分享。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片19.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-019",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "1ecb21376459af4d71c6b633bd6dacf83c71c082e5b2e1c743e31d8c83ed2516",
+      "test_result": "not_tested",
+      "topic": "鎮定安神、幫助入睡、深度熟睡",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「鎮定安神、幫助入睡、深度熟睡」，主題為鎮定安神、幫助入睡、深度熟睡。"
+    },
+    {
+      "audience": "睡眠照護相關客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「疫情期間焦慮失眠風險」的重點，可作為睡眠照護相關客戶的簡短參考。若您有需要，我再把 SleepHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片20.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-020",
+      "product": "SleepHA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "419a9ef1784f34925dda04516bda377dbdf6cef340887dabf33dd4d34a4b6759",
+      "test_result": "not_tested",
+      "topic": "疫情期間焦慮失眠風險",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「疫情期間焦慮失眠風險」，主題為疫情期間焦慮失眠風險。"
+    },
+    {
+      "audience": "睡眠照護相關客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「疫情焦慮失眠與緊張」的重點，可作為睡眠照護相關客戶的簡短參考。若您有需要，我再把 SleepHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片21.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-021",
+      "product": "SleepHA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "334cdc1662a9f1c3c0f441ae79b5ae4a4ffa5f9665015ef04b9b819e92a4fc49",
+      "test_result": "not_tested",
+      "topic": "疫情焦慮失眠與緊張",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「疫情焦慮失眠與緊張」，主題為疫情焦慮失眠與緊張。"
+    },
+    {
+      "audience": "睡眠照護相關客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「櫻桃汁與褪黑激素」的重點，可作為睡眠照護相關客戶的簡短參考。若您有需要，我再把 SleepHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片22.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-022",
+      "product": "SleepHA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "6d158269a35ad17c78a385525666dd21a1a30706327ab0f3e94d86f46c5deefc",
+      "test_result": "not_tested",
+      "topic": "櫻桃汁與褪黑激素",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「櫻桃汁與褪黑激素」，主題為櫻桃汁與褪黑激素。"
+    },
+    {
+      "audience": "睡眠照護相關客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「櫻桃汁改善睡眠品質」的重點，可作為睡眠照護相關客戶的簡短參考。若您有需要，我再把 SleepHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片23.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-023",
+      "product": "SleepHA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c52ef2c96975b279edf958006118a27a8107838089a22d1f0f36cef977250389",
+      "test_result": "not_tested",
+      "topic": "櫻桃汁改善睡眠品質",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「櫻桃汁改善睡眠品質」，主題為櫻桃汁改善睡眠品質。"
+    },
+    {
+      "audience": "睡眠照護相關客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Sleep HA 全方位改善睡眠品質」的重點，可作為睡眠照護相關客戶的簡短參考。若您有需要，我再把 SleepHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片24.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-024",
+      "product": "SleepHA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "e636d3f3d93802a2124a62b80600c5a5dceb397a81ba75d71f6e04dd77bab596",
+      "test_result": "not_tested",
+      "topic": "Sleep HA 全方位改善睡眠品質",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Sleep HA 全方位改善睡眠品質」，主題為Sleep HA 全方位改善睡眠品質。"
+    },
+    {
+      "audience": "睡眠照護相關客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片25.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-025",
+      "product": "SleepHA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "4411ff11ef3e5bff7b8f07358dea77cb7afd446eefe0119f6f51f6f2ba210385",
+      "test_result": "not_tested",
+      "topic": "Sleep HA 診所體驗分享",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Sleep HA 診所體驗分享」，主題為Sleep HA 診所體驗分享。"
+    },
+    {
+      "audience": "睡眠照護相關客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片26.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-026",
+      "product": "SleepHA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "0856ceb8102f2c457d7845d826b24e2d3f2b2f595e1af20ae3595d58510ad964",
+      "test_result": "not_tested",
+      "topic": "Sleep HA 使用經驗分享",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Sleep HA 使用經驗分享」，主題為Sleep HA 使用經驗分享。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片27.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-027",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "43ae47bd0f930b5cc7fa3d9838cc35ee0adac5de262c8e6b9711acb49594134a",
+      "test_result": "not_tested",
+      "topic": "鎮定安神、幫助入睡、深度熟睡",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「鎮定安神、幫助入睡、深度熟睡」，主題為鎮定安神、幫助入睡、深度熟睡。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片28.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-028",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "1e240d8df4553f7657cded4637f4ef38644e18ab119dd4a7e18cd7950885d351",
+      "test_result": "not_tested",
+      "topic": "提升睪固酮與男性健康",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「提升睪固酮與男性健康」，主題為提升睪固酮與男性健康。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片29.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-029",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "490107a426a534bc36a4590e751234b0b9a2fd753b23ea4253c96c1c55c84f74",
+      "test_result": "not_tested",
+      "topic": "健福診所改善案例",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「健福診所改善案例」，主題為健福診所改善案例。"
+    },
+    {
+      "audience": "家醫科、耳鼻喉科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「GOODHA Post Market Study」的重點，可作為家醫科、耳鼻喉科與藥局的簡短參考。若您有需要，我再把 GOODHA/TOPHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片30.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-030",
+      "product": "GOODHA/TOPHA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "819f6d23ad4c4db43a8d88ece4b01f8f181ff64e1a865d334469c294256b175c",
+      "test_result": "not_tested",
+      "topic": "GOODHA Post Market Study",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「GOODHA Post Market Study」，主題為GOODHA Post Market Study。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「新冠肺炎與傳染病風險」的重點，可作為醫療專業人員的簡短參考。若您有需要，我再把 全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片31.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-031",
+      "product": "全產品",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "542927b57787b9b6ad31bba550c1f174bdb03eb02f3d88e9e83f975f43a6fe04",
+      "test_result": "not_tested",
+      "topic": "新冠肺炎與傳染病風險",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「新冠肺炎與傳染病風險」，主題為新冠肺炎與傳染病風險。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片32.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-032",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "136e2f0dfc8b3c18a6b0a1834aae476854639b1d1305c1b02db2bc361b2b6254",
+      "test_result": "not_tested",
+      "topic": "消除疲勞、肝炎輔助治療、逆轉肝硬化",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「消除疲勞、肝炎輔助治療、逆轉肝硬化」，主題為消除疲勞、肝炎輔助治療、逆轉肝硬化。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片33.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-033",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "9b655a34ea34fac458c61c67a692c42c7a1ee11ed9be95f4521ce7ccbc34e13f",
+      "test_result": "not_tested",
+      "topic": "臨床案例：自抗原腎癌",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「臨床案例：自抗原腎癌」，主題為臨床案例：自抗原腎癌。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片34.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-034",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "26f8b482af00f70c6683ea01fd56be83c283f1152533fcfac6571c4c2e2d1dd4",
+      "test_result": "not_tested",
+      "topic": "臨床案例：GOT/GPT下降",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「臨床案例：GOT/GPT下降」，主題為臨床案例：GOT/GPT下降。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「冬蟲夏草原料比較」的重點，可作為醫療專業人員的簡短參考。若您有需要，我再把 全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片35.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-035",
+      "product": "全產品",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "2b61c924bcd2ad82b1b4e1ab0380677589aca7ced11f1a24cb63fa2f0d8db06f",
+      "test_result": "not_tested",
+      "topic": "冬蟲夏草原料比較",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「冬蟲夏草原料比較」，主題為冬蟲夏草原料比較。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「補充維生素B的好處」的重點，可作為醫療專業人員的簡短參考。若您有需要，我再把 全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片36.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-036",
+      "product": "全產品",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "009093c11b4706ea74cf559f698af170e5f6d9845f1ff90643efe447d5c3b170",
+      "test_result": "not_tested",
+      "topic": "補充維生素B的好處",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「補充維生素B的好處」，主題為補充維生素B的好處。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片37.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-037",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "120ff072ec5a6fa77a6ef55457347818cfc56b852fe319aa1d433578bc71f29b",
+      "test_result": "not_tested",
+      "topic": "降尿酸、減少痛風發作、保護腎臟",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「降尿酸、減少痛風發作、保護腎臟」，主題為降尿酸、減少痛風發作、保護腎臟。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片38.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-038",
+      "product": "全產品",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "61730a636308b1273c2b8a92f31ec75469f87b5b5d08d1162554ee0e7266b4d0",
+      "test_result": "not_tested",
+      "topic": "實際改善案例",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「實際改善案例」，主題為實際改善案例。"
+    },
+    {
+      "audience": "醫療專業人員",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「如何選擇適合的產品」的重點，可作為醫療專業人員的簡短參考。若您有需要，我再把 全產品 相關內容整理成更精簡的版本。",
+      "duplicate_of": "MAT-ACT-011",
+      "filename": "投影片39.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-039",
+      "product": "全產品",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c8639a7168a758c1780e1dcad06e28fa69a764f4b50953bb4503aeb68e7bf0e0",
+      "test_result": "not_tested",
+      "topic": "如何選擇適合的產品",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「如何選擇適合的產品」，主題為如何選擇適合的產品。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「退化性關節炎整合照護」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片40.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-040",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "0f6b8062ceff9c6ff18b97cef45c23666c3002c8cec632816fdec409d63991b9",
+      "test_result": "not_tested",
+      "topic": "退化性關節炎整合照護",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「退化性關節炎整合照護」，主題為退化性關節炎整合照護。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸的專家」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片41.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-041",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "38d5095dff458c11aff5ae30775b629dfed75ed67cc3cb516881593d3b600758",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸的專家",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸的專家」，主題為口服玻尿酸的專家。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「什麼是玻尿酸」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片42.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-042",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "f24475f8ff7158f9febd3fd6cb9160e6d4d40bab78b5d4de3a1e9a9ac6be152a",
+      "test_result": "not_tested",
+      "topic": "什麼是玻尿酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「什麼是玻尿酸」，主題為什麼是玻尿酸。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「玻尿酸驚人之處與保水能力」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片43.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-043",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "104f37cf788d5e0c24c0d7e75a23b38a07a7de56466b31a18be62529a290bc81",
+      "test_result": "not_tested",
+      "topic": "玻尿酸驚人之處與保水能力",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「玻尿酸驚人之處與保水能力」，主題為玻尿酸驚人之處與保水能力。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「玻尿酸是老化的指標」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片44.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-044",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "d662482866224064eeb3de9f3e0b839d705c57e7cacc17efedf95467053bf052",
+      "test_result": "not_tested",
+      "topic": "玻尿酸是老化的指標",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「玻尿酸是老化的指標」，主題為玻尿酸是老化的指標。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「玻尿酸體內與自然界分布」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片45.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-045",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "6995971023515fb52bc95f2bffefb29bc5a1eb05a28e7de239378bb9ff281a37",
+      "test_result": "not_tested",
+      "topic": "玻尿酸體內與自然界分布",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「玻尿酸體內與自然界分布」，主題為玻尿酸體內與自然界分布。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片46.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-046",
+      "product": "A+HA/Q10HA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "6c9a58eaccdfe0da04fd5d277bfe132c5a9a0040f2b2c52a459ac42fb81a9db1",
+      "test_result": "not_tested",
+      "topic": "關節炎流行病學",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「關節炎流行病學」，主題為關節炎流行病學。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「骨關節炎盛行率」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片47.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-047",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "6884c8662522a094267b21672e7db4c8f36e44a93660d99b0b95ea9588c8bad4",
+      "test_result": "not_tested",
+      "topic": "骨關節炎盛行率",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「骨關節炎盛行率」，主題為骨關節炎盛行率。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「關節滑液」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片48.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-048",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "a9327bd7d4995ed7b5a50eae77b6325d7baf5f57e4510b2293867370b4b49c75",
+      "test_result": "not_tested",
+      "topic": "關節滑液",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「關節滑液」，主題為關節滑液。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「退化性關節炎與軟骨分解」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片49.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-049",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "a46d70a9aca148a966ee2b9124fb5c791987757ac9a432ad7fb2b8109c906c52",
+      "test_result": "not_tested",
+      "topic": "退化性關節炎與軟骨分解",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「退化性關節炎與軟骨分解」，主題為退化性關節炎與軟骨分解。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「退化性關節炎發炎機轉」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片50.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-050",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "fa72480f05cd10d9044c931907e7d79dd6e723bf641206698aabe0e1c7325a94",
+      "test_result": "not_tested",
+      "topic": "退化性關節炎發炎機轉",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「退化性關節炎發炎機轉」，主題為退化性關節炎發炎機轉。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「退化性關節炎與軟骨細胞」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片51.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-051",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "4a0e15dd04ee11459135fb326e4b5a9ea0dce07d5ca651352498717a3577cd2d",
+      "test_result": "not_tested",
+      "topic": "退化性關節炎與軟骨細胞",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「退化性關節炎與軟骨細胞」，主題為退化性關節炎與軟骨細胞。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「金屬蛋白酶形成機轉」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片52.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-052",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "47e462e442bf7661ca8362df136b92d1e309f11a7a591a6d76dd1488bbcadb6f",
+      "test_result": "not_tested",
+      "topic": "金屬蛋白酶形成機轉",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「金屬蛋白酶形成機轉」，主題為金屬蛋白酶形成機轉。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「軟骨退化訊號路徑」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片53.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-053",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c12d4c8ac54d6d1177e496da097b3a95e24a32c929d459ea26b87447435cac25",
+      "test_result": "not_tested",
+      "topic": "軟骨退化訊號路徑",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「軟骨退化訊號路徑」，主題為軟骨退化訊號路徑。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「玻尿酸抑制發炎的研究」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片54.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-054",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "02ac984b51e87efa305ad9afa82d1770bef9ea342962719b235ee28b6f217428",
+      "test_result": "not_tested",
+      "topic": "玻尿酸抑制發炎的研究",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「玻尿酸抑制發炎的研究」，主題為玻尿酸抑制發炎的研究。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片55.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-055",
+      "product": "A+HA/Q10HA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "3f53e2b404a3d8fbb8235936c773627d53ab646f5ca4dab617b6b604c4bd3ab3",
+      "test_result": "not_tested",
+      "topic": "A+HA 產品定位",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「A+HA 產品定位」，主題為A+HA 產品定位。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「玻尿酸分子與保水量」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片56.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-056",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "ab050fff43f506d9cbb536b96bba022d257ec405cd5490f3610b48d2c745e83f",
+      "test_result": "not_tested",
+      "topic": "玻尿酸分子與保水量",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「玻尿酸分子與保水量」，主題為玻尿酸分子與保水量。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「玻尿酸是老化指標」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片57.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-057",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "758f6143af13b9b5919eb2a734f2560a97c965a7c95f448ac9d83b319088ca3c",
+      "test_result": "not_tested",
+      "topic": "玻尿酸是老化指標",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「玻尿酸是老化指標」，主題為玻尿酸是老化指標。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸吸收實驗：美國」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片58.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-058",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c05babb1b7f36820e63267ddce6976bc76650ab436e6ca9a60cde2596582ff7a",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸吸收實驗：美國",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸吸收實驗：美國」，主題為口服玻尿酸吸收實驗：美國。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸吸收實驗：日本」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片59.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-059",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "354c3385ef8eb694f13e02cef18b075aeeb88804722129dca0e4c04da193011a",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸吸收實驗：日本",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸吸收實驗：日本」，主題為口服玻尿酸吸收實驗：日本。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸吸收實驗：中國」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片60.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-060",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "10f6dccd159c2459edb2970a1c91f0fb8319cc01c549445677d8279b37b4b54a",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸吸收實驗：中國",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸吸收實驗：中國」，主題為口服玻尿酸吸收實驗：中國。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸吸收機制」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片61.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-061",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "f68ed766f65e22fb0dd1e5eb9cc01edd95fb81d2893d0e77b9f1542d922038e4",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸吸收機制",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸吸收機制」，主題為口服玻尿酸吸收機制。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸如何吸收及合成」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片62.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-062",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "a941d6fc2052350c05abac4d0276c9120798079e9c30aa9e93f8746f6b5ef5cc",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸如何吸收及合成",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸如何吸收及合成」，主題為口服玻尿酸如何吸收及合成。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸臨床實證統合分析」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片63.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-063",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "2aa2bfed02ec904e58f127788475bf4877733f23576f407802ffc6f959ed25b6",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸臨床實證統合分析",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸臨床實證統合分析」，主題為口服玻尿酸臨床實證統合分析。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸臨床實證研究」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片64.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-064",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "7a1b9722c1a03ec1573c0816bd59b4e7d91d8de60bb4f88ed904c0386816f2d7",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸臨床實證研究",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸臨床實證研究」，主題為口服玻尿酸臨床實證研究。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「硫酸化葡萄糖胺吸收率限制」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片65.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-065",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "97a74fd013f9f9f334c7f3e57bcbcb607dd937acf3ba0348bec84321a20ba215",
+      "test_result": "not_tested",
+      "topic": "硫酸化葡萄糖胺吸收率限制",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「硫酸化葡萄糖胺吸收率限制」，主題為硫酸化葡萄糖胺吸收率限制。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「玻尿酸合成酵素」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片66.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-066",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "3deeb16403d8e8dbcedf881cc4578a42e8d24157081860bc15cd534d3434d74d",
+      "test_result": "not_tested",
+      "topic": "玻尿酸合成酵素",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「玻尿酸合成酵素」，主題為玻尿酸合成酵素。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「葡萄糖胺促進玻尿酸原料」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片67.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-067",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "bb0ba639d144a0e60a0bae270d5129321be12832c41e6603c784724deee8a7d3",
+      "test_result": "not_tested",
+      "topic": "葡萄糖胺促進玻尿酸原料",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「葡萄糖胺促進玻尿酸原料」，主題為葡萄糖胺促進玻尿酸原料。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「年輕女性玻尿酸合成情況」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片68.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-068",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "614864ff7031d8b1d73453324d09fdd017b333bf046f1f6cdf8f93f1ea6f6f39",
+      "test_result": "not_tested",
+      "topic": "年輕女性玻尿酸合成情況",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「年輕女性玻尿酸合成情況」，主題為年輕女性玻尿酸合成情況。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「中老年女性玻尿酸合成情況」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片69.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-069",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "35c36ea7f41f6b01c562c37e65755444c07c701163a0a5e21042e6165ccbb208",
+      "test_result": "not_tested",
+      "topic": "中老年女性玻尿酸合成情況",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「中老年女性玻尿酸合成情況」，主題為中老年女性玻尿酸合成情況。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「中老年婦女使用口服小分子玻尿酸」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片70.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-070",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "73c9b12cd411ce482a777203931d11fb2e32aecb80ae5ab91883c46d7b410eb0",
+      "test_result": "not_tested",
+      "topic": "中老年婦女使用口服小分子玻尿酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「中老年婦女使用口服小分子玻尿酸」，主題為中老年婦女使用口服小分子玻尿酸。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「A+HA 小分子液體口服玻尿酸」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片71.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-071",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "3fae8195f652aa3561ec7c0b57919959fdc0a0460fa34cf5e7ea833ac86bdbb7",
+      "test_result": "not_tested",
+      "topic": "A+HA 小分子液體口服玻尿酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「A+HA 小分子液體口服玻尿酸」，主題為A+HA 小分子液體口服玻尿酸。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「膝關節男女老化差異」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片72.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-072",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "33f3c58489a4a07c324ea105d2d2327259c10b4122472eb1644c4b32bdb7de11",
+      "test_result": "not_tested",
+      "topic": "膝關節男女老化差異",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「膝關節男女老化差異」，主題為膝關節男女老化差異。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「關節炎男女老化差異」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片73.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-073",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "bdfd3008640b9f3d971113547913994152e48de0ff17d9a85770e79cb2cb284d",
+      "test_result": "not_tested",
+      "topic": "關節炎男女老化差異",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「關節炎男女老化差異」，主題為關節炎男女老化差異。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Epidemiology of osteoarthritis」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片74.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-074",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "cc41eaccf516a7cb9ec1fcde969099ae4adb1c751650c9741314747dcf1a5f05",
+      "test_result": "not_tested",
+      "topic": "Epidemiology of osteoarthritis",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Epidemiology of osteoarthritis」，主題為Epidemiology of osteoarthritis。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「關節軟骨結構」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片75.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-075",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "eea4a5604bfd831c440f362fd571f2a332f632cb0e99aa65901c0dbb025b11a3",
+      "test_result": "not_tested",
+      "topic": "關節軟骨結構",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「關節軟骨結構」，主題為關節軟骨結構。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「關節軟骨之膠原結構」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片76.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-076",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "5e06126a424bd8b793105f7451bfde0bd25eea153885538bd28ff4b815730bb3",
+      "test_result": "not_tested",
+      "topic": "關節軟骨之膠原結構",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「關節軟骨之膠原結構」，主題為關節軟骨之膠原結構。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白聚醣是關節重要物質」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片77.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-077",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "7da7c058f0bcc1b2bbb2c5a38b9ace8c33c661542f40111344b40f7d323ccce9",
+      "test_result": "not_tested",
+      "topic": "蛋白聚醣是關節重要物質",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白聚醣是關節重要物質」，主題為蛋白聚醣是關節重要物質。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白聚醣的作用」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片78.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-078",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "6e4a81def55abbc0db847bf1d656462498956e1e400a050151461ba1266e1470",
+      "test_result": "not_tested",
+      "topic": "蛋白聚醣的作用",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白聚醣的作用」，主題為蛋白聚醣的作用。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「目前玻尿酸治療上的障礙」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片79.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-079",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "1754ccd257934dfac55e2a8f4e1b4e0e50b7a35ce6e63a46336a4a5cc32bb518",
+      "test_result": "not_tested",
+      "topic": "目前玻尿酸治療上的障礙",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「目前玻尿酸治療上的障礙」，主題為目前玻尿酸治療上的障礙。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「口服玻尿酸的安全選擇」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片80.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-080",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "17348f798e611874f9b2ef75ee7951e379168457523191eb3ba72e51bef19520",
+      "test_result": "not_tested",
+      "topic": "口服玻尿酸的安全選擇",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「口服玻尿酸的安全選擇」，主題為口服玻尿酸的安全選擇。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「如何選擇適合的產品」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "MAT-ACT-011",
+      "filename": "投影片81.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-081",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c8639a7168a758c1780e1dcad06e28fa69a764f4b50953bb4503aeb68e7bf0e0",
+      "test_result": "not_tested",
+      "topic": "如何選擇適合的產品",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「如何選擇適合的產品」，主題為如何選擇適合的產品。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Q10HA 產品與行動力」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片82.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-082",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "b95a4013a4dbe29872b130381434db619245d3b22819a0a1ace0848c067c7462",
+      "test_result": "not_tested",
+      "topic": "Q10HA 產品與行動力",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Q10HA 產品與行動力」，主題為Q10HA 產品與行動力。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「女性族群最關心的三大議題」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片83.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-083",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "4c26727b789387672f3c018d8e580d2ed498ab304bf502cc332783939fc9525f",
+      "test_result": "not_tested",
+      "topic": "女性族群最關心的三大議題",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「女性族群最關心的三大議題」，主題為女性族群最關心的三大議題。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Q10HA 小分子液體口服玻尿酸」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片84.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-084",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "7f240ca38758d95544b429936a5cafb30d3fa6cbf17aaafae1cedecfaf2c01f6",
+      "test_result": "not_tested",
+      "topic": "Q10HA 小分子液體口服玻尿酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Q10HA 小分子液體口服玻尿酸」，主題為Q10HA 小分子液體口服玻尿酸。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「退化性關節炎源自肌力減少」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片85.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-085",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "b32a85150e102c16692dfdfd77fe6a9fd455a1f018c9d9d43026e0a04b84c77e",
+      "test_result": "not_tested",
+      "topic": "退化性關節炎源自肌力減少",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「退化性關節炎源自肌力減少」，主題為退化性關節炎源自肌力減少。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Coenzyme Q10 的功能」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片86.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-086",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "8019dba535f13825c2f7f34e8c0171769a6212aa567052c02e881ca36ebcb760",
+      "test_result": "not_tested",
+      "topic": "Coenzyme Q10 的功能",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Coenzyme Q10 的功能」，主題為Coenzyme Q10 的功能。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「補充Q10提升肌耐力」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片87.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-087",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "2acd7aa515ef750a18a39be9882d9fca1de693ec76828eb94d180fd232a76416",
+      "test_result": "not_tested",
+      "topic": "補充Q10提升肌耐力",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「補充Q10提升肌耐力」，主題為補充Q10提升肌耐力。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片88.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-088",
+      "product": "A+HA/Q10HA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "7b1c85bdbd779b4bb9e3d31c581df3beaf124023ae1941a692e492625e4a24dc",
+      "test_result": "not_tested",
+      "topic": "Q10改善疲勞與腰痠肩痛案例",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Q10改善疲勞與腰痠肩痛案例」，主題為Q10改善疲勞與腰痠肩痛案例。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「A+HA與Q10HA關節問題整合」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片89.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-089",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "38c9e4403d71ed13f7bb33bd6c0700f02aa179405813732d718eb072b03c40fa",
+      "test_result": "not_tested",
+      "topic": "A+HA與Q10HA關節問題整合",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「A+HA與Q10HA關節問題整合」，主題為A+HA與Q10HA關節問題整合。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片90.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-090",
+      "product": "A+HA/Q10HA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "9684770dd547c8dd83f19af11d8acdb9cecc4eb0ff5b9313e65e569906f7acf2",
+      "test_result": "not_tested",
+      "topic": "A+HA與Q10HA行動力整合",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「A+HA與Q10HA行動力整合」，主題為A+HA與Q10HA行動力整合。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片91.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-091",
+      "product": "A+HA/Q10HA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "fe79ed609d33310f2e74ea09cfea06ac3136065b3ef9ed7ddacc42c025784de1",
+      "test_result": "not_tested",
+      "topic": "Q10增加行動力臨床使用案例",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Q10增加行動力臨床使用案例」，主題為Q10增加行動力臨床使用案例。"
+    },
+    {
+      "audience": "骨科、復健科、家醫科與藥局",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「如何選擇適合的產品」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "MAT-ACT-011",
+      "filename": "投影片92.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-092",
+      "product": "A+HA/Q10HA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c8639a7168a758c1780e1dcad06e28fa69a764f4b50953bb4503aeb68e7bf0e0",
+      "test_result": "not_tested",
+      "topic": "如何選擇適合的產品",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「如何選擇適合的產品」，主題為如何選擇適合的產品。"
+    },
+    {
+      "audience": "全素需求與關節照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「YESHA 素的玻尿酸新品」的重點，可作為全素需求與關節照護客戶的簡短參考。若您有需要，我再把 YESHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片93.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-093",
+      "product": "YESHA",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "4fe09d047aa155aacb12099122295811eeb2e976fdcb53fbd235df886d2a6728",
+      "test_result": "not_tested",
+      "topic": "YESHA 素的玻尿酸新品",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「YESHA 素的玻尿酸新品」，主題為YESHA 素的玻尿酸新品。"
+    },
+    {
+      "audience": "全素需求與關節照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「YESHA 包裝與外觀」的重點，可作為全素需求與關節照護客戶的簡短參考。若您有需要，我再把 YESHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片94.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-094",
+      "product": "YESHA",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "cdd30c12b3610fca893a424f38cde4c834d82d7a18613a48aace7cb6815144fc",
+      "test_result": "not_tested",
+      "topic": "YESHA 包裝與外觀",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「YESHA 包裝與外觀」，主題為YESHA 包裝與外觀。"
+    },
+    {
+      "audience": "全素需求與關節照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「YESHA 產品衛教摺頁」的重點，可作為全素需求與關節照護客戶的簡短參考。若您有需要，我再把 YESHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片95.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-095",
+      "product": "YESHA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "9a946e0b0f7a10402fcc4a2ab822988b4ad1fa7df1462d3bc66f913167bfb695",
+      "test_result": "not_tested",
+      "topic": "YESHA 產品衛教摺頁",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「YESHA 產品衛教摺頁」，主題為YESHA 產品衛教摺頁。"
+    },
+    {
+      "audience": "全素需求與關節照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「YESHA 與Q10HA研究素材」的重點，可作為全素需求與關節照護客戶的簡短參考。若您有需要，我再把 YESHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片96.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-096",
+      "product": "YESHA",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "internal_only",
+      "sha256": "09bd98125c60bf06241177ae9cd3ffc3a673580560639fb8558b8e1279b8533b",
+      "test_result": "not_tested",
+      "topic": "YESHA 與Q10HA研究素材",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「YESHA 與Q10HA研究素材」，主題為YESHA 與Q10HA研究素材。"
+    },
+    {
+      "audience": "全素需求與關節照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「愛老婆的知名藝人也知道肌肉對骨關節的重要」的重點，可作為全素需求與關節照護客戶的簡短參考。若您有需要，我再把 YESHA 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片97.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-097",
+      "product": "YESHA",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "78ed314a3f052f1682f7bafeafb4ac5bfe36c62c3bf9e9ef0a8d637c580e0db8",
+      "test_result": "not_tested",
+      "topic": "愛老婆的知名藝人也知道肌肉對骨關節的重要",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「愛老婆的知名藝人也知道肌肉對骨關節的重要」，主題為愛老婆的知名藝人也知道肌肉對骨關節的重要。"
+    },
+    {
+      "audience": "全素需求與關節照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片98.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-098",
+      "product": "YESHA",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "1598b2d2b450d33216fa948f33d33ef33f3b16192a57af133662d6652d752390",
+      "test_result": "not_tested",
+      "topic": "轉場動畫",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「轉場動畫」，主題為轉場動畫。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「iMuso 肌不可失產品封面」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片99.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-099",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "03de66c2ef215ca3b4646cade251816190a68acc658f604b5c00dcb4cdd72bdf",
+      "test_result": "not_tested",
+      "topic": "iMuso 肌不可失產品封面",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「iMuso 肌不可失產品封面」，主題為iMuso 肌不可失產品封面。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症在台灣」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片100.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-100",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "2e124c18d8684048516d8e211511450e425abb86d98559b12293559ec745ffb1",
+      "test_result": "not_tested",
+      "topic": "肌少症在台灣",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症在台灣」，主題為肌少症在台灣。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症在台灣的影響」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片101.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-101",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "b528d7b2a66f7eca1eb916a8c188e9ce4f6c33ba163c1c87a7b7fed380d1e218",
+      "test_result": "not_tested",
+      "topic": "肌少症在台灣的影響",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症在台灣的影響」，主題為肌少症在台灣的影響。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「台灣肌少症機率與盛行率」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片102.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-102",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "ea567021a8a42d0eef97de75d257784d105bb9aaced1d8bd59b6f4bea4983537",
+      "test_result": "not_tested",
+      "topic": "台灣肌少症機率與盛行率",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「台灣肌少症機率與盛行率」，主題為台灣肌少症機率與盛行率。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症篩檢流程」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片103.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-103",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "af437b931704f1650e6e7c504ec1655a328a431bfbb4008f58dc19270454df70",
+      "test_result": "not_tested",
+      "topic": "肌少症篩檢流程",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症篩檢流程」，主題為肌少症篩檢流程。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「歐盟肌少症SARC-F問卷」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片104.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-104",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "1b39f1513855196a565af3b9844067a64f620cefe0f9143cc7d6e85fc4db4069",
+      "test_result": "not_tested",
+      "topic": "歐盟肌少症SARC-F問卷",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「歐盟肌少症SARC-F問卷」，主題為歐盟肌少症SARC-F問卷。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「2019亞洲肌少症共識」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片105.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-105",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "f00bed8d96e5acc92c047124ddaaf14ff6caad296e2a640eedb0929bbe0e3316",
+      "test_result": "not_tested",
+      "topic": "2019亞洲肌少症共識",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「2019亞洲肌少症共識」，主題為2019亞洲肌少症共識。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「老年的隱性殺手肌少症」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片106.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-106",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "048191610a19224d13c6fa69b526e29e5f5a7ce957bff2f450c512e3dd13829a",
+      "test_result": "not_tested",
+      "topic": "老年的隱性殺手肌少症",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「老年的隱性殺手肌少症」，主題為老年的隱性殺手肌少症。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症發生的主要原因」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片107.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-107",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "3d5af33b43525366c69f5302bbbf443493ca0a84ebbd0d0f510c15e111e050e1",
+      "test_result": "not_tested",
+      "topic": "肌少症發生的主要原因",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症發生的主要原因」，主題為肌少症發生的主要原因。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症發生原因與路徑」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片108.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-108",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "7d7e6716ef2dc39be548f86c70d154d2c2963550ed4df5a351595c7f10046c8d",
+      "test_result": "not_tested",
+      "topic": "肌少症發生原因與路徑",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症發生原因與路徑」，主題為肌少症發生原因與路徑。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「老年合併糖尿病與肌少症風險」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片109.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-109",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "5c655b40378ad9037f0b9ed40542d3d5453db51b2e6324122270b219dea595ab",
+      "test_result": "not_tested",
+      "topic": "老年合併糖尿病與肌少症風險",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「老年合併糖尿病與肌少症風險」，主題為老年合併糖尿病與肌少症風險。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉量隨年齡衰退」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片110.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-110",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "40dd5f9875521c6aa093f07d76cc09fdf5822c1981e9f282b028b316a3f7d9ef",
+      "test_result": "not_tested",
+      "topic": "肌肉量隨年齡衰退",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉量隨年齡衰退」，主題為肌肉量隨年齡衰退。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症症狀」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片111.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-111",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "eda53a29282e3ab1966722503963e03b5740c17bf468c220d39f54902eaa9ae5",
+      "test_result": "not_tested",
+      "topic": "肌少症症狀",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症症狀」，主題為肌少症症狀。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症與退化性關節炎息息相關」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片112.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-112",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "fe97e88c543dd72cef568b1d24429b2e65372cc0a39ae828b0378a6717fe5a80",
+      "test_result": "not_tested",
+      "topic": "肌少症與退化性關節炎息息相關",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症與退化性關節炎息息相關」，主題為肌少症與退化性關節炎息息相關。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉不夠力關節磨損更嚴重」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片113.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-113",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "05a26cc9badc2941e7a11011e6e5df2118cc094ce9be374db080fd6784b60c34",
+      "test_result": "not_tested",
+      "topic": "肌肉不夠力關節磨損更嚴重",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉不夠力關節磨損更嚴重」，主題為肌肉不夠力關節磨損更嚴重。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「適度運動預防膝關節炎發生」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片114.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-114",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "982178c8765aaf7b160930538a50e4e6d0b697583f66f1024f98db3f91a82c58",
+      "test_result": "not_tested",
+      "topic": "適度運動預防膝關節炎發生",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「適度運動預防膝關節炎發生」，主題為適度運動預防膝關節炎發生。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「退化性關節炎源自肌力減少」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片115.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-115",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "1841041e35d6492857c08647458b3ef630736169e101ef815ad886f365f68fc4",
+      "test_result": "not_tested",
+      "topic": "退化性關節炎源自肌力減少",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「退化性關節炎源自肌力減少」，主題為退化性關節炎源自肌力減少。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉量決定活多久」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片116.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-116",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "6c95327a33c9c505d4fd6481e81899517a88b8f32af6337abf9d4e7dc9463e9b",
+      "test_result": "not_tested",
+      "topic": "肌肉量決定活多久",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉量決定活多久」，主題為肌肉量決定活多久。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉力量減弱增加關節負擔」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片117.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-117",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "a6d47d8cc628305f9fc8a9daed507c2155bbf19ed16779c9ee4c1e3260015fa7",
+      "test_result": "not_tested",
+      "topic": "肌肉力量減弱增加關節負擔",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉力量減弱增加關節負擔」，主題為肌肉力量減弱增加關節負擔。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「增強肌耐力減少關節疾病發生」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片118.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-118",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "30bbe26c729e4fbd67df296345509232edd7c3eeac13209b1f572ba1434f6846",
+      "test_result": "not_tested",
+      "topic": "增強肌耐力減少關節疾病發生",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「增強肌耐力減少關節疾病發生」，主題為增強肌耐力減少關節疾病發生。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「搶救退化性關節炎先強化肌肉」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片119.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-119",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "ee94367c52858ccd92a5506c9c877546a23192d9405e72b9be3c1c9ccf99249a",
+      "test_result": "not_tested",
+      "topic": "搶救退化性關節炎先強化肌肉",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「搶救退化性關節炎先強化肌肉」，主題為搶救退化性關節炎先強化肌肉。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「搶救退化性關節炎強化肌肉」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片120.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-120",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "f4901ef4fa86fc13c1bf780e631cef7c87ae249d7e352264cc177262370a4e69",
+      "test_result": "not_tested",
+      "topic": "搶救退化性關節炎強化肌肉",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「搶救退化性關節炎強化肌肉」，主題為搶救退化性關節炎強化肌肉。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症發生的主要原因」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "MAT-ACT-107",
+      "filename": "投影片121.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-121",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "3d5af33b43525366c69f5302bbbf443493ca0a84ebbd0d0f510c15e111e050e1",
+      "test_result": "not_tested",
+      "topic": "肌少症發生的主要原因",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症發生的主要原因」，主題為肌少症發生的主要原因。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「老年合併糖尿病與肌少症風險」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "MAT-ACT-109",
+      "filename": "投影片122.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-122",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "5c655b40378ad9037f0b9ed40542d3d5453db51b2e6324122270b219dea595ab",
+      "test_result": "not_tested",
+      "topic": "老年合併糖尿病與肌少症風險",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「老年合併糖尿病與肌少症風險」，主題為老年合併糖尿病與肌少症風險。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「吃蛋白質就能長肌肉嗎」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片123.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-123",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "525b78ccd895e393821bffe2f8664f92d1c2a0f85d110bf20012b16e481ec7a6",
+      "test_result": "not_tested",
+      "topic": "吃蛋白質就能長肌肉嗎",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「吃蛋白質就能長肌肉嗎」，主題為吃蛋白質就能長肌肉嗎。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「如何預防或改善肌少症」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片124.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-124",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "841a6d961a197459b70e474fa231fb80a3f5521a7e59b8edd8df9a901d6189d8",
+      "test_result": "not_tested",
+      "topic": "如何預防或改善肌少症",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「如何預防或改善肌少症」，主題為如何預防或改善肌少症。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉增強的關鍵營養素」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片125.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-125",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "252b76257bab1d2e8b9e0f5f86e92706449e31654e86a15ae43c20a1579d9141",
+      "test_result": "not_tested",
+      "topic": "肌肉增強的關鍵營養素",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉增強的關鍵營養素」，主題為肌肉增強的關鍵營養素。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「醫療級配方改善肌少症」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片126.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-126",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "03a272bdfcfe4bb2a6cf5d2fb9898042ccf4eac499637de199a6a666a35a0189",
+      "test_result": "not_tested",
+      "topic": "醫療級配方改善肌少症",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「醫療級配方改善肌少症」，主題為醫療級配方改善肌少症。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「胺基酸的重要性與來源」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片127.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-127",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "9bcc55c771cad663dea0bfe991172e399c3a411af4000f6285ac282f60dcb9a8",
+      "test_result": "not_tested",
+      "topic": "胺基酸的重要性與來源",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「胺基酸的重要性與來源」，主題為胺基酸的重要性與來源。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「胺基酸與運動的重要性」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片128.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-128",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "efce4de594cdd14e00594586e22bcb3e3fa162ada4ace58a10a8f8f82064a339",
+      "test_result": "not_tested",
+      "topic": "胺基酸與運動的重要性",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「胺基酸與運動的重要性」，主題為胺基酸與運動的重要性。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉生長關鍵因子白胺酸與精胺酸」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片129.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-129",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "f6a8982d01362bf0f9832a6615a4d7ebec8b4a9a29472cf09ff29555524db5d4",
+      "test_result": "not_tested",
+      "topic": "肌肉生長關鍵因子白胺酸與精胺酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉生長關鍵因子白胺酸與精胺酸」，主題為肌肉生長關鍵因子白胺酸與精胺酸。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「攝取量足才能達到Leucine Trigger」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片130.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-130",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "512653eedaf68089eaf5ae6ea284d3616089d0d7e66d89e09bf8b21cd9715d50",
+      "test_result": "not_tested",
+      "topic": "攝取量足才能達到Leucine Trigger",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「攝取量足才能達到Leucine Trigger」，主題為攝取量足才能達到Leucine Trigger。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「白胺酸在食物中的含量」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片131.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-131",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "ffd3f9a042e242604eeb57de3e6c57e463b7da1413632d4f7e339c62fbc0cb7e",
+      "test_result": "not_tested",
+      "topic": "白胺酸在食物中的含量",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「白胺酸在食物中的含量」，主題為白胺酸在食物中的含量。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「白胺酸增加肌力恢復行動力」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片132.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-132",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "a4d017edc7c592a5f7be699d7eb706b2ee04d4db731101023ec0fb25e5d90dfc",
+      "test_result": "not_tested",
+      "topic": "白胺酸增加肌力恢復行動力",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「白胺酸增加肌力恢復行動力」，主題為白胺酸增加肌力恢復行動力。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「白胺酸有效改善肌少症」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片133.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-133",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "a7badc367449985bfd705effa3aafe85c9f4657c819cbb2714d342f1368c2e59",
+      "test_result": "not_tested",
+      "topic": "白胺酸有效改善肌少症",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「白胺酸有效改善肌少症」，主題為白胺酸有效改善肌少症。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉生長關鍵因子白胺酸與精胺酸」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "MAT-ACT-129",
+      "filename": "投影片134.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-134",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "f6a8982d01362bf0f9832a6615a4d7ebec8b4a9a29472cf09ff29555524db5d4",
+      "test_result": "not_tested",
+      "topic": "肌肉生長關鍵因子白胺酸與精胺酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉生長關鍵因子白胺酸與精胺酸」，主題為肌肉生長關鍵因子白胺酸與精胺酸。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「IGF-1參與肌肉與骨骼生長」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片135.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-135",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "eec87d4b4bbb6d16ec6e9573e36e37a906fc6b01f70edab4066df0299d4a9496",
+      "test_result": "not_tested",
+      "topic": "IGF-1參與肌肉與骨骼生長",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「IGF-1參與肌肉與骨骼生長」，主題為IGF-1參與肌肉與骨骼生長。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「如何增加IGF-1分泌」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片136.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-136",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "8ec3e62192c2d1faba92a5a75ebedd5ca251c56a5d209c71559e1c01376026ca",
+      "test_result": "not_tested",
+      "topic": "如何增加IGF-1分泌",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「如何增加IGF-1分泌」，主題為如何增加IGF-1分泌。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Arginine能增加IGF-1」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片137.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-137",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "fb2b2e46700d07c37614c382f6826dfba7c5086cf7c4b3adf9ad9fd1166bccb9",
+      "test_result": "not_tested",
+      "topic": "Arginine能增加IGF-1",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Arginine能增加IGF-1」，主題為Arginine能增加IGF-1。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Arginine搭配重量訓練與IGF-1」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片138.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-138",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "7b245575c7ebd05de5c3cdbc903785ee79705e0aa886c5c74d1d1cd071608940",
+      "test_result": "not_tested",
+      "topic": "Arginine搭配重量訓練與IGF-1",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Arginine搭配重量訓練與IGF-1」，主題為Arginine搭配重量訓練與IGF-1。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「乳清蛋白合成肌肉的原料」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片139.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-139",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "1a66517cf852896a737a40f4bb58d75869aa6c1091085ee387b75bc8608dc028",
+      "test_result": "not_tested",
+      "topic": "乳清蛋白合成肌肉的原料",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「乳清蛋白合成肌肉的原料」，主題為乳清蛋白合成肌肉的原料。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「老人要比一般人攝取更多蛋白質」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片140.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-140",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "7e6035f12861cfdbc57334cfedd3a192330a7fa8f5e08e89c5205f780f003305",
+      "test_result": "not_tested",
+      "topic": "老人要比一般人攝取更多蛋白質",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「老人要比一般人攝取更多蛋白質」，主題為老人要比一般人攝取更多蛋白質。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「乳清蛋白富含白胺酸」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片141.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-141",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "172c0f68556fef54feeb0ec0092541fb3c74106f4f265fc34c6e703f2214895e",
+      "test_result": "not_tested",
+      "topic": "乳清蛋白富含白胺酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「乳清蛋白富含白胺酸」，主題為乳清蛋白富含白胺酸。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「乳清蛋白加運動增加肌肉纖維合成效率」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片142.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-142",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "f034a5329280ace838709c80ce09ff6f78bb872ac6e13b692bedb85f067addbd",
+      "test_result": "not_tested",
+      "topic": "乳清蛋白加運動增加肌肉纖維合成效率",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「乳清蛋白加運動增加肌肉纖維合成效率」，主題為乳清蛋白加運動增加肌肉纖維合成效率。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「黃金比例高劑量白胺酸與乳清蛋白」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片143.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-143",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "c6bb87b1f3aa311525645a3ce1d98692051d619669ad84a8b8564b2c95190e91",
+      "test_result": "not_tested",
+      "topic": "黃金比例高劑量白胺酸與乳清蛋白",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「黃金比例高劑量白胺酸與乳清蛋白」，主題為黃金比例高劑量白胺酸與乳清蛋白。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白質一日攝取量」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片144.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-144",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "0906aae4918ec0720ec4ac0112b9df0db40a2d8adfb0d34878e6084d846bbe41",
+      "test_result": "not_tested",
+      "topic": "蛋白質一日攝取量",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白質一日攝取量」，主題為蛋白質一日攝取量。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「何謂BCAA」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片145.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-145",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "23e7c2f40d97a8f0fa7d3c305e69cc1a3051a78979abd84882fe21c4fe051565",
+      "test_result": "not_tested",
+      "topic": "何謂BCAA",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「何謂BCAA」，主題為何謂BCAA。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「BCAA在人體的角色」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片146.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-146",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "88cd58f13e5a308fb8d959b3aa0187a3c4c6d0c0cb4bb0b5c57fa40b21636691",
+      "test_result": "not_tested",
+      "topic": "BCAA在人體的角色",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「BCAA在人體的角色」，主題為BCAA在人體的角色。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Benefits of BCAAs」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片147.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-147",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "47b565775ac97b4bf2feb957b9f349184d502b914d3cea770374bcc4cf13b95a",
+      "test_result": "not_tested",
+      "topic": "Benefits of BCAAs",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Benefits of BCAAs」，主題為Benefits of BCAAs。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「常見的BCAA功效」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片148.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-148",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "a64ac4d9a0ac8e1983e8999b47a51865dc34b6f5e80ee17466ec636d6c7578b1",
+      "test_result": "not_tested",
+      "topic": "常見的BCAA功效",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「常見的BCAA功效」，主題為常見的BCAA功效。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉生長四大關鍵」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片149.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-149",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "1d5486105e26103969f2735d40c35539e2832a84ab3ace15950a583f4f4bc3c5",
+      "test_result": "not_tested",
+      "topic": "肌肉生長四大關鍵",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉生長四大關鍵」，主題為肌肉生長四大關鍵。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「iMuso胺基酸醫療級配方」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片150.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-150",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "a803806e55d526302d35123b247967c51095aa7fffa67b219c1607db906d1d4b",
+      "test_result": "not_tested",
+      "topic": "iMuso胺基酸醫療級配方",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「iMuso胺基酸醫療級配方」，主題為iMuso胺基酸醫療級配方。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白質該如何攝取」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片151.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-151",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "1f192a3ce61a5726f064a921434cd3f75e7ddb3ac6927a32b82f4bafae897af8",
+      "test_result": "not_tested",
+      "topic": "蛋白質該如何攝取",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白質該如何攝取」，主題為蛋白質該如何攝取。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「台灣常見的三餐」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片152.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-152",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "e7a14172112665b9cb7529f470fd219919bef844019620697b6a1481ec42427d",
+      "test_result": "not_tested",
+      "topic": "台灣常見的三餐",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「台灣常見的三餐」，主題為台灣常見的三餐。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「三餐平均攝取蛋白質增加效果最佳」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片153.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-153",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "7b6f8c1883964e4be1ef72f319bf2c99b3480b35c0f43f5e3dd257d506ad3b01",
+      "test_result": "not_tested",
+      "topic": "三餐平均攝取蛋白質增加效果最佳",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「三餐平均攝取蛋白質增加效果最佳」，主題為三餐平均攝取蛋白質增加效果最佳。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「茹素者的蛋白質攝取量不足」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片154.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-154",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "ffe364f2bbff03c665e1d6bbd6f581e20796469c7ebfcbd72246858ed1fbd141",
+      "test_result": "not_tested",
+      "topic": "茹素者的蛋白質攝取量不足",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「茹素者的蛋白質攝取量不足」，主題為茹素者的蛋白質攝取量不足。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「運動後補充需立即補充蛋白質」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片155.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-155",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "77757d6bfedcac1d748ffdbf4e3237e39df30fbaaee78ab46889a0bd18e9262a",
+      "test_result": "not_tested",
+      "topic": "運動後補充需立即補充蛋白質",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「運動後補充需立即補充蛋白質」，主題為運動後補充需立即補充蛋白質。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「茹素者的蛋白質攝取量不足」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片156.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-156",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "fe4f008eac64972ab99cfaafb3c204ee2dec0e436aae667ecd1277ebd5f0defc",
+      "test_result": "not_tested",
+      "topic": "茹素者的蛋白質攝取量不足",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「茹素者的蛋白質攝取量不足」，主題為茹素者的蛋白質攝取量不足。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「用法用量」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片157.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-157",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "bdbe2e34f782c2c2c37339c41407731ef2250df9c2888c5934cfc3cea60cc1a1",
+      "test_result": "not_tested",
+      "topic": "用法用量",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「用法用量」，主題為用法用量。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片158.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-158",
+      "product": "iMuso",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "26b24a00a7dc71450628c0907cef0a5299d09079b62fab065e931850def8613e",
+      "test_result": "not_tested",
+      "topic": "使用者體驗分享",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「使用者體驗分享」，主題為使用者體驗分享。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「iMuso增加肌肉量提升免疫力」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片159.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-159",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "82dbb58cd0e22345ae441176b3c9dc33ed5e0371c0d63386b4edbd2e3d4460fa",
+      "test_result": "not_tested",
+      "topic": "iMuso增加肌肉量提升免疫力",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「iMuso增加肌肉量提升免疫力」，主題為iMuso增加肌肉量提升免疫力。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「iMuso適用族群」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片160.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-160",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "b3991ea64e610912521de200924b9fcc5de1cb35d10f2833357a37d5670c5286",
+      "test_result": "not_tested",
+      "topic": "iMuso適用族群",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「iMuso適用族群」，主題為iMuso適用族群。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「iMuso一手四足效果說明」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片161.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-161",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "2c3ffd3b73d8e73000ba5d272d74d9959fe7e44ec0c0165816e4799fc00f5507",
+      "test_result": "not_tested",
+      "topic": "iMuso一手四足效果說明",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「iMuso一手四足效果說明」，主題為iMuso一手四足效果說明。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「iMuso與A+HA、Q10HA搭配方法」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片162.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-162",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "4c033b00acf0de9200a1e03acea85477b45af155603de3f606fd6dd9d2925412",
+      "test_result": "not_tested",
+      "topic": "iMuso與A+HA、Q10HA搭配方法",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「iMuso與A+HA、Q10HA搭配方法」，主題為iMuso與A+HA、Q10HA搭配方法。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「三折頁正面」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片163.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-163",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "8d7e5fcef2ad998a36552fc47e5ad8676896b2791f5e2401cd181f98bf4b3142",
+      "test_result": "not_tested",
+      "topic": "三折頁正面",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「三折頁正面」，主題為三折頁正面。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「三折頁背面」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片164.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-164",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "dfa4dda0a867442365bf3632d9e8d761b58d53a62dbd27182f020c5719c55052",
+      "test_result": "not_tested",
+      "topic": "三折頁背面",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「三折頁背面」，主題為三折頁背面。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Thank you for your attention」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片165.JPG",
+      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "material_id": "MAT-ACT-165",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "low",
+      "safety_flags": [
+        "human_review_required"
+      ],
+      "sendability": "sendable",
+      "sha256": "2d8a69e4b946ab441370d4bfb4e4ef99b8f807541a4d4ce32c7fe194b8b399f3",
+      "test_result": "not_tested",
+      "topic": "Thank you for your attention",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Thank you for your attention」，主題為Thank you for your attention。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「診所肌少症相關產品：固力健」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片166.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-166",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "9e4cc1484c1cfc22e354b5f5fe8b1e181e901d15bdfe1c02a9d68af20f360866",
+      "test_result": "not_tested",
+      "topic": "診所肌少症相關產品：固力健",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「診所肌少症相關產品：固力健」，主題為診所肌少症相關產品：固力健。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「診所肌少症相關產品：肌力加」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片167.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-167",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "5ae4e6e5dcd2b7cdd6cdbf44cbca2dd1f43deef2ce598390b25920dbf2eb7c2e",
+      "test_result": "not_tested",
+      "topic": "診所肌少症相關產品：肌力加",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「診所肌少症相關產品：肌力加」，主題為診所肌少症相關產品：肌力加。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「診所肌少症相關產品：胺舒寧」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片168.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-168",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "043eddb96e111276deaf325c98b05558b423c942e4bd7e3b95b85dacbbbd7537",
+      "test_result": "not_tested",
+      "topic": "診所肌少症相關產品：胺舒寧",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「診所肌少症相關產品：胺舒寧」，主題為診所肌少症相關產品：胺舒寧。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「好市多蛋白質補充品」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片169.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-169",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "2362cf7d3666eaef9a9320bcc3db8c6af7aa952d571b86660a0be9a8b1aa7972",
+      "test_result": "not_tested",
+      "topic": "好市多蛋白質補充品",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「好市多蛋白質補充品」，主題為好市多蛋白質補充品。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「常見產品比較」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片170.JPG",
+      "internal_comment": "含競品或產品比較，需法規與主管審核後才能使用。",
+      "material_id": "MAT-ACT-170",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "competitor_comparison_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "cdae2d13f59ef4530f244a8e76ba5101cf5a3a1baca8e5329fa813c4f9f4f4b8",
+      "test_result": "not_tested",
+      "topic": "常見產品比較",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「常見產品比較」，主題為常見產品比較。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片171.JPG",
+      "internal_comment": "含個案、表單或可識別內容，只能內部查閱。",
+      "material_id": "MAT-ACT-171",
+      "product": "iMuso",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "patient_privacy_risk"
+      ],
+      "sendability": "blocked",
+      "sha256": "0307ed5e8c003c8c6c53d0c81f566b01c09025db96cdeb8c6d0d32267ea29042",
+      "test_result": "not_tested",
+      "topic": "產品文件掃描",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「產品文件掃描」，主題為產品文件掃描。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白質與胺基酸」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片172.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-172",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "17e41c815d01ef33ae3777259e8e4f5c99da1b4a2335d4d286fe5a3a76a3fbad",
+      "test_result": "not_tested",
+      "topic": "蛋白質與胺基酸",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白質與胺基酸」，主題為蛋白質與胺基酸。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白質的生物功能」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片173.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-173",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "97b9d5ec3de9f48332fd7115f5323ce495b9c9aa71697313257db781f09c303c",
+      "test_result": "not_tested",
+      "topic": "蛋白質的生物功能",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白質的生物功能」，主題為蛋白質的生物功能。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白質代謝路徑」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片174.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-174",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "73fa655048c7ecec7b23dd6113cee0568b4d862710310dedd416450143ca801f",
+      "test_result": "not_tested",
+      "topic": "蛋白質代謝路徑",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白質代謝路徑」，主題為蛋白質代謝路徑。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「蛋白質一日攝取量」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片175.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-175",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "544b4d1ab395a39feb45ba50ec1b7e9bf20a7f57feaf21adcad0d5be6849036d",
+      "test_result": "not_tested",
+      "topic": "蛋白質一日攝取量",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「蛋白質一日攝取量」，主題為蛋白質一日攝取量。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「胺基酸藥品與腎臟照護」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片176.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-176",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "08d12cee4e40b9580a965a46754f542bc62307da7ddbde4bec3a38c3394ce10b",
+      "test_result": "not_tested",
+      "topic": "胺基酸藥品與腎臟照護",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「胺基酸藥品與腎臟照護」，主題為胺基酸藥品與腎臟照護。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「Q&A」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片177.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-177",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "e993457861f01cf118b6447100f9617f61e351e0e1c821249da1f8918f08942b",
+      "test_result": "not_tested",
+      "topic": "Q&A",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「Q&A」，主題為Q&A。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌少症篩檢流程」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片178.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-178",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "23dc6150d9d839cc39412a798600dea3651109bfc95b9e9071d3f407f82bdeb9",
+      "test_result": "not_tested",
+      "topic": "肌少症篩檢流程",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌少症篩檢流程」，主題為肌少症篩檢流程。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「歐盟肌少症SARC-F問卷」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片179.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-179",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "54e5fa10cc8c16e7545d8d1ea9d2c062109e55fd2ebac5e3af859dba2ac303f2",
+      "test_result": "not_tested",
+      "topic": "歐盟肌少症SARC-F問卷",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「歐盟肌少症SARC-F問卷」，主題為歐盟肌少症SARC-F問卷。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「2019亞洲肌少症共識」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片180.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-180",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "6cb25b8f1a52961d5cfa504be20e9bf9427075f4f831d056cefb6b565093f5dc",
+      "test_result": "not_tested",
+      "topic": "2019亞洲肌少症共識",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「2019亞洲肌少症共識」，主題為2019亞洲肌少症共識。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「SPPB簡短身體功能量表」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片181.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-181",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "0b28dd0e9d8000a7661226caceeb8fd0425de9301a6e16b118090bd6c920e798",
+      "test_result": "not_tested",
+      "topic": "SPPB簡短身體功能量表",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「SPPB簡短身體功能量表」，主題為SPPB簡短身體功能量表。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「平衡測驗」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片182.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-182",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "7ecfd8feeba36639b31b73ecd22b3395ca7356f91256c5655d879e0ac32c6f54",
+      "test_result": "not_tested",
+      "topic": "平衡測驗",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「平衡測驗」，主題為平衡測驗。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「走路速度」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片183.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-183",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "aa6208f11e9465831af4ca9f510c86b9aea76574c3e1643cffe24c34c2b6e95c",
+      "test_result": "not_tested",
+      "topic": "走路速度",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「走路速度」，主題為走路速度。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「坐站測驗」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片184.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-184",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "ddb78de970b8b45340b4084498cfc7af3cfb3d13f931f90ff498b941ce6e5462",
+      "test_result": "not_tested",
+      "topic": "坐站測驗",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「坐站測驗」，主題為坐站測驗。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「下肢肌肉功能評估」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片185.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-185",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "5fc182badc0f090fb36301f49ce2887287993130d08a06c4457bd08ee472e127",
+      "test_result": "not_tested",
+      "topic": "下肢肌肉功能評估",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「下肢肌肉功能評估」，主題為下肢肌肉功能評估。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「iMuso一手四足效果說明」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "MAT-ACT-161",
+      "filename": "投影片186.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-186",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "2c3ffd3b73d8e73000ba5d272d74d9959fe7e44ec0c0165816e4799fc00f5507",
+      "test_result": "not_tested",
+      "topic": "iMuso一手四足效果說明",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「iMuso一手四足效果說明」，主題為iMuso一手四足效果說明。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「IGF-1增加癌症風險」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片187.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-187",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "b1973c4ccdc0874716328fec2690c2949fd364924ee33d4ede6d251677e768e4",
+      "test_result": "not_tested",
+      "topic": "IGF-1增加癌症風險",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「IGF-1增加癌症風險」，主題為IGF-1增加癌症風險。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「乳糖不耐症」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片188.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-188",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "internal_only",
+      "sha256": "4e3326ebb6ec823af59207643a4c43a28f2b5d5bbbfb48ad26893b95d6d07aed",
+      "test_result": "not_tested",
+      "topic": "乳糖不耐症",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「乳糖不耐症」，主題為乳糖不耐症。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「mTOR」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片189.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-189",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "615fbcdc36573b5d50c8e2619060e17f477b5a50ce914bdfedd9f457c39f5b8c",
+      "test_result": "not_tested",
+      "topic": "mTOR",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「mTOR」，主題為mTOR。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉生長四大關鍵」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片190.JPG",
+      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "material_id": "MAT-ACT-190",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "medium",
+      "safety_flags": [
+        "human_review_required",
+        "dense_clinical_reference"
+      ],
+      "sendability": "sendable",
+      "sha256": "ed7f3fcf54a444c4b597bcfd993c81a3dd62f2301dfacc7244c623b4e2db188b",
+      "test_result": "not_tested",
+      "topic": "肌肉生長四大關鍵",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉生長四大關鍵」，主題為肌肉生長四大關鍵。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「增強肌肉能提升免疫力嗎」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片191.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-191",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "01c5182f0ff9a34a0e9e0b4a248fe5e0890f5cedaee9157ba4e09ab0030850b6",
+      "test_result": "not_tested",
+      "topic": "增強肌肉能提升免疫力嗎",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「增強肌肉能提升免疫力嗎」，主題為增強肌肉能提升免疫力嗎。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「肌肉活化與免疫細胞」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片192.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-192",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "e64aef3217119cc2210905740dd076217ef42e06840228695d9b4049c9dda03c",
+      "test_result": "not_tested",
+      "topic": "肌肉活化與免疫細胞",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「肌肉活化與免疫細胞」，主題為肌肉活化與免疫細胞。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「糖尿病患更應補充蛋白質」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片193.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-193",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "18a9cff23f4ed160660b3f2428a4dec9a2368f7e1fc58490e9fc2e41494ad8ee",
+      "test_result": "not_tested",
+      "topic": "糖尿病患更應補充蛋白質",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「糖尿病患更應補充蛋白質」，主題為糖尿病患更應補充蛋白質。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "您好，這張資料整理的是「白胺酸不影響體內葡萄糖生作用」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "duplicate_of": "",
+      "filename": "投影片194.JPG",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "material_id": "MAT-ACT-194",
+      "product": "iMuso",
+      "review_status": "pending_review",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "medical_overclaim_risk"
+      ],
+      "sendability": "internal_only",
+      "sha256": "e309f2a95aca7e88f354af6a0b2c73ad54cf15a674d4b5d5014db8988dc53588",
+      "test_result": "not_tested",
+      "topic": "白胺酸不影響體內葡萄糖生作用",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「白胺酸不影響體內葡萄糖生作用」，主題為白胺酸不影響體內葡萄糖生作用。"
+    },
+    {
+      "audience": "高齡、肌少症、復健與營養照護客戶",
+      "campaigns": [
+        "行動力"
+      ],
+      "customer_caption": "此素材僅供內部辨識，請勿直接傳送。",
+      "duplicate_of": "",
+      "filename": "投影片195.JPG",
+      "internal_comment": "空白、轉場或未完成版面，不得直接對外發送。",
+      "material_id": "MAT-ACT-195",
+      "product": "iMuso",
+      "review_status": "blocked",
+      "risk_level": "high",
+      "safety_flags": [
+        "human_review_required",
+        "blank_or_template"
+      ],
+      "sendability": "blocked",
+      "sha256": "7581a34ae806b508b51fb6413e22df21d2245fb05ac4c5734d5d8485ea1267ea",
+      "test_result": "not_tested",
+      "topic": "影片素材",
+      "trigger_types": [
+        "continue_topic",
+        "activity_followup",
+        "usage_reminder"
+      ],
+      "visual_summary": "簡報頁面「影片素材」，主題為影片素材。"
+    }
+  ],
+  "version": 1
+}

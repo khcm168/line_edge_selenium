@@ -42,6 +42,10 @@ class MessageTask:
     customer_id: str = ""
     line_contact: str = ""
     line_message_style: str = ""
+    material_id: str = ""
+    image_path: str = ""
+    message_kind: str = "text"
+    material_sha256: str = ""
     source: dict[str, Any] | None = None
     reminder_type: str = ""
     due_date: str = ""
@@ -115,6 +119,10 @@ def build_shipping_notice_tasks(
                 customer_id=row.code,
                 line_contact=line_contact,
                 line_message_style=line_message_style,
+                material_id="",
+                image_path="",
+                message_kind="text",
+                material_sha256="",
                 source=source,
                 reminder_type="shipping",
                 due_date=row.sales_date.isoformat(),
@@ -386,6 +394,10 @@ def _build_activity_followups(
                 customer_id=row.medical_unit,
                 line_contact=line_contact,
                 line_message_style=line_message_style,
+                material_id="",
+                image_path="",
+                message_kind="text",
+                material_sha256="",
                 source=source,
                 reminder_type=reminder_type,
                 due_date=today.isoformat(),
@@ -445,6 +457,10 @@ def _shipment_task(
         customer_id=row.code,
         line_contact=line_contact,
         line_message_style=line_message_style,
+        material_id="",
+        image_path="",
+        message_kind="text",
+        material_sha256="",
         source=source,
         reminder_type=reminder_type,
         due_date=today.isoformat(),
@@ -555,6 +571,10 @@ def tasks_to_drafts(
                 draft_message=task.message,
                 line_contact=task.line_contact,
                 line_message_style=task.line_message_style,
+                material_id=task.material_id,
+                image_path=task.image_path,
+                message_kind=task.message_kind,
+                material_sha256=task.material_sha256,
                 risk_level=str(message_draft.get("risk_level") or "low"),
                 safety_flags=tuple(message_draft.get("safety_flags") or ("human_review_required",)),
                 result=f"{result}: {rationale}" if rationale else result,
@@ -586,6 +606,10 @@ def read_tasks(path: str | Path) -> list[MessageTask]:
             customer_id=str(item.get("customer_id") or ""),
             line_contact=str(item.get("line_contact") or ""),
             line_message_style=str(item.get("line_message_style") or ""),
+            material_id=str(item.get("material_id") or ""),
+            image_path=str(item.get("image_path") or ""),
+            message_kind=str(item.get("message_kind") or "text"),
+            material_sha256=str(item.get("material_sha256") or ""),
             source=item.get("source") or {},
             reminder_type=str(item.get("reminder_type") or ""),
             due_date=str(item.get("due_date") or ""),

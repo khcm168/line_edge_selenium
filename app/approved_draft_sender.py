@@ -175,6 +175,10 @@ def select_approved_drafts(
             customer_id=row.draft.customer_id,
             line_contact=row.draft.line_contact,
             line_message_style=row.draft.line_message_style,
+            material_id=row.draft.material_id,
+            image_path=row.draft.image_path,
+            message_kind=row.draft.message_kind,
+            material_sha256=row.draft.material_sha256,
             source={
                 "draft_id": row.draft.draft_id,
                 "trigger_type": row.draft.trigger_type,

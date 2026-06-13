@@ -19,6 +19,19 @@ class FakeDraftProvider:
 
 
 class TaskBuilderTest(unittest.TestCase):
+    def test_reads_legacy_text_task_with_picture_defaults(self):
+        task = MessageTask(
+            action="send_message",
+            query="P100",
+            match_policy="unique_contains_friend",
+            message="hello",
+        )
+
+        self.assertEqual(task.message_kind, "text")
+        self.assertEqual(task.material_id, "")
+        self.assertEqual(task.image_path, "")
+        self.assertEqual(task.material_sha256, "")
+
     def test_test_tasks_are_limited_targets(self):
         tasks = build_test_tasks()
 

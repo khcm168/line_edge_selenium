@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from app.config import Settings
+from app.material_catalog import MaterialRecord
 from app.scenario_engine import (
     DRAFT_HEADERS,
     LOG_HEADERS,
@@ -34,10 +35,38 @@ class DraftSheetRow:
 
 
 class SheetGateway:
-    def __init__(self, spreadsheet: Any, *, draft_sheet_name: str, log_sheet_name: str) -> None:
+    MATERIAL_HEADERS = (
+        "Material_ID",
+        "Filename",
+        "SHA256",
+        "Duplicate_Of",
+        "Product",
+        "Topic",
+        "Audience",
+        "Visual_Summary",
+        "Internal_Comment",
+        "Customer_Caption",
+        "Risk_Level",
+        "Safety_Flags",
+        "Sendability",
+        "Review_Status",
+        "Test_Result",
+        "Campaigns",
+        "Trigger_Types",
+    )
+
+    def __init__(
+        self,
+        spreadsheet: Any,
+        *,
+        draft_sheet_name: str,
+        log_sheet_name: str,
+        material_sheet_name: str = "LINE_Material",
+    ) -> None:
         self.spreadsheet = spreadsheet
         self.draft_sheet_name = draft_sheet_name
         self.log_sheet_name = log_sheet_name
+        self.material_sheet_name = material_sheet_name
 
     @classmethod
     def from_settings(cls, settings: Settings) -> "SheetGateway":
@@ -55,6 +84,7 @@ class SheetGateway:
             spreadsheet,
             draft_sheet_name=settings.draft_sheet_name,
             log_sheet_name=settings.sheet_log_name,
+            material_sheet_name=settings.material_sheet_name,
         )
 
     def fetch_sources(self, tab_names: tuple[str, ...]) -> dict[str, list[list[str]]]:
@@ -92,6 +122,15 @@ class SheetGateway:
         worksheet = self.ensure_log_sheet()
         worksheet.append_rows([event_to_log_row(event) for event in events], value_input_option="USER_ENTERED")
         return len(events)
+
+    def replace_material_catalog(
+        self,
+        records: list[MaterialRecord] | tuple[MaterialRecord, ...],
+    ) -> int:
+        worksheet = self.ensure_material_sheet()
+        rows = [_material_to_row(record) for record in records]
+        update_values(worksheet, "A1", [list(self.MATERIAL_HEADERS)] + rows)
+        return len(rows)
 
     def read_draft_rows(self) -> list[DraftSheetRow]:
         worksheet = self.ensure_draft_sheet()
@@ -140,6 +179,9 @@ class SheetGateway:
     def ensure_log_sheet(self) -> Any:
         return self._ensure_sheet(self.log_sheet_name, LOG_HEADERS)
 
+    def ensure_material_sheet(self) -> Any:
+        return self._ensure_sheet(self.material_sheet_name, self.MATERIAL_HEADERS)
+
     def _ensure_sheet(self, title: str, headers: tuple[str, ...]) -> Any:
         worksheet = self._maybe_worksheet(title)
         if worksheet is None:
@@ -180,3 +222,26 @@ def update_values(worksheet: Any, range_name: str, values: list[list[str]]) -> N
         worksheet.update(range_name, values, value_input_option="USER_ENTERED")
     except TypeError:
         worksheet.update(values, range_name=range_name, value_input_option="USER_ENTERED")
+
+
+def _material_to_row(record: MaterialRecord) -> list[str]:
+    values = {
+        "Material_ID": record.material_id,
+        "Filename": record.filename,
+        "SHA256": record.sha256,
+        "Duplicate_Of": record.duplicate_of,
+        "Product": record.product,
+        "Topic": record.topic,
+        "Audience": record.audience,
+        "Visual_Summary": record.visual_summary,
+        "Internal_Comment": record.internal_comment,
+        "Customer_Caption": record.customer_caption,
+        "Risk_Level": record.risk_level,
+        "Safety_Flags": ",".join(record.safety_flags),
+        "Sendability": record.sendability,
+        "Review_Status": record.review_status,
+        "Test_Result": record.test_result,
+        "Campaigns": ",".join(record.campaigns),
+        "Trigger_Types": ",".join(record.trigger_types),
+    }
+    return [values[header] for header in SheetGateway.MATERIAL_HEADERS]

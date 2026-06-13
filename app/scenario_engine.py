@@ -56,6 +56,10 @@ DRAFT_HEADERS = (
     "Error_Message",
     "Line_Contact",
     "Line_Message_Style",
+    "Material_ID",
+    "Image_Path",
+    "Message_Kind",
+    "Material_SHA256",
 )
 
 LOG_HEADERS = (
@@ -121,6 +125,10 @@ class ScenarioDraft:
     draft_message: str
     line_contact: str = ""
     line_message_style: str = ""
+    material_id: str = ""
+    image_path: str = ""
+    message_kind: str = "text"
+    material_sha256: str = ""
     risk_level: str = "low"
     safety_flags: tuple[str, ...] = ("human_review_required",)
     status: str = DRAFT_STATUS_PENDING
@@ -275,6 +283,10 @@ def draft_to_row(draft: ScenarioDraft) -> list[str]:
         "Line_Query": draft.line_query,
         "Line_Contact": draft.line_contact,
         "Line_Message_Style": draft.line_message_style,
+        "Material_ID": draft.material_id,
+        "Image_Path": draft.image_path,
+        "Message_Kind": draft.message_kind,
+        "Material_SHA256": draft.material_sha256,
         "Product": draft.product,
         "Signal_Summary": draft.signal_summary,
         "Draft_Message": draft.draft_message,
@@ -342,6 +354,10 @@ def draft_from_row(row: dict[str, str]) -> ScenarioDraft:
         line_query=row.get("Line_Query", ""),
         line_contact=row.get("Line_Contact", ""),
         line_message_style=row.get("Line_Message_Style", ""),
+        material_id=row.get("Material_ID", ""),
+        image_path=row.get("Image_Path", ""),
+        message_kind=row.get("Message_Kind", "text") or "text",
+        material_sha256=row.get("Material_SHA256", ""),
         product=row.get("Product", ""),
         signal_summary=row.get("Signal_Summary", ""),
         draft_message=row.get("Draft_Message", ""),
