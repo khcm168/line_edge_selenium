@@ -47,6 +47,14 @@ class MaterialCatalogTest(unittest.TestCase):
         self.assertFalse(self.by_id["MAT-ACT-002"].is_live_eligible)
         self.assertFalse(self.by_id["MAT-ACT-018"].is_live_eligible)
         self.assertFalse(self.by_id["MAT-ACT-020"].is_live_eligible)
+        self.assertFalse(self.by_id["MAT-ACT-003"].is_live_eligible)
+        self.assertFalse(self.by_id["MAT-ACT-005"].is_live_eligible)
+
+    def test_manually_reviewed_acceptance_material_is_live_eligible(self):
+        record = self.by_id["MAT-ACT-006"]
+
+        self.assertTrue(record.is_live_eligible)
+        self.assertEqual(record.test_result, "manual_visual_review_2026-06-13")
 
     def test_resolve_material_detects_missing_file(self):
         temp_dir = self._temp_dir()

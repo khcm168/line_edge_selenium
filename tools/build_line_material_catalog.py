@@ -86,9 +86,10 @@ BLANK_OR_TEMPLATE = {2, 12, 14, 15, 16, 17, 19, 27, 28, 32, 37, 46, 55, 90, 98, 
 CASE_OR_PRIVATE = {18, 25, 26, 29, 33, 34, 38, 88, 91, 158, 171}
 COMPETITOR = {9, 10, 11, 35, 36, 39, 166, 167, 168, 169, 170}
 STRONG_CLAIM = {
-    20, 21, 22, 23, 24, 31, 54, 63, 64, 72, 73, 83, 84, 85, 87, 97,
+    3, 5, 20, 21, 22, 23, 24, 31, 54, 63, 64, 72, 73, 83, 84, 85, 87, 97,
     109, 133, 187, 191, 192, 193, 194,
 }
+MANUALLY_APPROVED = {6}
 DENSE_RESEARCH = set(range(42, 81)) | set(range(100, 159)) | set(range(172, 195))
 SENDABLE = {
     3, 4, 5, 6, 7, 8, 40, 41, 45, 47, 48, 56, 71, 75, 77, 79, 80,
@@ -142,6 +143,7 @@ def _record(slide: int, digest: str) -> MaterialRecord:
     product, topic, audience = _classify(slide, title)
     sendability = "sendable" if slide in SENDABLE else "internal_only"
     review_status = "pending_review"
+    test_result = "not_tested"
     risk = "medium"
     flags = ["human_review_required"]
     comment = "可作為拜訪後的輔助素材，送出前需確認對象與文案。"
@@ -176,6 +178,10 @@ def _record(slide: int, digest: str) -> MaterialRecord:
     else:
         risk = "low" if slide in SENDABLE else "medium"
 
+    if slide in MANUALLY_APPROVED and sendability == "sendable":
+        review_status = "approved"
+        test_result = "manual_visual_review_2026-06-13"
+
     caption = _caption(product, topic, audience, sendability)
     campaigns = ("行動力",)
     triggers = ("continue_topic", "activity_followup", "usage_reminder")
@@ -194,7 +200,7 @@ def _record(slide: int, digest: str) -> MaterialRecord:
         safety_flags=tuple(flags),
         sendability=sendability,
         review_status=review_status,
-        test_result="not_tested",
+        test_result=test_result,
         campaigns=campaigns,
         trigger_types=triggers,
     )

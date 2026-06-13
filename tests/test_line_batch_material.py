@@ -3,8 +3,10 @@ import unittest
 import uuid
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
-from app.line_batch import _resolve_task_material
+from app.line_batch import _resolve_task_material, _run_task
+from app.line_matcher import LineCandidate, MatchDecision
 from app.material_catalog import MaterialRecord, sha256_file, write_catalog
 from app.task_builder import MessageTask
 
@@ -38,6 +40,7 @@ class LineBatchMaterialTest(unittest.TestCase):
         self.settings = SimpleNamespace(
             material_root=self.material_root,
             material_catalog_path=self.catalog_path,
+            allowed_group_targets=("001N1備份區",),
         )
 
     def tearDown(self):
@@ -89,6 +92,49 @@ class LineBatchMaterialTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "not approved"):
             _resolve_task_material(self.task(), self.settings)
+
+    def test_image_upload_failure_happens_before_caption_send(self):
+        candidate = LineCandidate("group", "001N1備份區", 0)
+        decision = MatchDecision(
+            "matched",
+            "unique_contains_group",
+            "001N1備份區",
+            candidate,
+            (candidate,),
+            "matched",
+        )
+        client = SimpleNamespace(
+            driver=object(),
+            visible_text=lambda: "",
+        )
+        snapshot_writer = Mock()
+        snapshot_writer.write.return_value = self.root / "snapshot.json"
+
+        with (
+            patch("app.line_batch.resolve_match", return_value=decision),
+            patch("app.line_batch.open_chat"),
+            patch(
+                "app.line_batch.check_composer",
+                return_value=SimpleNamespace(ok=True, status="ok", detail="ok"),
+            ),
+            patch(
+                "app.line_batch.upload_image",
+                side_effect=RuntimeError("upload failed"),
+            ),
+            patch("app.line_batch.send_message") as send_message,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "upload failed"):
+                _run_task(
+                    client=client,
+                    task=self.task(),
+                    send=True,
+                    manual_approve=False,
+                    settings=self.settings,
+                    audit_path=self.root / "audit.jsonl",
+                    snapshot_writer=snapshot_writer,
+                )
+
+        send_message.assert_not_called()
 
 
 if __name__ == "__main__":

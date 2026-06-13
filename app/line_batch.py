@@ -246,8 +246,6 @@ def _run_task(
         raise RuntimeError(health.detail)
     methods: list[str] = []
     evidence = {"pre_send": str(snapshot)}
-    if task.message_kind in TEXT_MESSAGE_KINDS:
-        methods.append(f"text:{send_message(client.driver, task.message)}")
     if task.message_kind in IMAGE_MESSAGE_KINDS:
         upload = upload_image(client.driver, material["resolved_path"])
         upload_snapshot = snapshot_writer.write(
@@ -285,6 +283,8 @@ def _run_task(
         methods.append(
             f"image:{submit_image_attachment(client.driver, upload)}"
         )
+    if task.message_kind in TEXT_MESSAGE_KINDS:
+        methods.append(f"text:{send_message(client.driver, task.message)}")
     method = ",".join(methods)
     send_snapshot = snapshot_writer.write(
         label=f"sent_{task.query}",

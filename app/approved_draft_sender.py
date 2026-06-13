@@ -43,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Preview or send approved LINE_Drafts rows.")
     parser.add_argument("--send-approved", action="store_true", help="Live-send approved rows.")
     parser.add_argument("--max-rows", type=int, default=0, help="Limit approved rows processed.")
+    parser.add_argument("--draft-id", default="", help="Process one exact Draft_ID only.")
     parser.add_argument("--write-tasks", help="Write approved rows to a local task JSON file and exit.")
     parser.add_argument("--keep-open", action="store_true", help="Leave Edge open after live send.")
     args = parser.parse_args(argv)
@@ -55,6 +56,7 @@ def main(argv: list[str] | None = None) -> int:
         gateway.read_draft_rows(),
         allowed_group_targets=settings.allowed_group_targets,
         max_rows=args.max_rows,
+        draft_ids=(args.draft_id,) if args.draft_id else (),
     )
     gateway.append_log_events(selection.skipped)
 
@@ -169,10 +171,14 @@ def select_approved_drafts(
     *,
     allowed_group_targets: tuple[str, ...] = (),
     max_rows: int = 0,
+    draft_ids: tuple[str, ...] = (),
 ) -> ApprovalSelection:
     approved: list[ApprovedDraftTask] = []
     skipped: list[ScenarioEvent] = []
+    requested_ids = {item.strip() for item in draft_ids if item.strip()}
     for row in rows:
+        if requested_ids and row.draft.draft_id not in requested_ids:
+            continue
         reason = skip_reason(row.draft, allowed_group_targets=allowed_group_targets)
         if reason:
             skipped.append(_send_event(row.draft, "skipped", row.draft.risk_level, reason, ""))

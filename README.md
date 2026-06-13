@@ -82,6 +82,7 @@ The new workflow is preview-only by default. Live sends require `--send` and a n
 
 Reference docs:
 
+- `docs/line-with-pictures.md`
 - `docs/line-messaging-runbook.md`
 - `docs/line-bot-scenario-reference.md`
 - `docs/development-reference.md`

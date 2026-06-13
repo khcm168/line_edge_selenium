@@ -106,6 +106,20 @@ class ApprovedDraftSenderTest(unittest.TestCase):
             "",
         )
 
+    def test_can_select_one_exact_draft_id(self):
+        selection = select_approved_drafts(
+            [
+                DraftSheetRow(2, draft(draft_id="older"), {}),
+                DraftSheetRow(3, draft(draft_id="acceptance"), {}),
+            ],
+            draft_ids=("acceptance",),
+        )
+
+        self.assertEqual(
+            [item.draft.draft_id for item in selection.approved],
+            ["acceptance"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

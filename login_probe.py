@@ -29,14 +29,20 @@ if hasattr(sys.stdout, "reconfigure"):
 def build_driver() -> webdriver.Edge:
     options = Options()
     options.binary_location = str(EDGE_BINARY)
-    options.add_argument(f"--user-data-dir={ROOT / 'edge-profile'}")
+    options.add_argument(f"--user-data-dir={edge_profile_dir()}")
     options.add_argument("--no-first-run")
     options.add_argument("--no-default-browser-check")
     options.add_argument(f"--load-extension={LINE_EXTENSION_DIR}")
     options.add_argument(f"--disable-extensions-except={LINE_EXTENSION_DIR}")
     options.add_argument("--window-size=1180,900")
+    options.set_capability("webSocketUrl", True)
     options.add_experimental_option("detach", True)
     return webdriver.Edge(options=options)
+
+
+def edge_profile_dir() -> pathlib.Path:
+    configured = os.environ.get("LINE_EDGE_PROFILE_DIR", "").strip()
+    return pathlib.Path(configured) if configured else ROOT / "edge-profile"
 
 
 def visible_text(driver: webdriver.Edge) -> str:

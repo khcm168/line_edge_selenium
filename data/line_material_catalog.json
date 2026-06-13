@@ -63,15 +63,16 @@
       "customer_caption": "您好，這張資料整理的是「企業願景與永續責任」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
       "duplicate_of": "",
       "filename": "投影片3.JPG",
-      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
       "material_id": "MAT-ACT-003",
       "product": "品牌/全產品",
       "review_status": "pending_review",
-      "risk_level": "low",
+      "risk_level": "high",
       "safety_flags": [
-        "human_review_required"
+        "human_review_required",
+        "medical_overclaim_risk"
       ],
-      "sendability": "sendable",
+      "sendability": "internal_only",
       "sha256": "80ca595a7e822a3d6e305268994a965639606cbb4ee70aad79eba7823dcd1be3",
       "test_result": "not_tested",
       "topic": "企業願景與永續責任",
@@ -117,15 +118,16 @@
       "customer_caption": "您好，這張資料整理的是「高峰藥品的使命與獎項」的重點，可作為醫療專業人員與合作夥伴的簡短參考。若您有需要，我再把 品牌/全產品 相關內容整理成更精簡的版本。",
       "duplicate_of": "",
       "filename": "投影片5.JPG",
-      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
       "material_id": "MAT-ACT-005",
       "product": "品牌/全產品",
       "review_status": "pending_review",
-      "risk_level": "low",
+      "risk_level": "high",
       "safety_flags": [
-        "human_review_required"
+        "human_review_required",
+        "medical_overclaim_risk"
       ],
-      "sendability": "sendable",
+      "sendability": "internal_only",
       "sha256": "d3b60d04daf2803b7f523c673412ac62fd51db00a37d27fb52bfbe71907a14e9",
       "test_result": "not_tested",
       "topic": "高峰藥品的使命與獎項",
@@ -147,14 +149,14 @@
       "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
       "material_id": "MAT-ACT-006",
       "product": "品牌/全產品",
-      "review_status": "pending_review",
+      "review_status": "approved",
       "risk_level": "low",
       "safety_flags": [
         "human_review_required"
       ],
       "sendability": "sendable",
       "sha256": "7405b1516c59d4631c814cf1b789525c7d64179fd38913dc5ebb53736fb1ffaf",
-      "test_result": "not_tested",
+      "test_result": "manual_visual_review_2026-06-13",
       "topic": "取之於社會用之於社會",
       "trigger_types": [
         "continue_topic",
