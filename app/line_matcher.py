@@ -124,7 +124,10 @@ def apply_match_policy(
 
     selected = matches[0]
     if selected.kind == "group":
-        group_allowed = allow_group or selected.primary_normalized_name in allowed_group_norms
+        group_allowed = (
+            allow_group
+            and selected.primary_normalized_name in allowed_group_norms
+        )
         if not group_allowed:
             return MatchDecision(
                 "blocked_group",
@@ -132,7 +135,7 @@ def apply_match_policy(
                 query,
                 None,
                 rows,
-                "group match blocked by safety policy",
+                "group match requires task permission and configured allowlist",
             )
 
     return MatchDecision("matched", policy, query, selected, rows, "matched exactly one row")

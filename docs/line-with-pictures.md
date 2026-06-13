@@ -45,6 +45,11 @@ action is required. Success requires all of the following:
 The Windows dialog fallback is fail-closed. It never types or clicks through
 the general foreground window, and an uncertain submission is never retried.
 
+Group delivery uses two independent gates: the task must set `allow_group`,
+and the normalized group name must appear in `LINE_ALLOWED_GROUP_TARGETS`.
+The built-in internal test allowlist contains `001N1備份區` and
+`100分的自己`. Duplicate matching rows remain ambiguous and are never opened.
+
 ## Response Evidence
 
 Successful approved sends schedule local follow-up records at 24, 48, 72

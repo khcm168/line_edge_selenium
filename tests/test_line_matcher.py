@@ -27,6 +27,7 @@ class LineMatcherTest(unittest.TestCase):
             query="001N1備份區",
             policy="exact_group",
             candidates=[LineCandidate(category="群組", display_name="001N1備份區\n(2)", row_index=0)],
+            allow_group=True,
             allowed_group_targets=("001N1備份區",),
         )
 
@@ -54,10 +55,58 @@ class LineMatcherTest(unittest.TestCase):
                 LineCandidate(category="群組", display_name="001N1備份區\n(2)", row_index=0)
             ],
             allow_group=True,
+            allowed_group_targets=("001N1備份區",),
         )
 
         self.assertTrue(decision.ok)
         self.assertEqual(decision.selected.primary_normalized_name, "001n1備份區")
+
+    def test_group_task_permission_cannot_bypass_allowlist(self):
+        decision = apply_match_policy(
+            query="100分的自己",
+            policy="exact_group",
+            candidates=[
+                LineCandidate(
+                    category="群組",
+                    display_name="100分的自己\n(8)",
+                    row_index=0,
+                )
+            ],
+            allow_group=True,
+            allowed_group_targets=("001N1備份區",),
+        )
+
+        self.assertEqual(decision.status, "blocked_group")
+
+    def test_allowlisted_group_still_requires_task_permission(self):
+        decision = apply_match_policy(
+            query="100分的自己",
+            policy="exact_group",
+            candidates=[
+                LineCandidate(
+                    category="群組",
+                    display_name="100分的自己\n(8)",
+                    row_index=0,
+                )
+            ],
+            allowed_group_targets=("100分的自己",),
+        )
+
+        self.assertEqual(decision.status, "blocked_group")
+
+    def test_duplicate_exact_group_rows_are_ambiguous(self):
+        decision = apply_match_policy(
+            query="100分的自己",
+            policy="exact_group",
+            candidates=[
+                LineCandidate("群組", "100分的自己\n(8)", 0),
+                LineCandidate("群組", "100分的自己\n(3)", 1),
+            ],
+            allow_group=True,
+            allowed_group_targets=("100分的自己",),
+        )
+
+        self.assertEqual(decision.status, "ambiguous")
 
     def test_no_match(self):
         decision = apply_match_policy(

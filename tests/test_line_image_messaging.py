@@ -223,6 +223,52 @@ class LineImageMessagingTest(unittest.TestCase):
             "show_open_file_picker_auto_send_verified",
         )
 
+    def test_one_shot_picker_not_consumed_never_opens_native_dialog(self):
+        driver = FakeDriver(
+            one_shot_supported=True,
+            buttons=[FakeButton()],
+        )
+
+        with patch(
+            "app.line_messaging._select_file_in_native_dialog"
+        ) as native_select:
+            with self.assertRaisesRegex(TimeoutError, "no native dialog"):
+                upload_image(driver, self.image, timeout_seconds=0.001)
+
+        native_select.assert_not_called()
+        self.assertEqual(driver.buttons[0].clicks, 1)
+        self.assertEqual(driver.picker_cleanups, 1)
+
+    def test_auto_send_waits_for_progress_to_disappear(self):
+        driver = FakeDriver(
+            one_shot_supported=True,
+            states=[
+                {
+                    "preview": True,
+                    "explicitSubmit": False,
+                    "editorPreview": False,
+                }
+            ],
+            auto_send_states=[
+                {"imageCount": 1, "uploadInProgress": True},
+                {"imageCount": 1, "uploadInProgress": False},
+            ],
+        )
+        driver.buttons = [
+            FakeButton(
+                on_click=lambda: setattr(
+                    driver,
+                    "one_shot_status",
+                    "consumed",
+                )
+            )
+        ]
+
+        result = upload_image(driver, self.image, timeout_seconds=0.5)
+
+        self.assertTrue(result.auto_send_verified)
+        self.assertEqual(driver.buttons[0].clicks, 1)
+
     def test_bidi_event_without_dom_element_uses_native_dialog_once(self):
         bidi_input = FakeBidiInput()
         dialog = type(

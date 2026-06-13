@@ -36,8 +36,14 @@ DEFAULT_TASK_DIR = ROOT / "data" / "tasks"
 DEFAULT_RESPONSE_DIR = ROOT / "data" / "responses"
 DEFAULT_MATERIAL_CATALOG = ROOT / "data" / "line_material_catalog.json"
 DEFAULT_RULES_PATH = ROOT / "data" / "reminder_rules.json"
-DEFAULT_ALLOWED_LIVE_TARGETS = ("洪啓明", "P103003", "001N1備份區", "Ya.ping")
-DEFAULT_ALLOWED_GROUP_TARGETS = ("001N1備份區",)
+DEFAULT_ALLOWED_LIVE_TARGETS = (
+    "洪啓明",
+    "P103003",
+    "001N1備份區",
+    "100分的自己",
+    "Ya.ping",
+)
+DEFAULT_ALLOWED_GROUP_TARGETS = ("001N1備份區", "100分的自己")
 DEFAULT_OPENAI_MODEL = "gpt-4.1-mini"
 DEFAULT_AI_PROVIDER = "ollama"
 DEFAULT_OLLAMA_BASE_URL = "http://127.0.0.1:11434"
