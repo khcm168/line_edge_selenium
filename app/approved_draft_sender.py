@@ -12,6 +12,7 @@ from app.line_batch import _run_task
 from app.line_client import LineClient
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
 from app.reminder_rules import ReminderRules
+from app.response_loop import append_follow_ups, schedule_follow_ups
 from app.scenario_engine import (
     DRAFT_STATUS_APPROVED,
     DRAFT_STATUS_ERROR,
@@ -133,6 +134,16 @@ def main(argv: list[str] | None = None) -> int:
                     error_message="",
                 )
                 quota.record(item.task, day=date.today(), status=status)
+                message_id = f"line-send:{item.draft.draft_id}:{sent_at}"
+                append_follow_ups(
+                    settings.response_dir / "followups.jsonl",
+                    schedule_follow_ups(
+                        draft_id=item.draft.draft_id,
+                        message_id=message_id,
+                        recipient=item.task.query,
+                        sent_at=sent_at,
+                    ),
+                )
                 sent_events.append(_send_event(item.draft, "sent", item.draft.risk_level, status, ""))
             except Exception as exc:
                 error = f"{type(exc).__name__}: {exc}"

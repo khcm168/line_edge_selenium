@@ -33,6 +33,7 @@ DEFAULT_MATERIAL_SHEET = "LINE_Material"
 DEFAULT_LOG_DIR = ROOT / "data" / "logs"
 DEFAULT_SNAPSHOT_DIR = ROOT / "data" / "snapshots"
 DEFAULT_TASK_DIR = ROOT / "data" / "tasks"
+DEFAULT_RESPONSE_DIR = ROOT / "data" / "responses"
 DEFAULT_MATERIAL_CATALOG = ROOT / "data" / "line_material_catalog.json"
 DEFAULT_RULES_PATH = ROOT / "data" / "reminder_rules.json"
 DEFAULT_ALLOWED_LIVE_TARGETS = ("洪啓明", "P103003", "001N1備份區", "Ya.ping")
@@ -65,6 +66,7 @@ class Settings:
     log_dir: Path
     snapshot_dir: Path
     task_dir: Path
+    response_dir: Path
     reminder_rules_path: Path
     allowed_live_targets: tuple[str, ...]
     allowed_group_targets: tuple[str, ...]
@@ -119,6 +121,7 @@ class Settings:
             log_dir=Path(os.getenv("LINE_LOG_DIR", DEFAULT_LOG_DIR)),
             snapshot_dir=Path(os.getenv("LINE_SNAPSHOT_DIR", DEFAULT_SNAPSHOT_DIR)),
             task_dir=Path(os.getenv("LINE_TASK_DIR", DEFAULT_TASK_DIR)),
+            response_dir=Path(os.getenv("LINE_RESPONSE_DIR", DEFAULT_RESPONSE_DIR)),
             reminder_rules_path=Path(
                 os.getenv("LINE_REMINDER_RULES", DEFAULT_RULES_PATH)
             ),

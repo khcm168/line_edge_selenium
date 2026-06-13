@@ -270,6 +270,7 @@ def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
             "avoid": list(style.avoid),
         },
         "signal_summary": draft.signal_summary,
+        "approved_facts": draft.source_refs,
         "approved_template": draft.draft_message,
         "rules": [
             "Use Traditional Chinese suitable for Taiwan medical business relationships.",
