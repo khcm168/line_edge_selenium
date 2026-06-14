@@ -26,3 +26,6 @@ automations\15_Material_Vision_Index\stop.cmd
 
 The watcher polls every 30 seconds. It is hash-idempotent and writes each
 successful catalog row immediately, so a restart resumes with the next image.
+Vision defaults to CPU-only inference (`OLLAMA_VISION_NUM_GPU=0`) to avoid
+competing with Edge for limited Vulkan memory. Machines with sufficient VRAM
+can opt into GPU layers explicitly.

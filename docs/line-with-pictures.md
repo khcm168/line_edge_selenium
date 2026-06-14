@@ -43,6 +43,8 @@ kept deterministically. Every draft remains human-review required.
 `app.material_ingest` recursively detects image hashes that are not already in
 the catalog. Visual analysis uses `OLLAMA_VISION_MODEL` (`gemma3:12b` by
 default), which is separate from the text rewriting model.
+It defaults to CPU-only inference through `OLLAMA_VISION_NUM_GPU=0` so the
+background watcher does not exhaust GPU memory used by Edge.
 
 ```powershell
 .\.venv\Scripts\python.exe -m app.material_ingest --list-new

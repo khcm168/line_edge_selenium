@@ -93,6 +93,7 @@ class MaterialIngestTest(unittest.TestCase):
             model="gemma3:12b",
             base_url="http://unused",
             timeout_seconds=1,
+            num_gpu=0,
             max_files=1,
             min_age_seconds=0,
             analyzer=lambda *args, **kwargs: analysis(),

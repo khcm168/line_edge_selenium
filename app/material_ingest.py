@@ -143,6 +143,7 @@ def ingest_once(
     model: str,
     base_url: str,
     timeout_seconds: int,
+    num_gpu: int,
     max_files: int,
     min_age_seconds: float,
     analyzer: Callable[..., VisionAnalysis] = analyze_material_image,
@@ -175,6 +176,7 @@ def ingest_once(
                 model=model,
                 base_url=base_url,
                 timeout_seconds=timeout_seconds,
+                num_gpu=num_gpu,
             )
             record = build_pending_record(
                 relative_path=relative,
@@ -225,6 +227,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-files", type=int, default=0)
     parser.add_argument("--min-age-seconds", type=float, default=10)
     parser.add_argument("--poll-seconds", type=float, default=POLL_SECONDS)
+    parser.add_argument(
+        "--num-gpu",
+        type=int,
+        default=int(os.getenv("OLLAMA_VISION_NUM_GPU", "0")),
+    )
     parser.add_argument("--watch", action="store_true")
     parser.add_argument("--list-new", action="store_true")
     parser.add_argument("--status", action="store_true")
@@ -284,6 +291,7 @@ def main(argv: list[str] | None = None) -> int:
             model=args.model,
             base_url=settings.ollama_base_url,
             timeout_seconds=max(settings.ollama_timeout_seconds, 300),
+            num_gpu=args.num_gpu,
             max_files=args.max_files,
             min_age_seconds=args.min_age_seconds,
             audit_path=audit_path,

@@ -39,6 +39,7 @@ def analyze_material_image(
     model: str = DEFAULT_VISION_MODEL,
     base_url: str = "http://127.0.0.1:11434",
     timeout_seconds: int = 300,
+    num_gpu: int = 0,
 ) -> VisionAnalysis:
     source = Path(image_path)
     encoded = base64.b64encode(source.read_bytes()).decode("ascii")
@@ -90,7 +91,11 @@ def analyze_material_image(
         "stream": False,
         "keep_alive": 0,
         "format": "json",
-        "options": {"num_ctx": 1024, "temperature": 0},
+        "options": {
+            "num_ctx": 1024,
+            "temperature": 0,
+            "num_gpu": max(0, num_gpu),
+        },
     }
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
     http_request = request.Request(
