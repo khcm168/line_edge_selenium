@@ -52,6 +52,28 @@ class MaterialCatalog:
         return {record.material_id: record for record in self.records}
 
 
+def material_hashtags(record: MaterialRecord) -> tuple[str, ...]:
+    values = (
+        record.product,
+        record.topic,
+        record.audience,
+        *record.campaigns,
+        *record.trigger_types,
+        record.sendability,
+        record.review_status,
+        record.risk_level,
+    )
+    tags = []
+    for value in values:
+        normalized = "".join(
+            character if character.isalnum() else "_"
+            for character in value.strip()
+        ).strip("_")
+        if normalized:
+            tags.append(f"#{normalized}")
+    return tuple(dict.fromkeys(tags))
+
+
 def load_catalog(path: str | Path) -> MaterialCatalog:
     source = Path(path)
     if not source.exists():

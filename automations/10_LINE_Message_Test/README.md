@@ -20,3 +20,16 @@ Manual approval mode opens the matched chat and stops before typing:
 ```powershell
 preview.cmd --manual-approve
 ```
+
+For low-profile supervised work, keep one persistent worker alive:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File start_worker_hidden.ps1
+worker_status.cmd
+observe.cmd
+```
+
+`observe.cmd` captures the current LINE screen and visible state without
+searching, typing, uploading, or sending. Submit approved work to the same
+worker instead of launching another browser. Stop it deliberately with
+`stop_worker.cmd`.

@@ -99,6 +99,19 @@ Preferred handoff mode uses a persistent worker. Start it in Terminal 1:
 .\.venv\Scripts\python.exe -m app.handoff_worker
 ```
 
+For normal desktop use, start the same worker hidden and inspect its heartbeat:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File automations\10_LINE_Message_Test\start_worker_hidden.ps1
+automations\10_LINE_Message_Test\worker_status.cmd
+```
+
+Capture a passive screenshot/state observation:
+
+```powershell
+automations\10_LINE_Message_Test\observe.cmd
+```
+
 Before starting the worker, close old automation-controlled Edge windows that use this project profile. Only one process can own `edge-profile` at a time.
 
 Leave Terminal 1 and Edge open. Submit work from Terminal 2:

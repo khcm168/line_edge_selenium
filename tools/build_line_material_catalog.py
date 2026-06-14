@@ -86,13 +86,55 @@ BLANK_OR_TEMPLATE = {2, 12, 14, 15, 16, 17, 19, 27, 28, 32, 37, 46, 55, 90, 98, 
 CASE_OR_PRIVATE = {18, 25, 26, 29, 33, 34, 38, 88, 91, 158, 171}
 COMPETITOR = {9, 10, 11, 35, 36, 39, 166, 167, 168, 169, 170}
 STRONG_CLAIM = {
-    3, 5, 20, 21, 22, 23, 24, 31, 54, 63, 64, 72, 73, 83, 84, 85, 87, 97,
+    3, 5, 20, 22, 23, 24, 31, 54, 63, 64, 72, 73, 83, 84, 85, 87, 97,
     109, 133, 187, 191, 192, 193, 194,
 }
-MANUALLY_APPROVED = {6}
+MANUALLY_APPROVED = {6, 21, 77, 82, 152}
+MANUAL_REVIEW_METADATA = {
+    6: {
+        "test_result": "manual_visual_review_2026-06-13",
+    },
+    21: {
+        "test_result": "operator_approved_supervised_send_2026-06-14",
+        "risk_level": "medium",
+        "safety_flags": ("human_review_required", "contextual_health_education"),
+        "caption": (
+            "補充一張睡眠環境與作息影響因素的參考圖。重點是壓力、活動量、"
+            "光照與睡前使用3C都可能影響睡眠；圖片含疫情時期背景，僅作一般衛教參考。"
+        ),
+        "comment": (
+            "2026-06-14 由操作者監督審閱；可搭配中性文字作一般睡眠衛教，"
+            "不作產品療效宣稱。"
+        ),
+    },
+    77: {
+        "test_result": "operator_approved_supervised_batch_2026-06-14",
+        "caption": (
+            "分享一張關節結構的基礎圖，內容是蛋白聚醣、玻尿酸與軟骨之間的關係，"
+            "作為 A+HA 相關概念的簡單參考。"
+        ),
+        "comment": "2026-06-14 由操作者授權，作 A+HA 關節結構教育素材。",
+    },
+    82: {
+        "test_result": "operator_approved_supervised_batch_2026-06-14",
+        "caption": (
+            "這張是 Q10HA 的產品外觀資料，先供您辨識與參考；"
+            "圖片上的產品訴求仍以實際標示與專業說明為準。"
+        ),
+        "comment": "2026-06-14 由操作者授權，搭配不重述療效的中性產品辨識文字。",
+    },
+    152: {
+        "test_result": "operator_approved_supervised_batch_2026-06-14",
+        "caption": (
+            "分享一張日常三餐營養比例圖，重點是餐食均衡與蛋白質分配，"
+            "作為 iMuso 相關營養溝通的生活化參考。"
+        ),
+        "comment": "2026-06-14 由操作者授權，作一般均衡飲食教育素材。",
+    },
+}
 DENSE_RESEARCH = set(range(42, 81)) | set(range(100, 159)) | set(range(172, 195))
 SENDABLE = {
-    3, 4, 5, 6, 7, 8, 40, 41, 45, 47, 48, 56, 71, 75, 77, 79, 80,
+    3, 4, 5, 6, 7, 8, 21, 40, 41, 45, 47, 48, 56, 71, 75, 77, 79, 80,
     82, 93, 94, 99, 103, 105, 106, 110, 111, 112, 113, 115, 116, 117,
     118, 119, 120, 123, 124, 127, 128, 131, 139, 140, 144, 149, 150,
     152, 153, 154, 155, 156, 157, 159, 160, 161, 162, 163, 164, 165,
@@ -178,11 +220,17 @@ def _record(slide: int, digest: str) -> MaterialRecord:
     else:
         risk = "low" if slide in SENDABLE else "medium"
 
-    if slide in MANUALLY_APPROVED and sendability == "sendable":
+    manual_review = MANUAL_REVIEW_METADATA.get(slide)
+    if manual_review and sendability == "sendable":
         review_status = "approved"
-        test_result = "manual_visual_review_2026-06-13"
+        test_result = manual_review["test_result"]
+        risk = manual_review.get("risk_level", risk)
+        flags = list(manual_review.get("safety_flags", flags))
 
     caption = _caption(product, topic, audience, sendability)
+    if manual_review:
+        caption = manual_review.get("caption", caption)
+        comment = manual_review.get("comment", comment)
     campaigns = ("行動力",)
     triggers = ("continue_topic", "activity_followup", "usage_reminder")
     return MaterialRecord(

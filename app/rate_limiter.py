@@ -6,6 +6,7 @@ import time
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from typing import Callable
 
 from app.task_builder import MessageTask
 
@@ -22,11 +23,27 @@ class RandomDelay:
     def __init__(self, settings: RateLimitSettings) -> None:
         self.settings = settings
 
-    def wait(self) -> float:
+    def wait(
+        self,
+        *,
+        heartbeat: Callable[[], None] | None = None,
+        heartbeat_interval_seconds: float = 30.0,
+    ) -> float:
         minimum = max(0, self.settings.delay_min_seconds)
         maximum = max(minimum, self.settings.delay_max_seconds)
         seconds = random.uniform(minimum, maximum)
-        time.sleep(seconds)
+        if heartbeat is None:
+            time.sleep(seconds)
+            return seconds
+
+        interval = max(0.1, heartbeat_interval_seconds)
+        deadline = time.monotonic() + seconds
+        while True:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            time.sleep(min(interval, remaining))
+            heartbeat()
         return seconds
 
 

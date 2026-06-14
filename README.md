@@ -2,6 +2,12 @@
 
 This project drives Microsoft Edge with the LINE extension loaded.
 
+## Daily Operator Menu
+
+Run `OPEN_LINE_RUNBOOK.bat` for picture-material search, draft preparation,
+approved-row preview, tests, Git status, and a separately confirmed live-send
+action. The written guide is `LINE_RUNBOOK.md`.
+
 ## Setup
 
 ```powershell
@@ -82,8 +88,11 @@ The new workflow is preview-only by default. Live sends require `--send` and a n
 
 Reference docs:
 
+- `LINE_RUNBOOK.md`
 - `docs/line-with-pictures.md`
+- `docs/line-picture-live-observations-2026-06-14.md`
 - `docs/line-messaging-runbook.md`
+- `docs/solo-git-workflow.md`
 - `docs/line-bot-scenario-reference.md`
 - `docs/development-reference.md`
 - `docs/google-sheet-dy2-reference.md`

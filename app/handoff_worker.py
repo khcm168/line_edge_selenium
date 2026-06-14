@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import sys
 import time
 from dataclasses import asdict
+from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import uuid4
-
-from datetime import date
 
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
@@ -20,16 +21,27 @@ from app.ui_health import check_login_state, check_search_box
 
 
 POLL_SECONDS = 1.0
+HEARTBEAT_STALE_SECONDS = 180.0
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Persistent LINE handoff worker.")
     parser.add_argument("--submit", action="store_true", help="Submit a request to the running worker.")
     parser.add_argument("--stop", action="store_true", help="Ask the running worker to stop.")
+    parser.add_argument("--status", action="store_true", help="Show persistent worker status.")
+    parser.add_argument(
+        "--observe",
+        action="store_true",
+        help="Submit a passive screenshot/state observation without sending.",
+    )
     parser.add_argument("--tasks", help="Task JSON file to submit.")
     parser.add_argument("--test-targets", action="store_true", help="Submit smoke-test targets.")
     parser.add_argument("--manual-approve", action="store_true", help="Open matched chat and stop before sending.")
     parser.add_argument("--send", action="store_true", help="Ask worker to live-send.")
+    parser.add_argument("--delay-min-seconds", type=int)
+    parser.add_argument("--delay-max-seconds", type=int)
+    parser.add_argument("--per-recipient-quota", type=int)
+    parser.add_argument("--daily-message-quota", type=int)
     args = parser.parse_args(argv)
 
     settings = Settings.from_env()
@@ -37,17 +49,27 @@ def main(argv: list[str] | None = None) -> int:
     inbox = handoff_dir / "inbox"
     done = handoff_dir / "done"
     errors = handoff_dir / "error"
+    state_path = handoff_dir / "worker_state.json"
     inbox.mkdir(parents=True, exist_ok=True)
     done.mkdir(parents=True, exist_ok=True)
     errors.mkdir(parents=True, exist_ok=True)
 
-    if args.submit or args.stop:
+    if args.status:
+        return print_worker_status(state_path)
+
+    if args.submit or args.stop or args.observe:
         request_path = submit_request(args=args, inbox=inbox)
         print(f"handoff_request={request_path}")
         print("handoff_worker_must_be_running=true")
         return 0
 
-    return run_worker(settings=settings, inbox=inbox, done=done, errors=errors)
+    return run_worker(
+        settings=settings,
+        inbox=inbox,
+        done=done,
+        errors=errors,
+        state_path=state_path,
+    )
 
 
 def submit_request(*, args: argparse.Namespace, inbox: Path) -> Path:
@@ -55,19 +77,32 @@ def submit_request(*, args: argparse.Namespace, inbox: Path) -> Path:
         "id": uuid4().hex,
         "created_at": utc_stamp(),
         "stop": args.stop,
+        "observe": args.observe,
         "tasks": str(Path(args.tasks)) if args.tasks else "",
         "test_targets": args.test_targets,
         "manual_approve": args.manual_approve,
         "send": args.send,
+        "delay_min_seconds": args.delay_min_seconds,
+        "delay_max_seconds": args.delay_max_seconds,
+        "per_recipient_quota": args.per_recipient_quota,
+        "daily_message_quota": args.daily_message_quota,
     }
     path = inbox / f"{request['created_at']}_{request['id']}.json"
     path.write_text(json.dumps(request, ensure_ascii=False, indent=2), encoding="utf-8")
     return path
 
 
-def run_worker(*, settings: Settings, inbox: Path, done: Path, errors: Path) -> int:
+def run_worker(
+    *,
+    settings: Settings,
+    inbox: Path,
+    done: Path,
+    errors: Path,
+    state_path: Path,
+) -> int:
     settings.log_dir.mkdir(parents=True, exist_ok=True)
     settings.snapshot_dir.mkdir(parents=True, exist_ok=True)
+    write_worker_state(state_path, status="starting")
     client = LineClient.open()
     try:
         client.driver.maximize_window()
@@ -107,25 +142,43 @@ def run_worker(*, settings: Settings, inbox: Path, done: Path, errors: Path) -> 
                 ),
             )
             raise RuntimeError(search_health.detail)
+        write_worker_state(state_path, status="idle")
         print("handoff_worker_ready=true", flush=True)
         print(f"handoff_inbox={inbox}", flush=True)
         while True:
+            write_worker_state(state_path, status="idle")
             request_path = next_request(inbox)
             if request_path is None:
                 time.sleep(POLL_SECONDS)
                 continue
+            write_worker_state(
+                state_path,
+                status="processing",
+                request=request_path.name,
+            )
             should_stop = handle_request(
                 request_path=request_path,
                 done=done,
                 errors=errors,
                 settings=settings,
                 client=client,
+                state_path=state_path,
             )
             if should_stop:
                 print("handoff_worker_stopping=true", flush=True)
                 return 0
+    except Exception as exc:
+        write_worker_state(
+            state_path,
+            status="error",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
+        raise
     finally:
         client.close()
+        current = read_worker_state(state_path)
+        if current.get("status") != "error":
+            write_worker_state(state_path, status="stopped")
 
 
 def next_request(inbox: Path) -> Path | None:
@@ -140,6 +193,7 @@ def handle_request(
     errors: Path,
     settings: Settings,
     client: LineClient,
+    state_path: Path,
 ) -> bool:
     request = json.loads(request_path.read_text(encoding="utf-8"))
     result = {
@@ -154,14 +208,45 @@ def handle_request(
             result["status"] = "stopped"
             return True
 
+        if request.get("observe"):
+            audit_path = settings.log_dir / (
+                f"line_handoff_observe_{utc_stamp()}_{request['id']}.jsonl"
+            )
+            snapshot_writer = SnapshotWriter(settings.snapshot_dir)
+            snapshot = snapshot_writer.write(
+                label="handoff_observation",
+                payload={
+                    "request": request,
+                    "visible_text": client.visible_text()[:5000],
+                    "search_health": check_search_box(client.driver),
+                },
+                driver=client.driver,
+            )
+            append_jsonl(
+                audit_path,
+                build_audit_record(
+                    action="observe",
+                    status="captured",
+                    detail="Passive LINE state captured; no message action attempted.",
+                    source={"request_id": request["id"]},
+                    snapshot=snapshot,
+                ),
+            )
+            result["status"] = "ok"
+            result["audit"] = str(audit_path)
+            return False
+
         tasks = load_request_tasks(request)
         _validate_live_scope(tasks, send=bool(request.get("send")), settings=settings)
         rules = ReminderRules.load(settings.reminder_rules_path)
-        rate_settings = RateLimitSettings(
+        rate_settings = request_rate_settings(
+            request,
+            defaults=RateLimitSettings(
             delay_min_seconds=rules.default_int("delay_min_seconds", 45),
             delay_max_seconds=rules.default_int("delay_max_seconds", 120),
             daily_message_quota=rules.default_int("daily_message_quota", 20),
             per_recipient_daily_quota=rules.default_int("per_recipient_daily_quota", 1),
+            ),
         )
         quota = MessageQuota(settings.task_dir.parent / "handoff" / "quota.json", rate_settings)
         delay = RandomDelay(rate_settings)
@@ -185,7 +270,13 @@ def handle_request(
                     )
                     raise RuntimeError(detail)
                 if index > 0:
-                    waited = delay.wait()
+                    waited = delay.wait(
+                        heartbeat=lambda: write_worker_state(
+                            state_path,
+                            status="processing",
+                            request=request_path.name,
+                        )
+                    )
                     append_jsonl(
                         audit_path,
                         build_audit_record(
@@ -243,6 +334,132 @@ def load_request_tasks(request: dict[str, object]) -> list[MessageTask]:
     if not task_path:
         raise ValueError("Handoff request requires --tasks or --test-targets.")
     return read_tasks(task_path)
+
+
+def write_worker_state(
+    path: Path,
+    *,
+    status: str,
+    request: str = "",
+    detail: str = "",
+) -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    previous = read_worker_state(path)
+    payload = {
+        "pid": os.getpid(),
+        "started_at": previous.get("started_at") or now,
+        "heartbeat_at": now,
+        "status": status,
+        "request": request,
+        "detail": detail,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(
+        f".{path.name}.{os.getpid()}.{uuid4().hex}.tmp"
+    )
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    for attempt in range(10):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 9:
+                break
+            time.sleep(0.05)
+    try:
+        temporary.unlink()
+    except OSError:
+        pass
+    print(
+        f"handoff_state_warning=unable_to_replace:{path}",
+        file=sys.stderr,
+        flush=True,
+    )
+
+
+def read_worker_state(path: Path) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def worker_state_is_live(
+    state: dict[str, object],
+    *,
+    now: datetime | None = None,
+) -> bool:
+    if state.get("status") not in {"starting", "idle", "processing"}:
+        return False
+    heartbeat = str(state.get("heartbeat_at") or "")
+    if not heartbeat:
+        return False
+    try:
+        heartbeat_at = datetime.fromisoformat(heartbeat)
+    except ValueError:
+        return False
+    current = now or datetime.now(timezone.utc)
+    return (current - heartbeat_at).total_seconds() <= HEARTBEAT_STALE_SECONDS
+
+
+def print_worker_status(path: Path) -> int:
+    state = read_worker_state(path)
+    live = worker_state_is_live(state)
+    print(f"handoff_worker_live={str(live).lower()}")
+    for field in ("status", "pid", "started_at", "heartbeat_at", "request", "detail"):
+        print(f"{field}={state.get(field, '')}")
+    return 0 if live else 1
+
+
+def request_rate_settings(
+    request: dict[str, object],
+    *,
+    defaults: RateLimitSettings,
+) -> RateLimitSettings:
+    minimum = _positive_override(
+        request.get("delay_min_seconds"),
+        defaults.delay_min_seconds,
+        allow_zero=True,
+    )
+    maximum = _positive_override(
+        request.get("delay_max_seconds"),
+        defaults.delay_max_seconds,
+        allow_zero=True,
+    )
+    if maximum < minimum:
+        raise ValueError("delay_max_seconds must be >= delay_min_seconds")
+    return RateLimitSettings(
+        delay_min_seconds=minimum,
+        delay_max_seconds=maximum,
+        daily_message_quota=_positive_override(
+            request.get("daily_message_quota"),
+            defaults.daily_message_quota,
+        ),
+        per_recipient_daily_quota=_positive_override(
+            request.get("per_recipient_quota"),
+            defaults.per_recipient_daily_quota,
+        ),
+    )
+
+
+def _positive_override(
+    value: object,
+    default: int,
+    *,
+    allow_zero: bool = False,
+) -> int:
+    if value is None:
+        return default
+    parsed = int(value)
+    lower_bound = 0 if allow_zero else 1
+    if parsed < lower_bound:
+        raise ValueError(f"Rate-limit override must be >= {lower_bound}")
+    return parsed
 
 
 if __name__ == "__main__":

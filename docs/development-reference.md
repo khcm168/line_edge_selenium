@@ -83,6 +83,11 @@ For long workflows, prefer `app.handoff_worker` over repeated `app.line_batch` r
 - It prevents overlapping clicks from multiple scripts.
 - It gives a natural place for quota, delay, and stop-on-error policy.
 
+Important: `--keep-open` preserves a visible detached Edge window, but not the
+WebDriver session after the Python process exits. It is useful for visual
+inspection, not later automation reuse. See
+`docs/line-picture-live-observations-2026-06-14.md`.
+
 Only one automation-controlled Edge window should use this project profile at a time. Close old controlled Edge windows before starting the persistent worker if the profile is locked or behavior becomes strange.
 
 ## Search And Match Behavior
@@ -169,6 +174,14 @@ Required checks:
 If LINE changes class names or behavior, inspect the latest snapshot files first. Do not immediately loosen match policy; first decide whether the candidate data is stale, misclassified, or truly ambiguous.
 
 ## Last Verified Live Behavior
+
+On 2026-06-14, a supervised exact-friend picture test succeeded:
+
+- Chinese sleep-care text sent through the shadow-DOM composer.
+- `MAT-ACT-021` uploaded through the one-shot `showOpenFilePicker()` provider.
+- LINE image auto-send completion was verified before the neutral caption was
+  sent.
+- The resulting image and caption were visible in the chat screenshot.
 
 On 2026-06-01, these controlled live sends succeeded:
 

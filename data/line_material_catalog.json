@@ -559,21 +559,21 @@
       "campaigns": [
         "行動力"
       ],
-      "customer_caption": "您好，這張資料整理的是「疫情焦慮失眠與緊張」的重點，可作為睡眠照護相關客戶的簡短參考。若您有需要，我再把 SleepHA 相關內容整理成更精簡的版本。",
+      "customer_caption": "補充一張睡眠環境與作息影響因素的參考圖。重點是壓力、活動量、光照與睡前使用3C都可能影響睡眠；圖片含疫情時期背景，僅作一般衛教參考。",
       "duplicate_of": "",
       "filename": "投影片21.JPG",
-      "internal_comment": "含強療效、疾病或風險敘述，只供內部訓練與人工改寫。",
+      "internal_comment": "2026-06-14 由操作者監督審閱；可搭配中性文字作一般睡眠衛教，不作產品療效宣稱。",
       "material_id": "MAT-ACT-021",
       "product": "SleepHA",
-      "review_status": "pending_review",
-      "risk_level": "high",
+      "review_status": "approved",
+      "risk_level": "medium",
       "safety_flags": [
         "human_review_required",
-        "medical_overclaim_risk"
+        "contextual_health_education"
       ],
-      "sendability": "internal_only",
+      "sendability": "sendable",
       "sha256": "334cdc1662a9f1c3c0f441ae79b5ae4a4ffa5f9665015ef04b9b819e92a4fc49",
-      "test_result": "not_tested",
+      "test_result": "operator_approved_supervised_send_2026-06-14",
       "topic": "疫情焦慮失眠與緊張",
       "trigger_types": [
         "continue_topic",
@@ -2124,13 +2124,13 @@
       "campaigns": [
         "行動力"
       ],
-      "customer_caption": "您好，這張資料整理的是「蛋白聚醣是關節重要物質」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "customer_caption": "分享一張關節結構的基礎圖，內容是蛋白聚醣、玻尿酸與軟骨之間的關係，作為 A+HA 相關概念的簡單參考。",
       "duplicate_of": "",
       "filename": "投影片77.JPG",
-      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "internal_comment": "2026-06-14 由操作者授權，作 A+HA 關節結構教育素材。",
       "material_id": "MAT-ACT-077",
       "product": "A+HA/Q10HA",
-      "review_status": "pending_review",
+      "review_status": "approved",
       "risk_level": "medium",
       "safety_flags": [
         "human_review_required",
@@ -2138,7 +2138,7 @@
       ],
       "sendability": "sendable",
       "sha256": "7da7c058f0bcc1b2bbb2c5a38b9ace8c33c661542f40111344b40f7d323ccce9",
-      "test_result": "not_tested",
+      "test_result": "operator_approved_supervised_batch_2026-06-14",
       "topic": "蛋白聚醣是關節重要物質",
       "trigger_types": [
         "continue_topic",
@@ -2263,20 +2263,20 @@
       "campaigns": [
         "行動力"
       ],
-      "customer_caption": "您好，這張資料整理的是「Q10HA 產品與行動力」的重點，可作為骨科、復健科、家醫科與藥局的簡短參考。若您有需要，我再把 A+HA/Q10HA 相關內容整理成更精簡的版本。",
+      "customer_caption": "這張是 Q10HA 的產品外觀資料，先供您辨識與參考；圖片上的產品訴求仍以實際標示與專業說明為準。",
       "duplicate_of": "",
       "filename": "投影片82.JPG",
-      "internal_comment": "可作為拜訪後的輔助素材，送出前需確認對象與文案。",
+      "internal_comment": "2026-06-14 由操作者授權，搭配不重述療效的中性產品辨識文字。",
       "material_id": "MAT-ACT-082",
       "product": "A+HA/Q10HA",
-      "review_status": "pending_review",
+      "review_status": "approved",
       "risk_level": "low",
       "safety_flags": [
         "human_review_required"
       ],
       "sendability": "sendable",
       "sha256": "b95a4013a4dbe29872b130381434db619245d3b22819a0a1ace0848c067c7462",
-      "test_result": "not_tested",
+      "test_result": "operator_approved_supervised_batch_2026-06-14",
       "topic": "Q10HA 產品與行動力",
       "trigger_types": [
         "continue_topic",
@@ -4214,13 +4214,13 @@
       "campaigns": [
         "行動力"
       ],
-      "customer_caption": "您好，這張資料整理的是「台灣常見的三餐」的重點，可作為高齡、肌少症、復健與營養照護客戶的簡短參考。若您有需要，我再把 iMuso 相關內容整理成更精簡的版本。",
+      "customer_caption": "分享一張日常三餐營養比例圖，重點是餐食均衡與蛋白質分配，作為 iMuso 相關營養溝通的生活化參考。",
       "duplicate_of": "",
       "filename": "投影片152.JPG",
-      "internal_comment": "研究或臨床資訊密度高，應搭配簡短說明並由人員確認。",
+      "internal_comment": "2026-06-14 由操作者授權，作一般均衡飲食教育素材。",
       "material_id": "MAT-ACT-152",
       "product": "iMuso",
-      "review_status": "pending_review",
+      "review_status": "approved",
       "risk_level": "medium",
       "safety_flags": [
         "human_review_required",
@@ -4228,7 +4228,7 @@
       ],
       "sendability": "sendable",
       "sha256": "e7a14172112665b9cb7529f470fd219919bef844019620697b6a1481ec42427d",
-      "test_result": "not_tested",
+      "test_result": "operator_approved_supervised_batch_2026-06-14",
       "topic": "台灣常見的三餐",
       "trigger_types": [
         "continue_topic",

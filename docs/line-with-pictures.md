@@ -7,6 +7,17 @@
 Only rows with `Status=approved`, `Send_Mode=live`, safe flags, and a material
 that is approved and sendable in the catalog can reach the live sender.
 
+Browse the catalog by product, topic, audience, ID, or generated hashtag:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.material_picker --search "sleep"
+.\.venv\Scripts\python.exe -m app.material_picker --product "iMuso"
+.\.venv\Scripts\python.exe -m app.material_picker --live-only
+```
+
+The hashtags are views of structured catalog fields; filenames remain stable
+and SHA-256 verification binds the selected `Material_ID` to the exact JPG.
+
 Configure the external library:
 
 ```powershell

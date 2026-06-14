@@ -56,6 +56,25 @@ class MaterialCatalogTest(unittest.TestCase):
         self.assertTrue(record.is_live_eligible)
         self.assertEqual(record.test_result, "manual_visual_review_2026-06-13")
 
+    def test_supervised_sleep_material_is_live_eligible(self):
+        record = self.by_id["MAT-ACT-021"]
+
+        self.assertTrue(record.is_live_eligible)
+        self.assertEqual(
+            record.test_result,
+            "operator_approved_supervised_send_2026-06-14",
+        )
+
+    def test_supervised_product_batch_materials_are_live_eligible(self):
+        for material_id in ("MAT-ACT-077", "MAT-ACT-082", "MAT-ACT-152"):
+            with self.subTest(material_id=material_id):
+                record = self.by_id[material_id]
+                self.assertTrue(record.is_live_eligible)
+                self.assertEqual(
+                    record.test_result,
+                    "operator_approved_supervised_batch_2026-06-14",
+                )
+
     def test_resolve_material_detects_missing_file(self):
         temp_dir = self._temp_dir()
         try:
