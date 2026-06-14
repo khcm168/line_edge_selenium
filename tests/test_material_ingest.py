@@ -94,6 +94,7 @@ class MaterialIngestTest(unittest.TestCase):
             base_url="http://unused",
             timeout_seconds=1,
             num_gpu=0,
+            num_thread=4,
             max_files=1,
             min_age_seconds=0,
             analyzer=lambda *args, **kwargs: analysis(),

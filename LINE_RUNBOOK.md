@@ -100,6 +100,9 @@ human explicitly reviews and approves them. Generated rows live in the ignored
 runtime overlay `data/material_ingest/pending_catalog.json`, keeping Git clean
 until a reviewed record is deliberately promoted into the main catalog.
 
+The background watcher is intentionally low impact: four CPU threads, one
+image per cycle, a five-minute rest, and below-normal process priority.
+
 ## Safe Commands
 
 ```powershell

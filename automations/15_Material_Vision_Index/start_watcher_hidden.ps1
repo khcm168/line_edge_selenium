@@ -38,5 +38,6 @@ $Process = Start-Process `
     -WindowStyle Hidden `
     -PassThru
 
+$Process.PriorityClass = "BelowNormal"
 Write-Host "Material watcher started with PID $($Process.Id)."
 Write-Host "Status: automations\15_Material_Vision_Index\status.cmd"

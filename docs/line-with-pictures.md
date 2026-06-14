@@ -45,6 +45,9 @@ the catalog. Visual analysis uses `OLLAMA_VISION_MODEL` (`gemma3:12b` by
 default), which is separate from the text rewriting model.
 It defaults to CPU-only inference through `OLLAMA_VISION_NUM_GPU=0` so the
 background watcher does not exhaust GPU memory used by Edge.
+Unattended defaults use four CPU threads, one image per cycle, and a five-minute
+rest. Override `OLLAMA_VISION_NUM_THREAD`, `MATERIAL_WATCH_BATCH_SIZE`, or
+`MATERIAL_WATCH_POLL_SECONDS` only after measuring the target machine.
 
 ```powershell
 .\.venv\Scripts\python.exe -m app.material_ingest --list-new

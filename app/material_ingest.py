@@ -22,7 +22,7 @@ from app.material_vision import DEFAULT_VISION_MODEL, VisionAnalysis, analyze_ma
 
 
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp"}
-POLL_SECONDS = 30
+POLL_SECONDS = 300
 MEDICAL_CLAIM_TERMS = (
     "治癒",
     "根治",
@@ -144,6 +144,7 @@ def ingest_once(
     base_url: str,
     timeout_seconds: int,
     num_gpu: int,
+    num_thread: int,
     max_files: int,
     min_age_seconds: float,
     analyzer: Callable[..., VisionAnalysis] = analyze_material_image,
@@ -177,6 +178,7 @@ def ingest_once(
                 base_url=base_url,
                 timeout_seconds=timeout_seconds,
                 num_gpu=num_gpu,
+                num_thread=num_thread,
             )
             record = build_pending_record(
                 relative_path=relative,
@@ -226,11 +228,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--model", default=os.getenv("OLLAMA_VISION_MODEL", DEFAULT_VISION_MODEL))
     parser.add_argument("--max-files", type=int, default=0)
     parser.add_argument("--min-age-seconds", type=float, default=10)
-    parser.add_argument("--poll-seconds", type=float, default=POLL_SECONDS)
+    parser.add_argument(
+        "--poll-seconds",
+        type=float,
+        default=float(os.getenv("MATERIAL_WATCH_POLL_SECONDS", POLL_SECONDS)),
+    )
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=int(os.getenv("MATERIAL_WATCH_BATCH_SIZE", "1")),
+        help="Maximum images analyzed per watcher cycle.",
+    )
     parser.add_argument(
         "--num-gpu",
         type=int,
         default=int(os.getenv("OLLAMA_VISION_NUM_GPU", "0")),
+    )
+    parser.add_argument(
+        "--num-thread",
+        type=int,
+        default=int(os.getenv("OLLAMA_VISION_NUM_THREAD", "4")),
     )
     parser.add_argument("--watch", action="store_true")
     parser.add_argument("--list-new", action="store_true")
@@ -283,6 +300,11 @@ def main(argv: list[str] | None = None) -> int:
         stop_path.unlink()
     while True:
         _write_state(state_path, status="scanning", root=str(root), model=args.model)
+        cycle_limit = (
+            args.max_files
+            if args.max_files > 0
+            else max(1, args.batch_size) if args.watch else 0
+        )
         imported, failed = ingest_once(
             material_root=root,
             catalog_path=catalog_path,
@@ -292,7 +314,8 @@ def main(argv: list[str] | None = None) -> int:
             base_url=settings.ollama_base_url,
             timeout_seconds=max(settings.ollama_timeout_seconds, 300),
             num_gpu=args.num_gpu,
-            max_files=args.max_files,
+            num_thread=args.num_thread,
+            max_files=cycle_limit,
             min_age_seconds=args.min_age_seconds,
             audit_path=audit_path,
             should_stop=stop_path.exists,
@@ -308,10 +331,12 @@ def main(argv: list[str] | None = None) -> int:
             model=args.model,
             imported=imported,
             failed=failed,
+            batch_size=max(1, args.batch_size),
+            poll_seconds=max(1, args.poll_seconds),
         )
         print(f"imported_count={imported}")
         print(f"failed_count={failed}")
-        if not args.watch or args.max_files > 0:
+        if not args.watch:
             return 1 if failed else 0
         deadline = time.monotonic() + max(1, args.poll_seconds)
         while time.monotonic() < deadline:
