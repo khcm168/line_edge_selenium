@@ -109,6 +109,8 @@ def constrained_rewrite(
             return _fallback_review(draft, "AI returned blank message")
         if _has_unexpected_script(message):
             return _fallback_review(draft, "AI returned unexpected script characters")
+        if has_unresolved_placeholder(message):
+            return _fallback_review(draft, "AI returned unresolved message placeholder")
         risk_level, flags = validate_message(
             message,
             requested_risk=risk_level,
@@ -278,7 +280,7 @@ def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
             "Do not include identifiable patient information.",
             "Do not claim cure rate, guaranteed efficacy, or patient outcomes.",
             "Preserve the approved template intent and do not invent facts.",
-            "Reference LINE暱稱 only to make the wording feel personally addressed; do not expose internal IDs unless needed.",
+            "Use the resolved line_nickname value when personalizing; never output placeholders such as [LINE暱稱], [客戶名稱], or [您的姓名].",
             "Use the resolved LINE風格 rules exactly; do not invent a new tone category.",
             "safety_flags must use only: human_review_required, manual_review_required, message_too_long, medical_overclaim_risk, patient_privacy_risk.",
         ],
@@ -322,6 +324,26 @@ def _has_unexpected_script(message: str) -> bool:
         if 0x3040 <= code <= 0x30FF:
             return True
     return False
+
+
+def has_unresolved_placeholder(message: str) -> bool:
+    placeholder_terms = (
+        "line暱稱",
+        "line nickname",
+        "客戶名稱",
+        "customer name",
+        "您的名字",
+        "您的姓名",
+        "your name",
+        "您的公司",
+        "your company",
+    )
+    bracketed = re.findall(r"[\[\{【＜<]([^\]\}】＞>]{1,50})[\]\}】＞>]", message or "")
+    return any(
+        term in value.strip().casefold()
+        for value in bracketed
+        for term in placeholder_terms
+    )
 
 
 def _sentences(message: str) -> list[str]:

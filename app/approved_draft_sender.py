@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
+from app.ai_drafter import has_unresolved_placeholder
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
 from app.line_profile import is_line_contact_eligible
@@ -230,6 +231,10 @@ def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] 
         return "unsupported message kind"
     if draft.message_kind in {"text", "image_text"} and not draft.draft_message.strip():
         return "blank message"
+    if draft.message_kind in {"text", "image_text"} and has_unresolved_placeholder(
+        draft.draft_message
+    ):
+        return "unresolved message placeholder"
     if draft.message_kind in {"image", "image_text"}:
         if not draft.material_id.strip():
             return "missing material id"
