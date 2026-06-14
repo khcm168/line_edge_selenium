@@ -38,6 +38,26 @@ The drafting pipeline uses local Ollama `gemma4:latest` by default. If Ollama
 is unavailable or returns invalid content, the approved catalog caption is
 kept deterministically. Every draft remains human-review required.
 
+## Vision Import For New Folders
+
+`app.material_ingest` recursively detects image hashes that are not already in
+the catalog. Visual analysis uses `OLLAMA_VISION_MODEL` (`gemma3:12b` by
+default), which is separate from the text rewriting model.
+
+```powershell
+.\.venv\Scripts\python.exe -m app.material_ingest --list-new
+.\.venv\Scripts\python.exe -m app.material_ingest --max-files 1
+.\.venv\Scripts\python.exe -m app.material_ingest --watch
+```
+
+Folder-relative filenames such as `睡眠(SleepHA)/投影片1.JPG` remain unchanged.
+SHA-256 makes ingestion idempotent even when different folders reuse the same
+leaf filename. Vision output adds explicit tags to `material_hashtags`, but
+all imported records remain `internal_only` and `pending_review`.
+Generated records are written to the ignored overlay
+`data/material_ingest/pending_catalog.json`; `load_catalog` merges that overlay
+with the reviewed catalog for search and validation.
+
 ## Image Upload
 
 LINE extension 3.7.2 implements the chat attachment button with

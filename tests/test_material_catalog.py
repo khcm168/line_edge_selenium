@@ -20,10 +20,10 @@ class MaterialCatalogTest(unittest.TestCase):
         cls.catalog = load_catalog(CATALOG_PATH)
         cls.by_id = cls.catalog.by_id()
 
-    def test_catalog_has_all_195_slides(self):
-        self.assertEqual(len(self.catalog.records), 195)
+    def test_catalog_has_all_legacy_slides(self):
+        self.assertGreaterEqual(len(self.catalog.records), 195)
         self.assertEqual(self.catalog.records[0].filename, "投影片1.JPG")
-        self.assertEqual(self.catalog.records[-1].filename, "投影片195.JPG")
+        self.assertEqual(self.by_id["MAT-ACT-195"].filename, "投影片195.JPG")
         self.assertTrue(all(record.customer_caption for record in self.catalog.records))
         self.assertTrue(all(record.internal_comment for record in self.catalog.records))
         self.assertTrue(all(record.visual_summary for record in self.catalog.records))
@@ -99,6 +99,33 @@ class MaterialCatalogTest(unittest.TestCase):
         finally:
             if target.exists():
                 target.unlink()
+            temp_dir.rmdir()
+
+    def test_resolve_material_can_find_sibling_library_folder(self):
+        temp_dir = self._temp_dir()
+        legacy_root = temp_dir / "行動力"
+        sibling = temp_dir / "高血壓"
+        legacy_root.mkdir()
+        sibling.mkdir()
+        target = sibling / "圖1.jpg"
+        target.write_bytes(b"picture")
+        record = self.by_id["MAT-ACT-003"]
+        sibling_record = type(record)(
+            **{
+                **record.__dict__,
+                "filename": "高血壓/圖1.jpg",
+                "sha256": sha256_file(target),
+            }
+        )
+        try:
+            self.assertEqual(
+                resolve_material_path(sibling_record, material_root=legacy_root),
+                target.resolve(),
+            )
+        finally:
+            target.unlink()
+            sibling.rmdir()
+            legacy_root.rmdir()
             temp_dir.rmdir()
 
     def test_catalog_json_has_no_absolute_paths(self):

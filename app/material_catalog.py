@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
+from uuid import uuid4
 
 
 CATALOG_VERSION = 1
@@ -31,6 +33,7 @@ class MaterialRecord:
     test_result: str
     campaigns: tuple[str, ...] = ()
     trigger_types: tuple[str, ...] = ()
+    tags: tuple[str, ...] = ()
 
     @property
     def is_live_eligible(self) -> bool:
@@ -57,6 +60,7 @@ def material_hashtags(record: MaterialRecord) -> tuple[str, ...]:
         record.product,
         record.topic,
         record.audience,
+        *record.tags,
         *record.campaigns,
         *record.trigger_types,
         record.sendability,
@@ -74,13 +78,23 @@ def material_hashtags(record: MaterialRecord) -> tuple[str, ...]:
     return tuple(dict.fromkeys(tags))
 
 
-def load_catalog(path: str | Path) -> MaterialCatalog:
+def load_catalog(
+    path: str | Path,
+    *,
+    include_pending: bool = True,
+) -> MaterialCatalog:
     source = Path(path)
     if not source.exists():
         raise FileNotFoundError(f"LINE material catalog not found: {source}")
-    payload = json.loads(source.read_text(encoding="utf-8"))
-    records = tuple(_record_from_dict(item) for item in payload.get("records", []))
-    catalog = MaterialCatalog(version=int(payload.get("version", 0)), records=records)
+    catalog = _load_catalog_file(source)
+    if include_pending:
+        pending_path = source.parent / "material_ingest" / "pending_catalog.json"
+        if pending_path.exists():
+            pending = _load_catalog_file(pending_path)
+            catalog = MaterialCatalog(
+                version=catalog.version,
+                records=catalog.records + pending.records,
+            )
     validate_catalog_shape(catalog)
     return catalog
 
@@ -90,12 +104,14 @@ def write_catalog(path: str | Path, records: Iterable[MaterialRecord]) -> Path:
     target.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "version": CATALOG_VERSION,
-        "records": [asdict(record) for record in records],
+        "records": [_record_to_dict(record) for record in records],
     }
-    target.write_text(
+    temporary = target.with_name(f".{target.name}.{os.getpid()}.{uuid4().hex}.tmp")
+    temporary.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True),
         encoding="utf-8",
     )
+    temporary.replace(target)
     return target
 
 
@@ -147,12 +163,12 @@ def resolve_material_path(
         raise FileNotFoundError(f"LINE material root is unavailable: {root}")
     candidate = (root / record.filename).resolve()
     root_resolved = root.resolve()
-    try:
-        candidate.relative_to(root_resolved)
-    except ValueError as exc:
-        raise ValueError(
-            f"Material filename escapes LINE_MATERIAL_ROOT: {record.filename}"
-        ) from exc
+    candidates = ((candidate, root_resolved),)
+    relative = Path(record.filename)
+    if len(relative.parts) > 1:
+        library_root = root_resolved.parent
+        candidates += (((library_root / relative).resolve(), library_root),)
+    candidate = _first_safe_existing_candidate(candidates, record.filename)
     if not candidate.exists() or not candidate.is_file():
         raise FileNotFoundError(
             f"LINE material file is missing for {record.material_id}: {candidate}"
@@ -238,4 +254,38 @@ def _record_from_dict(item: dict[str, Any]) -> MaterialRecord:
         test_result=str(item.get("test_result") or "not_tested"),
         campaigns=tuple(item.get("campaigns") or ()),
         trigger_types=tuple(item.get("trigger_types") or ()),
+        tags=tuple(item.get("tags") or ()),
     )
+
+
+def _load_catalog_file(source: Path) -> MaterialCatalog:
+    payload = json.loads(source.read_text(encoding="utf-8"))
+    records = tuple(_record_from_dict(item) for item in payload.get("records", []))
+    catalog = MaterialCatalog(version=int(payload.get("version", 0)), records=records)
+    validate_catalog_shape(catalog)
+    return catalog
+
+
+def _record_to_dict(record: MaterialRecord) -> dict[str, Any]:
+    payload = asdict(record)
+    if not record.tags:
+        payload.pop("tags", None)
+    return payload
+
+
+def _first_safe_existing_candidate(
+    candidates: tuple[tuple[Path, Path], ...],
+    filename: str,
+) -> Path:
+    safe = []
+    for candidate, root in candidates:
+        try:
+            candidate.relative_to(root)
+        except ValueError as exc:
+            raise ValueError(
+                f"Material filename escapes LINE_MATERIAL_ROOT: {filename}"
+            ) from exc
+        safe.append(candidate)
+        if candidate.exists():
+            return candidate
+    return safe[0]

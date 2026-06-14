@@ -5,7 +5,7 @@ from collections import defaultdict
 from dataclasses import replace
 from pathlib import Path
 
-from app.material_catalog import MaterialRecord, sha256_file, write_catalog
+from app.material_catalog import MaterialRecord, load_catalog, sha256_file, write_catalog
 
 
 TITLES = (
@@ -174,7 +174,15 @@ def main(argv: list[str] | None = None) -> int:
         replace(record, duplicate_of=canonical_by_slide.get(index, ""))
         for index, record in enumerate(records, start=1)
     ]
-    output = write_catalog(args.output, records)
+    output_path = Path(args.output)
+    if output_path.exists():
+        existing = load_catalog(output_path, include_pending=False)
+        records.extend(
+            record
+            for record in existing.records
+            if record.material_id.startswith("MAT-AUTO-")
+        )
+    output = write_catalog(output_path, records)
     print(f"catalog={output}")
     print(f"records={len(records)}")
     return 0

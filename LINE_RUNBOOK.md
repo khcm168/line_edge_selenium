@@ -63,6 +63,43 @@ an approved catalog record and an approved `LINE_Drafts` row.
 material approval. Search results marked `REVIEW/BLOCKED` are visible for
 planning but cannot pass the sender.
 
+## New Material Vision Index
+
+The material watcher recursively scans `C:\Dev\line_edge_selenium\Material`.
+It uses local Ollama `gemma3:12b` to propose:
+
+- objective visual description and readable text
+- topic, audience, and searchable hashtags
+- medical-claim, privacy, prescription, comparison, and dense-reference risks
+- a neutral Traditional Chinese caption
+
+List files that are not represented by an existing SHA-256:
+
+```powershell
+python -m app.material_ingest --list-new
+```
+
+Analyze only one picture:
+
+```powershell
+python -m app.material_ingest --max-files 1
+```
+
+Run continuous detection in the background:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File automations\15_Material_Vision_Index\start_watcher_hidden.ps1
+automations\15_Material_Vision_Index\status.cmd
+automations\15_Material_Vision_Index\stop.cmd
+```
+
+Each completed hash is appended immediately, so restarting resumes instead of
+duplicating work. AI-generated rows are always `internal_only` and
+`pending_review`; they cannot be selected by `--live-only` or sent until a
+human explicitly reviews and approves them. Generated rows live in the ignored
+runtime overlay `data/material_ingest/pending_catalog.json`, keeping Git clean
+until a reviewed record is deliberately promoted into the main catalog.
+
 ## Safe Commands
 
 ```powershell

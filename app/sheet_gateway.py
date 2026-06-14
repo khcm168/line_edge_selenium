@@ -53,6 +53,7 @@ class SheetGateway:
         "Test_Result",
         "Campaigns",
         "Trigger_Types",
+        "Tags",
     )
 
     def __init__(
@@ -243,5 +244,6 @@ def _material_to_row(record: MaterialRecord) -> list[str]:
         "Test_Result": record.test_result,
         "Campaigns": ",".join(record.campaigns),
         "Trigger_Types": ",".join(record.trigger_types),
+        "Tags": ",".join(record.tags),
     }
     return [values[header] for header in SheetGateway.MATERIAL_HEADERS]

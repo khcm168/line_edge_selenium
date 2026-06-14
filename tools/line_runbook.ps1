@@ -30,6 +30,11 @@ while ($true) {
     Write-Host "11. Capture passive LINE observation" -ForegroundColor Green
     Write-Host "12. Stop persistent worker" -ForegroundColor Yellow
     Write-Host "13. LIVE send approved rows" -ForegroundColor Red
+    Write-Host "14. List newly detected material pictures" -ForegroundColor Green
+    Write-Host "15. Analyze one new picture with Ollama vision" -ForegroundColor Yellow
+    Write-Host "16. Start material vision watcher hidden" -ForegroundColor Green
+    Write-Host "17. Show material vision watcher status" -ForegroundColor Cyan
+    Write-Host "18. Stop material vision watcher" -ForegroundColor Yellow
     Write-Host "Q. Quit"
     Write-Host ""
 
@@ -87,6 +92,22 @@ while ($true) {
             else {
                 Write-Host "Live send cancelled."
             }
+        }
+        "14" {
+            Invoke-Python -m app.material_ingest --list-new
+        }
+        "15" {
+            Invoke-Python -m app.material_ingest --max-files 1
+        }
+        "16" {
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File `
+                (Join-Path $ProjectRoot "automations\15_Material_Vision_Index\start_watcher_hidden.ps1")
+        }
+        "17" {
+            Invoke-Python -m app.material_ingest --status
+        }
+        "18" {
+            Invoke-Python -m app.material_ingest --stop
         }
         "Q" {
             break

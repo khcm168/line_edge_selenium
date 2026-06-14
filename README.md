@@ -8,6 +8,17 @@ Run `OPEN_LINE_RUNBOOK.bat` for picture-material search, draft preparation,
 approved-row preview, tests, Git status, and a separately confirmed live-send
 action. The written guide is `LINE_RUNBOOK.md`.
 
+New material folders can be indexed with local Ollama vision:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.material_ingest --list-new
+.\.venv\Scripts\python.exe -m app.material_ingest --max-files 1
+powershell -ExecutionPolicy Bypass -File automations\15_Material_Vision_Index\start_watcher_hidden.ps1
+```
+
+Vision imports are always draft metadata only: `internal_only`,
+`pending_review`, and `human_review_required`.
+
 ## Setup
 
 ```powershell

@@ -23,6 +23,7 @@ def record(**overrides):
         "test_result": "reviewed",
         "campaigns": ("daily followup",),
         "trigger_types": ("material_followup",),
+        "tags": (),
     }
     values.update(overrides)
     return MaterialRecord(**values)
@@ -56,6 +57,12 @@ class MaterialPickerTest(unittest.TestCase):
 
         self.assertEqual(find_materials((item,), search="quality"), (item,))
         self.assertEqual(find_materials((item,), product="sleep"), (item,))
+
+    def test_searches_explicit_vision_tags(self):
+        item = record(tags=("高血壓", "血壓管理"))
+
+        self.assertIn("#高血壓", material_hashtags(item))
+        self.assertEqual(find_materials((item,), search="#高血壓"), (item,))
 
 
 if __name__ == "__main__":
