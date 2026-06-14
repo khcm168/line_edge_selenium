@@ -724,11 +724,18 @@ def _submit_editor_image_once(
     )
 
 
-RESULT_SELECTOR = ".friendlistItem-module__item__1tuZn"
-NAME_SELECTOR = ".friendlistItem-module__name_box__fUKhX"
+RESULT_SELECTOR = (
+    '[class*="friendlistItem-module__item"], '
+    '[class*="chatlistItem-module__chatlist_item"]'
+)
+NAME_SELECTOR = (
+    '[class*="friendlistItem-module__name_box"], '
+    '[class*="chatlistItem-module__title_box"]'
+)
 CATEGORY_OR_ROW_SELECTOR = (
     ".categoryLayout-module__button_category__nqIZM, "
-    ".friendlistItem-module__item__1tuZn"
+    '[class*="friendlistItem-module__item"], '
+    '[class*="chatlistItem-module__chatlist_item"]'
 )
 NO_RESULT_TERMS = ("無搜尋結果", "找不到", "No results", "No search")
 
@@ -784,7 +791,7 @@ def search_value(driver: Any) -> str:
 def collect_candidate_preview(driver: Any) -> list[LineCandidate]:
     return [
         LineCandidate(
-            category=row.get("category") or "",
+            category=_candidate_category(row),
             display_name=row.get("displayName") or "",
             row_index=int(row.get("rowIndex", 0)),
         )
@@ -798,7 +805,7 @@ def collect_candidates(driver: Any) -> list[LineCandidate]:
     for row in rows:
         candidates.append(
             LineCandidate(
-                category=row.get("category") or "",
+                category=_candidate_category(row),
                 display_name=row.get("displayName") or "",
                 row_index=int(row.get("rowIndex", len(candidates))),
                 element=row.get("element"),
@@ -811,7 +818,9 @@ def raw_candidate_rows(driver: Any) -> list[dict[str, Any]]:
     return driver.execute_script(
         """
         const elements = [...document.querySelectorAll(
-          '[class*="categoryLayout-module__button_category"], [class*="friendlistItem-module__item"]'
+          '[class*="categoryLayout-module__button_category"], '
+          + '[class*="friendlistItem-module__item"], '
+          + '[class*="chatlistItem-module__chatlist_item"]'
         )];
         let category = '';
         const rows = [];
@@ -823,14 +832,35 @@ def raw_candidate_rows(driver: Any) -> list[dict[str, Any]]:
             category = (el.innerText || el.textContent || '').split('\\n')[0].trim();
             continue;
           }
-          if (!className.includes('friendlistItem-module__item')) continue;
-          const nameEl = el.querySelector('[class*="friendlistItem-module__name_box"]');
+          const legacyRow = className.includes('friendlistItem-module__item');
+          const chatRow = className.includes('chatlistItem-module__chatlist_item');
+          if (!legacyRow && !chatRow) continue;
+          const nameEl = el.querySelector(
+            '[class*="friendlistItem-module__name_box"], '
+            + '[class*="chatlistItem-module__title_box"]'
+          );
           const displayName = ((nameEl && nameEl.innerText) || el.innerText || el.textContent || '').trim();
-          rows.push({category, displayName, rowIndex: rows.length, element: el});
+          const hasMemberCount = Boolean(
+            el.querySelector('[class*="chatlistItem-module__member_count"]')
+          );
+          rows.push({
+            category,
+            displayName,
+            rowIndex: rows.length,
+            rowType: chatRow ? 'chat' : 'legacy',
+            hasMemberCount,
+            element: el
+          });
         }
         return rows;
         """
     )
+
+
+def _candidate_category(row: dict[str, Any]) -> str:
+    if row.get("rowType") == "chat":
+        return "group" if row.get("hasMemberCount") else "friend"
+    return row.get("category") or ""
 
 
 def visible_result_rows(driver: Any) -> list[Any]:
@@ -890,7 +920,8 @@ def open_chat(driver: Any, decision: MatchDecision) -> None:
         raise RuntimeError(f"Cannot open chat: {decision.status} {decision.detail}")
     button = decision.selected.element.find_element(
         By.CSS_SELECTOR,
-        '[class*="friendlistItem-module__button_friendlist_item"]',
+        '[class*="friendlistItem-module__button_friendlist_item"], '
+        '[class*="chatlistItem-module__button_chatlist_item"]',
     )
     driver.execute_script("arguments[0].click();", button)
     expected_name = (decision.selected.display_name or "").splitlines()[0]

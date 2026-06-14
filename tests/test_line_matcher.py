@@ -1,9 +1,32 @@
 import unittest
 
 from app.line_matcher import LineCandidate, apply_match_policy
+from app.line_messaging import _candidate_category
 
 
 class LineMatcherTest(unittest.TestCase):
+    def test_new_chat_rows_keep_friend_and_group_policies_separate(self):
+        friend_category = _candidate_category(
+            {"rowType": "chat", "hasMemberCount": False, "category": "聊天"}
+        )
+        group_category = _candidate_category(
+            {"rowType": "chat", "hasMemberCount": True, "category": "聊天"}
+        )
+
+        friend = apply_match_policy(
+            query="Ya.ping",
+            policy="exact_friend",
+            candidates=[LineCandidate(friend_category, "Ya.ping", 0)],
+        )
+        group = apply_match_policy(
+            query="001N1備份區",
+            policy="exact_friend",
+            candidates=[LineCandidate(group_category, "001N1備份區\n(2)", 0)],
+        )
+
+        self.assertTrue(friend.ok)
+        self.assertEqual(group.status, "no_match")
+
     def test_exact_friend_match(self):
         decision = apply_match_policy(
             query="洪啓明",
