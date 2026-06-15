@@ -366,7 +366,8 @@ def _resolve_task_material(task: MessageTask, settings: Settings) -> dict[str, s
         )
     if task.image_path:
         requested_name = Path(task.image_path).name.casefold()
-        if requested_name != record.filename.casefold():
+        catalog_name = Path(record.filename).name.casefold()
+        if requested_name != catalog_name:
             raise ValueError(
                 f"Task image_path does not match catalog for {record.material_id}"
             )
