@@ -33,3 +33,6 @@
 Read `docs/arm-webapp-orchestration.md` before changing the source spreadsheet
 or shared ARM compatibility probe. This project is an observer, not a WebApp
 client: orchestration must never send LINE messages or edit LINE sheets.
+ARM alone owns the full queue preview. Never copy another project's `.env` or
+credentials here, and require the logged all-project proof plus row readback
+before claiming compatibility.
