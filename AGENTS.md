@@ -27,3 +27,9 @@
 - Written operator guide: `LINE_RUNBOOK.md`
 - Solo Git guide: `docs/solo-git-workflow.md`
 - Full test suite: `python -m unittest discover -s tests`
+
+## Shared ARM integration
+
+Read `docs/arm-webapp-orchestration.md` before changing the source spreadsheet
+or shared ARM compatibility probe. This project is an observer, not a WebApp
+client: orchestration must never send LINE messages or edit LINE sheets.
