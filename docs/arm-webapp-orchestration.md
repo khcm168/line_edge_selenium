@@ -31,3 +31,16 @@ ARM alone owns the full queue preview. EasyFlow is a second observer with its
 own read-only sheet/header probe. Never copy another project's `.env` or
 credential JSON into this repository, add live LINE/EasyFlow actions to a
 probe, or claim success from an unverified audit response.
+
+## Nightly health handoff
+
+Codex automation `line` (`每日專案健康 LINE 報告`) runs at 22:45 Asia/Taipei,
+after the 22:30 World Cup Hello. It executes the four-project dry-run from
+`C:\Dev\psr-gas-health`, builds one combined Traditional Chinese summary, and
+submits one exact-friend request to this project's existing
+`app.handoff_worker`.
+
+If the earlier job is still running, this request waits in the same inbox. It
+must never launch a second Edge or bypass the queue. Health failures are sent
+as one red summary; uncertain LINE state is not retried. After success the
+worker remains live and returns to idle for later tasks.
