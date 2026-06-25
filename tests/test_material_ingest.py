@@ -3,7 +3,12 @@ from pathlib import Path
 from uuid import uuid4
 
 from app.material_catalog import MaterialCatalog, MaterialRecord, load_catalog, write_catalog
-from app.material_ingest import build_pending_record, discover_new_images, ingest_once
+from app.material_ingest import (
+    _build_cycle_notice,
+    build_pending_record,
+    discover_new_images,
+    ingest_once,
+)
 from app.material_vision import VisionAnalysis
 
 
@@ -119,6 +124,70 @@ class MaterialIngestTest(unittest.TestCase):
         self.assertEqual(record.risk_level, "high")
         self.assertIn("prescription_drug_content", record.safety_flags)
         self.assertFalse(record.is_live_eligible)
+
+    def test_cycle_notice_exposes_latest_completed_picture(self):
+        notice = _build_cycle_notice(
+            imported=1,
+            failed=0,
+            completed_at="2026-06-15T06:30:00+00:00",
+            latest_event={
+                "path": "高血壓/圖1.jpg",
+                "material_id": "MAT-AUTO-ABC123",
+            },
+        )
+
+        self.assertEqual(notice["result"], "success")
+        self.assertEqual(notice["path"], "高血壓/圖1.jpg")
+        self.assertEqual(notice["material_id"], "MAT-AUTO-ABC123")
+
+    def test_failed_image_is_quarantined_so_next_image_can_continue(self):
+        first = self.folder / "01失敗.jpg"
+        second = self.folder / "02成功.jpg"
+        first.write_bytes(b"bad-image")
+        second.write_bytes(b"good-image")
+        failed_path = self.root / "material_ingest" / "failed_images.json"
+
+        imported, failed = ingest_once(
+            material_root=self.materials,
+            catalog_path=self.catalog_path,
+            pending_catalog_path=self.pending_catalog_path,
+            folder="",
+            model="gemma3:12b",
+            base_url="http://unused",
+            timeout_seconds=1,
+            num_gpu=0,
+            num_thread=4,
+            max_files=1,
+            min_age_seconds=0,
+            analyzer=lambda *args, **kwargs: (_ for _ in ()).throw(
+                ValueError("invalid JSON")
+            ),
+            failed_registry_path=failed_path,
+        )
+        self.assertEqual((imported, failed), (0, 1))
+
+        imported, failed = ingest_once(
+            material_root=self.materials,
+            catalog_path=self.catalog_path,
+            pending_catalog_path=self.pending_catalog_path,
+            folder="",
+            model="gemma3:12b",
+            base_url="http://unused",
+            timeout_seconds=1,
+            num_gpu=0,
+            num_thread=4,
+            max_files=1,
+            min_age_seconds=0,
+            analyzer=lambda *args, **kwargs: analysis(),
+            failed_registry_path=failed_path,
+        )
+
+        self.assertEqual((imported, failed), (1, 0))
+        pending = load_catalog(
+            self.pending_catalog_path,
+            include_pending=False,
+        )
+        self.assertEqual(pending.records[0].filename, "高血壓/02成功.jpg")
 
 
 if __name__ == "__main__":

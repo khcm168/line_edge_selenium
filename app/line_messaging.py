@@ -15,6 +15,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
+from app.bmp_safety import sanitize_bmp_text
 from app.line_client import SEARCH_INPUT_SELECTOR
 from app.line_matcher import LineCandidate, MatchDecision, apply_match_policy
 
@@ -724,11 +725,18 @@ def _submit_editor_image_once(
     )
 
 
-RESULT_SELECTOR = ".friendlistItem-module__item__1tuZn"
-NAME_SELECTOR = ".friendlistItem-module__name_box__fUKhX"
+RESULT_SELECTOR = (
+    '[class*="friendlistItem-module__item"], '
+    '[class*="chatlistItem-module__chatlist_item"]'
+)
+NAME_SELECTOR = (
+    '[class*="friendlistItem-module__name_box"], '
+    '[class*="chatlistItem-module__title_box"]'
+)
 CATEGORY_OR_ROW_SELECTOR = (
     ".categoryLayout-module__button_category__nqIZM, "
-    ".friendlistItem-module__item__1tuZn"
+    '[class*="friendlistItem-module__item"], '
+    '[class*="chatlistItem-module__chatlist_item"]'
 )
 NO_RESULT_TERMS = ("無搜尋結果", "找不到", "No results", "No search")
 
@@ -784,7 +792,7 @@ def search_value(driver: Any) -> str:
 def collect_candidate_preview(driver: Any) -> list[LineCandidate]:
     return [
         LineCandidate(
-            category=row.get("category") or "",
+            category=_candidate_category(row),
             display_name=row.get("displayName") or "",
             row_index=int(row.get("rowIndex", 0)),
         )
@@ -798,7 +806,7 @@ def collect_candidates(driver: Any) -> list[LineCandidate]:
     for row in rows:
         candidates.append(
             LineCandidate(
-                category=row.get("category") or "",
+                category=_candidate_category(row),
                 display_name=row.get("displayName") or "",
                 row_index=int(row.get("rowIndex", len(candidates))),
                 element=row.get("element"),
@@ -811,7 +819,9 @@ def raw_candidate_rows(driver: Any) -> list[dict[str, Any]]:
     return driver.execute_script(
         """
         const elements = [...document.querySelectorAll(
-          '[class*="categoryLayout-module__button_category"], [class*="friendlistItem-module__item"]'
+          '[class*="categoryLayout-module__button_category"], '
+          + '[class*="friendlistItem-module__item"], '
+          + '[class*="chatlistItem-module__chatlist_item"]'
         )];
         let category = '';
         const rows = [];
@@ -823,14 +833,39 @@ def raw_candidate_rows(driver: Any) -> list[dict[str, Any]]:
             category = (el.innerText || el.textContent || '').split('\\n')[0].trim();
             continue;
           }
-          if (!className.includes('friendlistItem-module__item')) continue;
-          const nameEl = el.querySelector('[class*="friendlistItem-module__name_box"]');
+          const legacyRow = className.includes('friendlistItem-module__item');
+          const chatRow = className.includes('chatlistItem-module__chatlist_item');
+          if (!legacyRow && !chatRow) continue;
+          const nameEl = el.querySelector(
+            '[class*="friendlistItem-module__name_box"], '
+            + '[class*="chatlistItem-module__title_box"]'
+          );
           const displayName = ((nameEl && nameEl.innerText) || el.innerText || el.textContent || '').trim();
-          rows.push({category, displayName, rowIndex: rows.length, element: el});
+          const hasMemberCount = Boolean(
+            el.querySelector(
+              '[class*="chatlistItem-module__member_count"], '
+              + '[class*="friendlistItem-module__member_count"]'
+            )
+          );
+          rows.push({
+            category,
+            displayName,
+            rowIndex: rows.length,
+            rowType: chatRow ? 'chat' : 'legacy',
+            hasMemberCount,
+            ariaCurrent: String(el.getAttribute('aria-current') || ''),
+            element: el
+          });
         }
         return rows;
         """
     )
+
+
+def _candidate_category(row: dict[str, Any]) -> str:
+    if row.get("rowType") in {"chat", "legacy"}:
+        return "group" if row.get("hasMemberCount") else "friend"
+    return row.get("category") or ""
 
 
 def visible_result_rows(driver: Any) -> list[Any]:
@@ -890,7 +925,8 @@ def open_chat(driver: Any, decision: MatchDecision) -> None:
         raise RuntimeError(f"Cannot open chat: {decision.status} {decision.detail}")
     button = decision.selected.element.find_element(
         By.CSS_SELECTOR,
-        '[class*="friendlistItem-module__button_friendlist_item"]',
+        '[class*="friendlistItem-module__button_friendlist_item"], '
+        '[class*="chatlistItem-module__button_chatlist_item"]',
     )
     driver.execute_script("arguments[0].click();", button)
     expected_name = (decision.selected.display_name or "").splitlines()[0]
@@ -902,6 +938,23 @@ def open_chat(driver: Any, decision: MatchDecision) -> None:
             or (expected_name and expected_name in _visible_text(d))
         )
     )
+
+
+def current_chat_header(driver: Any) -> str:
+    texts = driver.execute_script(
+        """
+        const nodes = [...document.querySelectorAll(
+          '.chatroomHeader-module__button_name__US7lb, [class*="chatroomHeader-module__button_name"]'
+        )];
+        return nodes
+          .map(node => (node.textContent || '').trim())
+          .filter(Boolean);
+        """
+    ) or []
+    for text in texts:
+        if str(text).strip():
+            return str(text).strip()
+    return ""
 
 
 def visible_message_fields(driver: Any) -> list[tuple[Any, dict[str, float], str]]:
@@ -962,6 +1015,7 @@ def cdp_mouse_click(driver: Any, x: float, y: float) -> None:
 
 
 def cdp_type_and_enter(driver: Any, message: str) -> None:
+    message = sanitize_bmp_text(message)
     driver.execute_cdp_cmd("Input.insertText", {"text": message})
     time.sleep(0.1)
     for event_type in ("keyDown", "keyUp"):
@@ -992,6 +1046,7 @@ def composer_click_point(driver: Any) -> tuple[float, float]:
 
 
 def send_message(driver: Any, message: str) -> str:
+    message = sanitize_bmp_text(message)
     if not message.strip():
         raise ValueError("Refusing to send a blank message.")
     shadow_field = shadow_message_field(driver)

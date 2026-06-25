@@ -104,7 +104,8 @@ while ($true) {
                 (Join-Path $ProjectRoot "automations\15_Material_Vision_Index\start_watcher_hidden.ps1")
         }
         "17" {
-            Invoke-Python -m app.material_ingest --status
+            & powershell.exe -NoProfile -ExecutionPolicy Bypass -File `
+                (Join-Path $ProjectRoot "automations\15_Material_Vision_Index\status.ps1")
         }
         "18" {
             Invoke-Python -m app.material_ingest --stop

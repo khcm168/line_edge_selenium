@@ -43,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
     gateway = SheetGateway.from_settings(settings)
     written = gateway.append_drafts([draft])
     print(f"draft_id={draft.draft_id}")
+    print(f"material_label={draft.material_label}")
     print(f"material_id={draft.material_id}")
     print(f"drafts_written={written}")
     print(f"draft_result={draft.result}")

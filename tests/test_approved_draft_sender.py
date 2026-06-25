@@ -106,6 +106,16 @@ class ApprovedDraftSenderTest(unittest.TestCase):
             "",
         )
 
+    def test_blocks_unresolved_message_placeholder(self):
+        self.assertEqual(
+            skip_reason(
+                draft(
+                    draft_message="您好，[LINE暱稱]，這張資料提供您參考。",
+                )
+            ),
+            "unresolved message placeholder",
+        )
+
     def test_can_select_one_exact_draft_id(self):
         selection = select_approved_drafts(
             [

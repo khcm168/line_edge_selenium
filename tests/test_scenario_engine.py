@@ -54,7 +54,7 @@ class ScenarioEngineTest(unittest.TestCase):
         self.assertTrue(all(draft.status == "pending_review" for draft in result.drafts))
         self.assertTrue(all("human_review_required" in draft.safety_flags for draft in result.drafts))
         logistics = next(draft for draft in result.drafts if draft.customer_id == "P100")
-        self.assertEqual(logistics.line_query, "Clinic A LINE")
+        self.assertEqual(logistics.line_query, "P100")
         self.assertEqual(logistics.line_contact, "Clinic A LINE")
         self.assertEqual(logistics.line_message_style, "正式、簡短")
 
@@ -129,9 +129,34 @@ class ScenarioEngineTest(unittest.TestCase):
 
         parsed = draft_from_row(dict(zip(DRAFT_HEADERS, draft_to_row(draft))))
 
-        self.assertEqual(parsed.line_query, "Clinic A LINE")
+        self.assertEqual(parsed.line_query, "P104")
         self.assertEqual(parsed.line_contact, "Clinic A LINE")
         self.assertEqual(parsed.line_message_style, "warm")
+
+    def test_draft_round_trips_material_label(self):
+        draft = build_scenario_drafts(
+            {
+                "adr": [
+                    ["customer_id", "customer_name", "created_date"],
+                    ["P104", "Clinic A", "2026-06-06"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("new_customer",),
+        ).drafts[0]
+        draft = draft.__class__(
+            **{
+                **draft.__dict__,
+                "material_label": "健管師/投影片2.JPG | 健康照護",
+            }
+        )
+
+        parsed = draft_from_row(dict(zip(DRAFT_HEADERS, draft_to_row(draft))))
+
+        self.assertEqual(
+            parsed.material_label,
+            "健管師/投影片2.JPG | 健康照護",
+        )
 
     def test_draft_to_log_event_uses_final_risk_and_result(self):
         result = build_scenario_drafts(

@@ -5,7 +5,7 @@ from dataclasses import replace
 
 from app.ai_drafter import DraftProvider, draft_with_ai
 from app.config import Settings
-from app.material_catalog import MaterialCatalog, MaterialRecord, select_materials
+from app.material_catalog import MaterialCatalog, MaterialRecord, material_label, select_materials
 from app.scenario_engine import ScenarioDraft, taipei_now_iso
 
 
@@ -64,6 +64,7 @@ def build_material_draft(
         trigger_type=trigger_type,
     )
     created_at = taipei_now_iso()
+    readable_label = material_label(record)
     key = "|".join(
         (
             "material",
@@ -81,6 +82,7 @@ def build_material_draft(
         source_sheets=("LINE_Material",),
         source_refs={
             "material_id": record.material_id,
+            "material_label": readable_label,
             "product": record.product,
             "topic": record.topic,
             "audience": record.audience,
@@ -95,14 +97,15 @@ def build_material_draft(
         line_message_style=line_message_style,
         product=product or record.product,
         signal_summary=(
-            f"Approved material {record.material_id}; topic={record.topic}; "
-            f"audience={record.audience}; visual={record.visual_summary}"
+            f"圖片：{readable_label}；對象：{record.audience}；"
+            f"內容：{record.visual_summary}"
         ),
         draft_message=record.customer_caption,
         material_id=record.material_id,
         image_path=record.filename,
         message_kind="image_text",
         material_sha256=record.sha256,
+        material_label=readable_label,
         risk_level=record.risk_level,
         safety_flags=tuple(
             dict.fromkeys(record.safety_flags + ("human_review_required",))
@@ -116,4 +119,5 @@ def build_material_draft(
         image_path=record.filename,
         message_kind="image_text",
         material_sha256=record.sha256,
+        material_label=readable_label,
     )

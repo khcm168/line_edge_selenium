@@ -10,6 +10,7 @@ from app.material_catalog import (
     MaterialRecord,
     load_catalog,
     material_hashtags,
+    material_label,
 )
 
 
@@ -82,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
                     {
                         **asdict(record),
                         "hashtags": material_hashtags(record),
+                        "material_label": material_label(record),
                         "live_eligible": record.is_live_eligible,
                     }
                     for record in matches
@@ -99,7 +101,8 @@ def main(argv: list[str] | None = None) -> int:
     for record in matches:
         status = "LIVE-READY" if record.is_live_eligible else "REVIEW/BLOCKED"
         print(
-            f"{record.material_id} | {record.filename} | {status}\n"
+            f"{material_label(record)} | {status}\n"
+            f"  technical ID: {record.material_id}\n"
             f"  product: {record.product}\n"
             f"  topic: {record.topic}\n"
             f"  audience: {record.audience}\n"
@@ -111,7 +114,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"matches_shown={len(matches)}")
     print(
         "Create a review draft with: python -m app.line_picture_drafts "
-        '--line-query "<LINE name>" --material-id "<MAT-ACT-NNN>"'
+        '--line-query "<LINE name>" --material-id "<technical ID shown above>"'
     )
     return 0
 

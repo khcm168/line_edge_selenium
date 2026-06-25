@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from app.ai_drafter import DraftProvider, constrained_rewrite
+from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
 from app.line_profile import LineProfile, apply_line_profile
 from app.reminder_rules import ReminderRules
@@ -488,7 +489,7 @@ def _personalize_message(
     source = dict(source_refs)
     draft_message = _addressed_fallback_message(base_message, line_contact)
     if settings is None:
-        return draft_message, source
+        return sanitize_bmp_text(draft_message), source
 
     draft = ScenarioDraft(
         draft_id=f"task:{trigger_type}:{customer_id}:{datetime.now(timezone.utc).isoformat()}",
@@ -526,7 +527,7 @@ def _personalize_message(
         "line_nickname": line_contact,
         "line_style": line_message_style,
     }
-    return review.message, source
+    return sanitize_bmp_text(review.message), source
 
 
 def _addressed_fallback_message(message: str, line_contact: str) -> str:
@@ -568,7 +569,7 @@ def tasks_to_drafts(
                     f"{task.reminder_type or 'shipping'} task from {source_tab or 'task'} "
                     f"row {source_row}; due {task.due_date}."
                 ),
-                draft_message=task.message,
+                draft_message=sanitize_bmp_text(task.message),
                 line_contact=task.line_contact,
                 line_message_style=task.line_message_style,
                 material_id=task.material_id,
@@ -588,10 +589,16 @@ def write_tasks(path: str | Path, tasks: list[MessageTask]) -> Path:
     target = Path(path)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(
-        json.dumps([asdict(task) for task in tasks], ensure_ascii=False, indent=2),
+        json.dumps([_task_to_payload(task) for task in tasks], ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
     return target
+
+
+def _task_to_payload(task: MessageTask) -> dict[str, Any]:
+    payload = asdict(task)
+    payload["message"] = sanitize_bmp_text(str(payload.get("message") or ""))
+    return payload
 
 
 def read_tasks(path: str | Path) -> list[MessageTask]:
@@ -601,7 +608,7 @@ def read_tasks(path: str | Path) -> list[MessageTask]:
             action=item["action"],
             query=item["query"],
             match_policy=item["match_policy"],
-            message=item["message"],
+            message=sanitize_bmp_text(str(item["message"])),
             allow_group=bool(item.get("allow_group", False)),
             customer_id=str(item.get("customer_id") or ""),
             line_contact=str(item.get("line_contact") or ""),

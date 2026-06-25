@@ -1,4 +1,5 @@
 import unittest
+from dataclasses import replace
 
 from app.scenario_engine import ScenarioDraft, ScenarioEvent
 from app.sheet_gateway import SheetGateway
@@ -109,6 +110,18 @@ class SheetGatewayTest(unittest.TestCase):
         self.assertEqual(len(spreadsheet.sheets["LINE_Drafts"].values), 2)
         self.assertEqual(spreadsheet.sheets["LINE_Drafts"].values[1][0], "draft1")
 
+    def test_append_drafts_sanitizes_non_bmp_messages(self):
+        spreadsheet = FakeSpreadsheet()
+        gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
+        draft = replace(sample_draft(), draft_message="nightly health " + chr(0x1F6A8))
+
+        self.assertEqual(gateway.append_drafts([draft]), 1)
+
+        self.assertEqual(
+            spreadsheet.sheets["LINE_Drafts"].values[1][10],
+            "nightly health ",
+        )
+
     def test_reads_and_updates_draft_rows(self):
         spreadsheet = FakeSpreadsheet()
         gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
@@ -170,6 +183,7 @@ class SheetGatewayTest(unittest.TestCase):
         self.assertIn("Image_Path", worksheet.values[0])
         self.assertIn("Message_Kind", worksheet.values[0])
         self.assertIn("Material_SHA256", worksheet.values[0])
+        self.assertIn("Material_Label", worksheet.values[0])
 
 
 if __name__ == "__main__":

@@ -5,9 +5,11 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
+from app.ai_drafter import has_unresolved_placeholder
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
+from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
-from app.line_profile import is_line_contact_eligible
+from app.line_profile import is_line_query_eligible
 from app.line_batch import _run_task
 from app.line_client import LineClient
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
@@ -187,7 +189,7 @@ def select_approved_drafts(
             action="send_message",
             query=row.draft.line_query,
             match_policy=_match_policy(row.draft, allowed_group_targets),
-            message=row.draft.draft_message,
+            message=sanitize_bmp_text(row.draft.draft_message),
             allow_group=row.draft.line_query in allowed_group_targets,
             customer_id=row.draft.customer_id,
             line_contact=row.draft.line_contact,
@@ -224,12 +226,17 @@ def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] 
         return "already sent"
     if not draft.line_query.strip():
         return "missing line query"
-    if not is_line_contact_eligible(draft.customer_id, draft.line_contact):
-        return "missing eligible line contact"
+    if not is_line_query_eligible(draft.customer_id, draft.line_query):
+        return "missing eligible line query"
     if draft.message_kind not in {"text", "image", "image_text"}:
         return "unsupported message kind"
-    if draft.message_kind in {"text", "image_text"} and not draft.draft_message.strip():
+    sanitized_message = sanitize_bmp_text(draft.draft_message)
+    if draft.message_kind in {"text", "image_text"} and not sanitized_message.strip():
         return "blank message"
+    if draft.message_kind in {"text", "image_text"} and has_unresolved_placeholder(
+        sanitized_message
+    ):
+        return "unresolved message placeholder"
     if draft.message_kind in {"image", "image_text"}:
         if not draft.material_id.strip():
             return "missing material id"

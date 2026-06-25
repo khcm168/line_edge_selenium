@@ -6,8 +6,9 @@ actions visibly separate.
 ## Daily Choice
 
 1. Browse picture materials by product, topic, audience, or hashtag.
-2. Choose an approved `Material_ID` and create one picture review draft.
-3. Review text, image, target, risk flags, and `Material_ID` in Google Sheets.
+2. Choose an approved picture by its readable `Material_Label`; the picker also
+   shows the technical `Material_ID` needed by the command.
+3. Review text, image, target, risk flags, and `Material_Label` in Google Sheets.
 4. Set `Status=approved` and `Send_Mode=live` only for rows you intend to send.
 5. Preview approved rows.
 6. Use the live-send command only after that review.
@@ -40,7 +41,9 @@ renamed. They are identified by SHA-256 and described in
 
 Each catalog row has:
 
-- `Material_ID` and filename
+- `Material_Label`, such as `健管師/投影片2.JPG | 健康照護`
+- `Material_ID`, an internal stable key derived from the image hash
+- `SHA256`, the full image fingerprint used to detect replacement or changes
 - product, topic, and audience
 - campaign and trigger types
 - sendability, review status, risk, and safety flags
@@ -92,6 +95,17 @@ powershell -ExecutionPolicy Bypass -File automations\15_Material_Vision_Index\st
 automations\15_Material_Vision_Index\status.cmd
 automations\15_Material_Vision_Index\stop.cmd
 ```
+
+For the quickest visual check, double-click `MATERIAL_WATCHER_STATUS.bat`.
+Green means the watcher process and Ollama are both alive. The report also
+shows the latest completed image or error and the current reviewed/pending
+catalog counts. The completion notice is stored at
+`data\material_ingest\latest_notice.json`.
+
+If Ollama returns invalid metadata twice, the picture is listed in
+`data\material_ingest\failed_images.json` and skipped so later pictures can
+continue. After correcting the file or model settings, requeue those pictures
+with `python -m app.material_ingest --retry-failed`.
 
 Each completed hash is appended immediately, so restarting resumes instead of
 duplicating work. AI-generated rows are always `internal_only` and

@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import argparse
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
+from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
 from app.line_profile import is_line_contact_eligible
 from app.line_client import LineClient
 from app.line_messaging import (
+    current_chat_header,
     open_chat,
     resolve_match,
     send_message,
@@ -23,6 +25,8 @@ from app.ui_health import check_composer
 IMAGE_MESSAGE_KINDS = {"image", "image_text"}
 TEXT_MESSAGE_KINDS = {"text", "image_text"}
 MESSAGE_KINDS = IMAGE_MESSAGE_KINDS | TEXT_MESSAGE_KINDS
+CURRENT_CHAT_EXACT_FRIEND = "current_chat_exact_friend"
+CURRENT_CHAT_CONFIRMED = "current_chat_confirmed"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -117,25 +121,57 @@ def _run_task(
     audit_path: Path,
     snapshot_writer: SnapshotWriter,
 ) -> str:
+    task = _sanitize_task_message(task)
     material = _resolve_task_material(task, settings)
-    decision = resolve_match(
-        client.driver,
-        query=task.query,
-        policy=task.match_policy,
-        allow_group=task.allow_group,
-        allowed_group_targets=settings.allowed_group_targets,
-    )
+    if task.match_policy == CURRENT_CHAT_EXACT_FRIEND:
+        header = current_chat_header(client.driver)
+        if not header:
+            decision = None
+            status = "current_chat_missing"
+            detail = "no current chat header was visible"
+        elif header != task.query:
+            decision = None
+            status = "current_chat_mismatch"
+            detail = f"current chat header was {header!r}"
+        else:
+            decision = None
+            status = "matched"
+            detail = "current chat header matched exactly"
+    elif task.match_policy == CURRENT_CHAT_CONFIRMED:
+        header = current_chat_header(client.driver)
+        if not header:
+            decision = None
+            status = "current_chat_missing"
+            detail = "no current chat header was visible"
+        else:
+            decision = None
+            status = "matched"
+            detail = f"current chat header visible: {header!r}"
+    else:
+        decision = resolve_match(
+            client.driver,
+            query=task.query,
+            policy=task.match_policy,
+            allow_group=task.allow_group,
+            allowed_group_targets=settings.allowed_group_targets,
+        )
+        status = decision.status
+        detail = decision.detail
     snapshot = snapshot_writer.write(
         label=f"match_{task.query}",
         payload={
             "task": asdict(task),
             "material": material,
             "decision": decision,
+            "current_chat_header": current_chat_header(client.driver),
             "visible_text": client.visible_text()[:3000],
         },
         driver=client.driver,
     )
-    if not decision.ok:
+    if (
+        task.match_policy not in {CURRENT_CHAT_EXACT_FRIEND, CURRENT_CHAT_CONFIRMED}
+        and not decision.ok
+    ):
         append_jsonl(
             audit_path,
             build_audit_record(
@@ -152,9 +188,26 @@ def _run_task(
         )
         print(f"skipped={task.query} status={decision.status}")
         return decision.status
+    if task.match_policy in {CURRENT_CHAT_EXACT_FRIEND, CURRENT_CHAT_CONFIRMED} and status != "matched":
+        append_jsonl(
+            audit_path,
+            build_audit_record(
+                action=task.action,
+                status=status,
+                query=task.query,
+                policy=task.match_policy,
+                message=task.message,
+                detail=detail,
+                source=task.source,
+                snapshot=snapshot,
+            ),
+        )
+        print(f"skipped={task.query} status={status}")
+        return status
 
     if manual_approve:
-        open_chat(client.driver, decision)
+        if decision is not None:
+            open_chat(client.driver, decision)
         health = (
             check_composer(client.driver)
             if task.message_kind in TEXT_MESSAGE_KINDS
@@ -185,8 +238,8 @@ def _run_task(
                     + (f"; {health.status}" if health else "")
                 ),
                 source=task.source,
-                candidates=list(decision.candidates),
-                selected=decision.selected,
+                candidates=list(decision.candidates) if decision is not None else [],
+                selected=decision.selected if decision is not None else None,
                 snapshot=approval_snapshot,
             ),
         )
@@ -202,17 +255,18 @@ def _run_task(
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
-                detail=decision.detail,
+                detail=detail,
                 source=task.source,
-                candidates=list(decision.candidates),
-                selected=decision.selected,
+                candidates=list(decision.candidates) if decision is not None else [],
+                selected=decision.selected if decision is not None else None,
                 snapshot=snapshot,
             ),
         )
         print(f"preview_matched={task.query}")
         return "preview_matched"
 
-    open_chat(client.driver, decision)
+    if decision is not None:
+        open_chat(client.driver, decision)
     health = (
         check_composer(client.driver)
         if task.message_kind in TEXT_MESSAGE_KINDS
@@ -239,7 +293,7 @@ def _run_task(
                 message=task.message,
                 detail=health.detail,
                 source=task.source,
-                selected=decision.selected,
+                selected=decision.selected if decision is not None else None,
                 snapshot=failure_snapshot,
             ),
         )
@@ -276,7 +330,7 @@ def _run_task(
                     "material": material,
                     "evidence": dict(evidence),
                 },
-                selected=decision.selected,
+                selected=decision.selected if decision is not None else None,
                 snapshot=upload_snapshot,
             ),
         )
@@ -292,7 +346,7 @@ def _run_task(
             "task": asdict(task),
             "material": material,
             "method": method,
-            "selected": decision.selected,
+            "selected": decision.selected if decision is not None else None,
         },
         driver=client.driver,
     )
@@ -311,7 +365,7 @@ def _run_task(
                 "material": material,
                 "evidence": evidence,
             },
-            selected=decision.selected,
+            selected=decision.selected if decision is not None else None,
             snapshot=send_snapshot,
         ),
     )
@@ -332,7 +386,11 @@ def _validate_live_scope(
             raise ValueError(
                 f"Unsupported LINE message_kind {task.message_kind!r}: {task.query}"
             )
-        if task.message_kind in TEXT_MESSAGE_KINDS and not task.message.strip():
+        if task.match_policy in {CURRENT_CHAT_EXACT_FRIEND, CURRENT_CHAT_CONFIRMED} and task.allow_group:
+            raise ValueError(
+                f"Current-chat send cannot allow groups: {task.query}"
+            )
+        if task.message_kind in TEXT_MESSAGE_KINDS and not sanitize_bmp_text(task.message).strip():
             raise ValueError(f"Refusing live send with blank message: {task.query}")
         if task.message_kind in IMAGE_MESSAGE_KINDS:
             _resolve_task_material(task, settings)
@@ -344,6 +402,15 @@ def _validate_live_scope(
             raise ValueError(
                 f"Live send target {task.query!r} is missing eligible Line contact for Customer_ID {task.customer_id!r}."
             )
+
+
+def _sanitize_task_message(task: MessageTask) -> MessageTask:
+    if task.message_kind not in TEXT_MESSAGE_KINDS:
+        return task
+    message = sanitize_bmp_text(task.message)
+    if message == task.message:
+        return task
+    return replace(task, message=message)
 
 
 def _resolve_task_material(task: MessageTask, settings: Settings) -> dict[str, str]:
@@ -366,7 +433,8 @@ def _resolve_task_material(task: MessageTask, settings: Settings) -> dict[str, s
         )
     if task.image_path:
         requested_name = Path(task.image_path).name.casefold()
-        if requested_name != record.filename.casefold():
+        catalog_name = Path(record.filename).name.casefold()
+        if requested_name != catalog_name:
             raise ValueError(
                 f"Task image_path does not match catalog for {record.material_id}"
             )
