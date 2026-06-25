@@ -60,6 +60,7 @@ DRAFT_HEADERS = (
     "Image_Path",
     "Message_Kind",
     "Material_SHA256",
+    "Material_Label",
 )
 
 LOG_HEADERS = (
@@ -129,6 +130,7 @@ class ScenarioDraft:
     image_path: str = ""
     message_kind: str = "text"
     material_sha256: str = ""
+    material_label: str = ""
     risk_level: str = "low"
     safety_flags: tuple[str, ...] = ("human_review_required",)
     status: str = DRAFT_STATUS_PENDING
@@ -287,6 +289,7 @@ def draft_to_row(draft: ScenarioDraft) -> list[str]:
         "Image_Path": draft.image_path,
         "Message_Kind": draft.message_kind,
         "Material_SHA256": draft.material_sha256,
+        "Material_Label": draft.material_label,
         "Product": draft.product,
         "Signal_Summary": draft.signal_summary,
         "Draft_Message": draft.draft_message,
@@ -358,6 +361,7 @@ def draft_from_row(row: dict[str, str]) -> ScenarioDraft:
         image_path=row.get("Image_Path", ""),
         message_kind=row.get("Message_Kind", "text") or "text",
         material_sha256=row.get("Material_SHA256", ""),
+        material_label=row.get("Material_Label", ""),
         product=row.get("Product", ""),
         signal_summary=row.get("Signal_Summary", ""),
         draft_message=row.get("Draft_Message", ""),

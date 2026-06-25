@@ -128,6 +128,57 @@ class MaterialCatalogTest(unittest.TestCase):
             legacy_root.rmdir()
             temp_dir.rmdir()
 
+    def test_resolve_material_can_find_recursive_hash_match(self):
+        temp_dir = self._temp_dir()
+        nested = temp_dir / "nested"
+        nested.mkdir()
+        target = nested / "投影片6.JPG"
+        target.write_bytes(b"correct-picture")
+        record = self.by_id["MAT-ACT-006"]
+        nested_record = type(record)(
+            **{
+                **record.__dict__,
+                "filename": "投影片6.JPG",
+                "sha256": sha256_file(target),
+            }
+        )
+        try:
+            self.assertEqual(
+                resolve_material_path(nested_record, material_root=temp_dir),
+                target.resolve(),
+            )
+        finally:
+            target.unlink()
+            nested.rmdir()
+            temp_dir.rmdir()
+
+    def test_resolve_material_prefers_recursive_hash_match_over_wrong_root_basename(self):
+        temp_dir = self._temp_dir()
+        wrong = temp_dir / "投影片6.JPG"
+        wrong.write_bytes(b"wrong-picture")
+        nested = temp_dir / "nested"
+        nested.mkdir()
+        target = nested / "投影片6.JPG"
+        target.write_bytes(b"correct-picture")
+        record = self.by_id["MAT-ACT-006"]
+        nested_record = type(record)(
+            **{
+                **record.__dict__,
+                "filename": "投影片6.JPG",
+                "sha256": sha256_file(target),
+            }
+        )
+        try:
+            self.assertEqual(
+                resolve_material_path(nested_record, material_root=temp_dir),
+                target.resolve(),
+            )
+        finally:
+            wrong.unlink()
+            target.unlink()
+            nested.rmdir()
+            temp_dir.rmdir()
+
     def test_catalog_json_has_no_absolute_paths(self):
         payload = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
         serialized = json.dumps(payload, ensure_ascii=False)

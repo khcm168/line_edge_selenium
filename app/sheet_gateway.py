@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 from app.config import Settings
-from app.material_catalog import MaterialRecord
+from app.bmp_safety import sanitize_bmp_text
+from app.material_catalog import MaterialRecord, material_label
 from app.scenario_engine import (
     DRAFT_HEADERS,
     LOG_HEADERS,
@@ -54,6 +55,7 @@ class SheetGateway:
         "Campaigns",
         "Trigger_Types",
         "Tags",
+        "Material_Label",
     )
 
     def __init__(
@@ -110,7 +112,7 @@ class SheetGateway:
         for draft in drafts:
             if draft.draft_id and (draft.draft_id in existing_ids or draft.draft_id in batch_ids):
                 continue
-            pending_rows.append(draft_to_row(draft))
+            pending_rows.append(draft_to_row(_sanitize_draft(draft)))
             if draft.draft_id:
                 batch_ids.add(draft.draft_id)
         if pending_rows:
@@ -225,6 +227,13 @@ def update_values(worksheet: Any, range_name: str, values: list[list[str]]) -> N
         worksheet.update(values, range_name=range_name, value_input_option="USER_ENTERED")
 
 
+def _sanitize_draft(draft: ScenarioDraft) -> ScenarioDraft:
+    message = sanitize_bmp_text(draft.draft_message)
+    if message == draft.draft_message:
+        return draft
+    return replace(draft, draft_message=message)
+
+
 def _material_to_row(record: MaterialRecord) -> list[str]:
     values = {
         "Material_ID": record.material_id,
@@ -245,5 +254,6 @@ def _material_to_row(record: MaterialRecord) -> list[str]:
         "Campaigns": ",".join(record.campaigns),
         "Trigger_Types": ",".join(record.trigger_types),
         "Tags": ",".join(record.tags),
+        "Material_Label": material_label(record),
     }
     return [values[header] for header in SheetGateway.MATERIAL_HEADERS]

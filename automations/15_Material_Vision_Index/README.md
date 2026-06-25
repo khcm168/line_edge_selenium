@@ -28,6 +28,20 @@ The low-impact watcher analyzes one image, rests for five minutes, then scans
 again. It runs below normal process priority, is hash-idempotent, and writes
 each successful catalog row immediately, so a restart resumes with the next
 image.
+
+For a one-glance colored health report, double-click
+`MATERIAL_WATCHER_STATUS.bat` in the project root or run `status.cmd`. The
+report verifies both the saved PID and the live process, shows Ollama status,
+the latest completed image or error, and reviewed/pending catalog counts.
+Every completed scan also updates
+`data\material_ingest\latest_notice.json`.
+An image that still returns invalid metadata after the bounded retry is written
+to `data\material_ingest\failed_images.json` and skipped so it cannot block
+the rest of the folder. Requeue quarantined images deliberately with:
+
+```powershell
+python -m app.material_ingest --retry-failed
+```
 Vision defaults to CPU-only inference (`OLLAMA_VISION_NUM_GPU=0`) to avoid
 competing with Edge for limited Vulkan memory. Machines with sufficient VRAM
 can opt into GPU layers explicitly.

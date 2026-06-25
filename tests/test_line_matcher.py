@@ -27,6 +27,28 @@ class LineMatcherTest(unittest.TestCase):
         self.assertTrue(friend.ok)
         self.assertEqual(group.status, "no_match")
 
+    def test_legacy_rows_use_member_count_to_separate_friend_and_group(self):
+        friend_category = _candidate_category(
+            {"rowType": "legacy", "hasMemberCount": False, "category": "憟賢?"}
+        )
+        group_category = _candidate_category(
+            {"rowType": "legacy", "hasMemberCount": True, "category": "憟賢?"}
+        )
+
+        friend = apply_match_policy(
+            query="洪啓明",
+            policy="exact_friend",
+            candidates=[LineCandidate(friend_category, "洪啓明", 0)],
+        )
+        group = apply_match_policy(
+            query="洪啓明",
+            policy="exact_friend",
+            candidates=[LineCandidate(group_category, "洪啓明\n(4)", 0)],
+        )
+
+        self.assertTrue(friend.ok)
+        self.assertEqual(group.status, "no_match")
+
     def test_exact_friend_match(self):
         decision = apply_match_policy(
             query="洪啓明",

@@ -234,7 +234,11 @@ def _ollama_rewrite(
         "messages": [
             {
                 "role": "system",
-                "content": "Rewrite approved LINE templates into safe, warm Traditional Chinese. Return JSON only.",
+                "content": (
+                    "Rewrite approved LINE templates into safe Traditional Chinese for Taiwan. "
+                    "Personalize with Line_Contact, follow Line_Message_Style, and never use "
+                    "Line_Query as the recipient's name. Return JSON only."
+                ),
             },
             {"role": "user", "content": json.dumps(prompt, ensure_ascii=False)},
         ],
@@ -262,6 +266,8 @@ def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
         "customer_id": draft.customer_id,
         "customer_name": draft.customer_name,
         "line_query": draft.line_query,
+        "line_query_purpose": "LINE recipient lookup only; never use as salutation or message content",
+        "line_contact": draft.line_contact,
         "line_nickname": draft.line_contact,
         "line_style_raw": draft.line_message_style,
         "line_message_style_raw": draft.line_message_style,
@@ -280,8 +286,10 @@ def _rewrite_prompt(draft: ScenarioDraft) -> dict[str, Any]:
             "Do not include identifiable patient information.",
             "Do not claim cure rate, guaranteed efficacy, or patient outcomes.",
             "Preserve the approved template intent and do not invent facts.",
-            "Use the resolved line_nickname value when personalizing; never output placeholders such as [LINE暱稱], [客戶名稱], or [您的姓名].",
-            "Use the resolved LINE風格 rules exactly; do not invent a new tone category.",
+            "Use line_contact as the recipient name or salutation when it is nonblank.",
+            "Line_Query is an operational lookup key only. Never address the recipient with Line_Query and never include it in the drafted message unless the approved template explicitly requires that code.",
+            "Follow the resolved message_style rules derived from Line_Message_Style; do not invent a new tone category.",
+            "Never output unresolved placeholders such as [LINE暱稱], [客戶名稱], or [您的姓名].",
             "safety_flags must use only: human_review_required, manual_review_required, message_too_long, medical_overclaim_risk, patient_privacy_risk.",
         ],
     }

@@ -87,6 +87,8 @@ class MaterialDraftingTest(unittest.TestCase):
         self.assertEqual(draft.message_kind, "image_text")
         self.assertEqual(draft.material_id, "MAT-001")
         self.assertEqual(draft.image_path, "001.jpg")
+        self.assertEqual(draft.material_label, "HA | 001.jpg | product education")
+        self.assertIn("圖片：HA | 001.jpg | product education", draft.signal_summary)
         self.assertIn("ai_fallback", draft.safety_flags)
         self.assertIn("Ollama unavailable", draft.error_message)
 
