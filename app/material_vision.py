@@ -85,35 +85,46 @@ def analyze_material_image(
             "If the image cannot be read, use high risk and explain why.",
         ],
     }
-    payload = {
-        "model": model,
-        "prompt": json.dumps(prompt, ensure_ascii=False),
-        "images": [encoded],
-        "stream": False,
-        "keep_alive": 0,
-        "format": "json",
-        "options": {
-            "num_ctx": 1024,
-            "temperature": 0,
-            "num_gpu": max(0, num_gpu),
-            "num_thread": max(1, num_thread),
-        },
-    }
-    body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
-    http_request = request.Request(
-        f"{base_url.rstrip('/')}/api/generate",
-        data=body,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-    try:
-        with request.urlopen(http_request, timeout=timeout_seconds) as response:
-            result = json.loads(response.read().decode("utf-8"))
-    except error.HTTPError as exc:
-        detail = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"Ollama vision HTTP {exc.code}: {detail}") from exc
-    raw = str(result.get("response") or "").strip()
-    return parse_vision_analysis(raw)
+    parse_error: ValueError | json.JSONDecodeError | None = None
+    for attempt in range(2):
+        payload = {
+            "model": model,
+            "prompt": json.dumps(prompt, ensure_ascii=False),
+            "images": [encoded],
+            "stream": False,
+            "keep_alive": 0,
+            "format": "json",
+            "options": {
+                "num_ctx": 4096,
+                "num_predict": 1024,
+                "temperature": 0,
+                "num_gpu": max(0, num_gpu),
+                "num_thread": max(1, num_thread),
+            },
+        }
+        body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        http_request = request.Request(
+            f"{base_url.rstrip('/')}/api/generate",
+            data=body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with request.urlopen(http_request, timeout=timeout_seconds) as response:
+                result = json.loads(response.read().decode("utf-8"))
+        except error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")
+            raise RuntimeError(f"Ollama vision HTTP {exc.code}: {detail}") from exc
+        raw = str(result.get("response") or "").strip()
+        try:
+            return parse_vision_analysis(raw)
+        except (ValueError, json.JSONDecodeError) as exc:
+            parse_error = exc
+            if attempt == 0:
+                continue
+    raise RuntimeError(
+        f"Ollama vision returned invalid JSON twice: {parse_error}"
+    ) from parse_error
 
 
 def parse_vision_analysis(raw: str) -> VisionAnalysis:

@@ -60,6 +60,14 @@ DRAFT_HEADERS = (
     "Image_Path",
     "Message_Kind",
     "Material_SHA256",
+    "Material_Label",
+    "Presence_Date",
+    "Presence_Category",
+    "Presence_Theme",
+    "Image_Suggestion",
+    "Hashtag",
+    "Preferred_Send_Time",
+    "Remark",
 )
 
 LOG_HEADERS = (
@@ -129,6 +137,14 @@ class ScenarioDraft:
     image_path: str = ""
     message_kind: str = "text"
     material_sha256: str = ""
+    material_label: str = ""
+    presence_date: str = ""
+    presence_category: str = ""
+    presence_theme: str = ""
+    image_suggestion: str = ""
+    hashtag: str = ""
+    preferred_send_time: str = ""
+    remark: str = ""
     risk_level: str = "low"
     safety_flags: tuple[str, ...] = ("human_review_required",)
     status: str = DRAFT_STATUS_PENDING
@@ -287,6 +303,14 @@ def draft_to_row(draft: ScenarioDraft) -> list[str]:
         "Image_Path": draft.image_path,
         "Message_Kind": draft.message_kind,
         "Material_SHA256": draft.material_sha256,
+        "Material_Label": draft.material_label,
+        "Presence_Date": draft.presence_date,
+        "Presence_Category": draft.presence_category,
+        "Presence_Theme": draft.presence_theme,
+        "Image_Suggestion": draft.image_suggestion,
+        "Hashtag": draft.hashtag,
+        "Preferred_Send_Time": draft.preferred_send_time,
+        "Remark": draft.remark,
         "Product": draft.product,
         "Signal_Summary": draft.signal_summary,
         "Draft_Message": draft.draft_message,
@@ -358,6 +382,14 @@ def draft_from_row(row: dict[str, str]) -> ScenarioDraft:
         image_path=row.get("Image_Path", ""),
         message_kind=row.get("Message_Kind", "text") or "text",
         material_sha256=row.get("Material_SHA256", ""),
+        material_label=row.get("Material_Label", ""),
+        presence_date=row.get("Presence_Date", ""),
+        presence_category=row.get("Presence_Category", ""),
+        presence_theme=row.get("Presence_Theme", ""),
+        image_suggestion=row.get("Image_Suggestion", ""),
+        hashtag=row.get("Hashtag", ""),
+        preferred_send_time=row.get("Preferred_Send_Time", ""),
+        remark=row.get("Remark", ""),
         product=row.get("Product", ""),
         signal_summary=row.get("Signal_Summary", ""),
         draft_message=row.get("Draft_Message", ""),
@@ -412,12 +444,19 @@ def _detect_stocking_reorder(sources: dict[str, list[list[str]]], today: date, c
             line_query = _line_query(row)
             if not product or not line_query:
                 continue
-            interval = _int_value(row, "interval_days", "days_since_sale", "days_after_sale")
-            qty = _int_value(row, "qty", "quantity", "數量")
-            status = _value(row, "status", "flag", "reorder_risk").casefold()
-            sales_date = _date_value(row, "sales_date", "sale_date", "date")
-            old_sale = sales_date is not None and sales_date <= today - timedelta(days=30)
-            if interval >= 21 or qty <= 1 or old_sale or "reorder" in status or "stock" in status:
+            interval = _optional_int_value(row, "interval_days", "days_since_sale", "days_after_sale")
+            qty = _optional_int_value(row, "qty", "quantity", "數量")
+            status = _value(row, "status", "flag").casefold()
+            reorder_flag = _value(row, "reorder_risk", "reorder_flag", "stocking_reorder", "stocking_reorder_flag")
+            interval_signal = interval is not None and interval >= 21
+            low_quantity_signal = qty is not None and qty <= 1
+            status_signal = (
+                "reorder" in status
+                or "stock" in status
+                or "restock" in status
+                or _truthy(reorder_flag)
+            )
+            if interval_signal or low_quantity_signal or status_signal:
                 drafts.append(
                     _draft(
                         created_at,
@@ -514,8 +553,10 @@ def _detect_usage_reminder(sources: dict[str, list[list[str]]], today: date, cre
         for row in _row_dicts(sources, tab):
             product = _value(row, "product", "品項", "產品")
             line_query = _line_query(row)
-            needs_education = _truthy(_value(row, "usage_education_needed", "usage_reminder", "needs_usage"))
-            if line_query and product and ("ha" in product.casefold() or needs_education):
+            needs_education = _explicit_usage_reminder(
+                _value(row, "usage_education_needed", "usage_reminder", "needs_usage")
+            )
+            if line_query and product and needs_education:
                 drafts.append(
                     _draft(
                         created_at,
@@ -536,7 +577,7 @@ def _detect_new_customer(sources: dict[str, list[list[str]]], today: date, creat
     for row in _row_dicts(sources, "adr"):
         created = _date_value(row, "created_date", "append_date", "date", "建立日期")
         line_query = _line_query(row)
-        if line_query and (created is None or created == today):
+        if line_query and created == today:
             drafts.append(
                 _draft(
                     created_at,
@@ -810,12 +851,24 @@ def _date_value(row: dict[str, str], *names: str) -> date | None:
 
 
 def _int_value(row: dict[str, str], *names: str) -> int:
+    parsed = _optional_int_value(row, *names)
+    return parsed if parsed is not None else 0
+
+
+def _optional_int_value(row: dict[str, str], *names: str) -> int | None:
     text = _value(row, *names).replace(",", "")
+    if not text:
+        return None
     try:
         return int(float(text))
     except ValueError:
-        return 0
+        return None
 
 
 def _truthy(value: str) -> bool:
     return value.strip().casefold() in {"1", "true", "yes", "y", "on", "needed"}
+
+
+def _explicit_usage_reminder(value: str) -> bool:
+    normalized = value.strip().casefold()
+    return _truthy(normalized) or any(term in normalized for term in ("usage", "education", "reminder"))

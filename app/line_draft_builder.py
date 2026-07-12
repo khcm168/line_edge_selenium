@@ -8,7 +8,13 @@ from pathlib import Path
 from app.ai_drafter import draft_with_ai
 from app.audit import append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
-from app.scenario_engine import SOURCE_CANDIDATES, TRIGGER_TYPES, build_scenario_drafts, draft_to_log_event
+from app.scenario_engine import (
+    SOURCE_CANDIDATES,
+    TRIGGER_TYPES,
+    ScenarioDraft,
+    build_scenario_drafts,
+    draft_to_log_event,
+)
 from app.sheet_gateway import SheetGateway
 
 
@@ -36,11 +42,18 @@ def main(argv: list[str] | None = None) -> int:
         trigger_types=trigger_types,
         max_per_type=args.max_per_type,
     )
+    generated_drafts = result.drafts
+    print(f"generated_draft_count={len(generated_drafts)}", flush=True)
+
+    existing_draft_ids = read_existing_draft_ids(gateway, settings.draft_sheet_name) if gateway is not None else set()
+    new_drafts, existing_skipped_drafts = split_existing_drafts(generated_drafts, existing_draft_ids)
+    print(f"existing_draft_skip_count={len(existing_skipped_drafts)}", flush=True)
+    print(f"new_draft_count={len(new_drafts)}", flush=True)
 
     ai_settings = settings
     if args.no_ai:
         ai_settings = settings.__class__(**{**settings.__dict__, "ai_enabled": False})
-    drafts = tuple(draft_with_ai(draft, settings=ai_settings) for draft in result.drafts)
+    drafts = draft_new_drafts(new_drafts, settings=ai_settings)
     log_events = tuple(draft_to_log_event(draft) for draft in drafts) + tuple(
         event for event in result.events if event.draft_status != "generated"
     )
@@ -57,7 +70,10 @@ def main(argv: list[str] | None = None) -> int:
         build_audit_record(
             action="build_line_drafts",
             status="preview" if args.no_write else "written",
-            detail=f"generated {len(drafts)} drafts; wrote {draft_count} new drafts; logged {log_count} events",
+            detail=(
+                f"generated {len(generated_drafts)} drafts; skipped {len(existing_skipped_drafts)} existing; "
+                f"processed {len(drafts)} new; wrote {draft_count} new drafts; logged {log_count} events"
+            ),
             source={
                 "spreadsheet_id": settings.source_spreadsheet_id,
                 "draft_sheet": settings.draft_sheet_name,
@@ -65,23 +81,68 @@ def main(argv: list[str] | None = None) -> int:
                 "types": list(trigger_types),
                 "source_tabs": list(source_tabs),
                 "source_json": args.source_json or "",
-                "generated_draft_count": len(drafts),
+                "generated_draft_count": len(generated_drafts),
+                "existing_draft_skip_count": len(existing_skipped_drafts),
+                "new_draft_count": len(new_drafts),
                 "draft_count": draft_count,
                 "log_count": log_count,
             },
         ),
     )
-    print(f"generated_draft_count={len(drafts)}")
-    print(f"event_count={len(log_events)}")
-    print(f"audit={audit_path}")
+    print(f"event_count={len(log_events)}", flush=True)
+    print(f"draft_count={draft_count}", flush=True)
+    print(f"log_count={log_count}", flush=True)
+    print(f"draft_sheet={settings.draft_sheet_name}", flush=True)
+    print(f"audit={audit_path}", flush=True)
     if args.no_write:
-        print("sheets_written=false")
+        print("sheets_written=false", flush=True)
     else:
-        print(f"draft_count={draft_count}")
-        print(f"log_count={log_count}")
-        print(f"draft_sheet={settings.draft_sheet_name}")
-        print(f"log_sheet={settings.sheet_log_name}")
+        print(f"log_sheet={settings.sheet_log_name}", flush=True)
     return 0
+
+
+def read_existing_draft_ids(gateway: SheetGateway, draft_sheet_name: str) -> set[str]:
+    worksheet = gateway._maybe_worksheet(draft_sheet_name)
+    if worksheet is None:
+        return set()
+    values = worksheet.get_all_values()
+    if len(values) < 2:
+        return set()
+    headers = [str(cell).strip() for cell in values[0]]
+    try:
+        draft_id_index = headers.index("Draft_ID")
+    except ValueError:
+        return set()
+    return {
+        str(row[draft_id_index]).strip()
+        for row in values[1:]
+        if draft_id_index < len(row) and str(row[draft_id_index]).strip()
+    }
+
+
+def split_existing_drafts(
+    drafts: tuple[ScenarioDraft, ...],
+    existing_draft_ids: set[str],
+) -> tuple[tuple[ScenarioDraft, ...], tuple[ScenarioDraft, ...]]:
+    new_drafts = []
+    skipped_drafts = []
+    for draft in drafts:
+        if draft.draft_id and draft.draft_id in existing_draft_ids:
+            skipped_drafts.append(draft)
+        else:
+            new_drafts.append(draft)
+    return tuple(new_drafts), tuple(skipped_drafts)
+
+
+def draft_new_drafts(drafts: tuple[ScenarioDraft, ...], *, settings: Settings) -> tuple[ScenarioDraft, ...]:
+    total = len(drafts)
+    print(f"ai_progress=0/{total}", flush=True)
+    drafted = []
+    for index, draft in enumerate(drafts, start=1):
+        drafted.append(draft_with_ai(draft, settings=settings))
+        if index == total or index % 100 == 0:
+            print(f"ai_progress={index}/{total}", flush=True)
+    return tuple(drafted)
 
 
 def normalize_trigger_types(value: str) -> tuple[str, ...]:

@@ -176,6 +176,24 @@ class AiDrafterTest(unittest.TestCase):
         self.assertEqual(review.message, "Dr. Wu您好，A+HA 預計三個工作天到貨。")
         self.assertIn("unexpected script", review.error_message)
 
+    def test_falls_back_on_unresolved_line_nickname_placeholder(self):
+        review = constrained_rewrite(
+            sample_draft("原始安全範本"),
+            model="test-model",
+            provider=FakeProvider(
+                {
+                    "message": "您好，[LINE暱稱]，這張資料提供您參考。",
+                    "risk_level": "low",
+                    "safety_flags": ["human_review_required"],
+                    "rationale": "personalized",
+                }
+            ),
+        )
+
+        self.assertFalse(review.used_ai)
+        self.assertEqual(review.message, "原始安全範本")
+        self.assertIn("unresolved message placeholder", review.error_message)
+
     def test_prompt_uses_resolved_message_style(self):
         prompt = ai_drafter._rewrite_prompt(sample_draft())
 

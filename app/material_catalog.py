@@ -55,6 +55,15 @@ class MaterialCatalog:
         return {record.material_id: record for record in self.records}
 
 
+def material_label(record: MaterialRecord) -> str:
+    filename = record.filename.replace("\\", "/").strip()
+    parts = []
+    if "/" not in filename:
+        parts.append(record.product)
+    parts.extend((filename, record.topic))
+    return " | ".join(part.strip() for part in parts if part and part.strip())
+
+
 def material_hashtags(record: MaterialRecord) -> tuple[str, ...]:
     values = (
         record.product,
@@ -169,6 +178,14 @@ def resolve_material_path(
         library_root = root_resolved.parent
         candidates += (((library_root / relative).resolve(), library_root),)
     candidate = _first_safe_existing_candidate(candidates, record.filename)
+    if (not candidate.exists() or not candidate.is_file()) and len(relative.parts) == 1:
+        fallback = _find_recursive_material_candidate(
+            root=root_resolved,
+            filename=relative.name,
+            expected_sha256=record.sha256 if verify_hash else "",
+        )
+        if fallback is not None:
+            candidate = fallback
     if not candidate.exists() or not candidate.is_file():
         raise FileNotFoundError(
             f"LINE material file is missing for {record.material_id}: {candidate}"
@@ -176,10 +193,19 @@ def resolve_material_path(
     if verify_hash:
         actual = sha256_file(candidate)
         if actual != record.sha256:
-            raise ValueError(
-                f"LINE material hash mismatch for {record.material_id}: "
-                f"expected {record.sha256}, got {actual}"
+            fallback = _find_recursive_material_candidate(
+                root=root_resolved,
+                filename=relative.name,
+                expected_sha256=record.sha256,
             )
+            if fallback is not None and fallback != candidate:
+                candidate = fallback
+                actual = sha256_file(candidate)
+            if actual != record.sha256:
+                raise ValueError(
+                    f"LINE material hash mismatch for {record.material_id}: "
+                    f"expected {record.sha256}, got {actual}"
+                )
     return candidate
 
 
@@ -289,3 +315,30 @@ def _first_safe_existing_candidate(
         if candidate.exists():
             return candidate
     return safe[0]
+
+
+def _find_recursive_material_candidate(
+    *,
+    root: Path,
+    filename: str,
+    expected_sha256: str,
+) -> Path | None:
+    matches = []
+    for path in root.rglob(filename):
+        if not path.is_file():
+            continue
+        try:
+            path.relative_to(root)
+        except ValueError:
+            continue
+        matches.append(path.resolve())
+    if not matches:
+        return None
+    if expected_sha256:
+        for path in matches:
+            if sha256_file(path) == expected_sha256:
+                return path
+        return None
+    if len(matches) == 1:
+        return matches[0]
+    return None

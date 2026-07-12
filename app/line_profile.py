@@ -43,12 +43,19 @@ def apply_line_profile(
     profiles: Mapping[str, LineProfile],
 ) -> tuple[str, str, str]:
     profile = profiles.get(customer_id)
-    if profile is None or not profile.line_contact:
+    if profile is None:
         return fallback_query, "", ""
-    return profile.line_contact, profile.line_contact, profile.line_message_style
+    # Line_Query is the operational LINE lookup key (normally the customer
+    # code). Line_Contact is drafting context only and must never replace it.
+    return fallback_query, profile.line_contact, profile.line_message_style
+
+
+def is_line_query_eligible(customer_id: str, line_query: str) -> bool:
+    return bool(customer_id.strip() and line_query.strip())
 
 
 def is_line_contact_eligible(customer_id: str, line_contact: str) -> bool:
+    """Backward-compatible guard for older direct line_batch callers."""
     return bool(customer_id.strip() and line_contact.strip())
 
 

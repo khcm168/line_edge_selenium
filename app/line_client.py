@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchWindowException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -18,6 +19,7 @@ from login_probe import (
     dump_state,
     edge_profile_dir,
     maybe_login,
+    prepare_edge_profile_dir,
     visible_text,
     wait_for_phone_verification,
 )
@@ -39,7 +41,7 @@ class LineClient:
     def open_handoff(cls) -> "LineClient":
         options = Options()
         options.binary_location = str(EDGE_BINARY)
-        options.add_argument(f"--user-data-dir={edge_profile_dir()}")
+        options.add_argument(f"--user-data-dir={prepare_edge_profile_dir(edge_profile_dir())}")
         options.add_argument("--no-first-run")
         options.add_argument("--no-default-browser-check")
         options.add_argument(f"--load-extension={LINE_EXTENSION_DIR}")
@@ -63,19 +65,29 @@ class LineClient:
         self.driver.quit()
 
     def ensure_friends(self) -> None:
+        self._open_friends_view()
+        if _visible_search_inputs(self.driver):
+            time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+            return
+        if _visible_password_inputs(self.driver):
+            if maybe_login(self.driver):
+                try:
+                    wait_for_phone_verification(self.driver)
+                except NoSuchWindowException:
+                    _recover_extension_window(self.driver)
+                time.sleep(float(os.getenv("LINE_POST_LOGIN_SETTLE_SECONDS", "8")))
+                self._open_friends_view()
+        WebDriverWait(self.driver, 30).until(
+            lambda d: _visible_search_inputs(d)
+        )
+        time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+
+    def _open_friends_view(self) -> None:
+        _recover_extension_window(self.driver)
         self.driver.get(LINE_EXTENSION_URL + "#/friends")
         WebDriverWait(self.driver, 30).until(
             lambda d: visible_text(d) or d.find_elements(By.CSS_SELECTOR, "input")
         )
-        if self.driver.find_elements(By.CSS_SELECTOR, "input[type='password']"):
-            if maybe_login(self.driver):
-                wait_for_phone_verification(self.driver)
-                time.sleep(float(os.getenv("LINE_POST_LOGIN_SETTLE_SECONDS", "8")))
-                self.driver.get(LINE_EXTENSION_URL + "#/friends")
-        WebDriverWait(self.driver, 30).until(
-            lambda d: d.find_elements(By.CSS_SELECTOR, SEARCH_INPUT_SELECTOR)
-        )
-        time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
 
     def dump_state(self, label: str) -> None:
         dump_state(self.driver, label)
@@ -102,3 +114,31 @@ def read_debugger_address() -> str:
 
 def handoff_port() -> str:
     return os.getenv("LINE_HANDOFF_DEBUGGING_PORT", DEFAULT_HANDOFF_PORT).strip()
+
+
+def _visible_search_inputs(driver: Any) -> list[Any]:
+    return _visible_elements(driver.find_elements(By.CSS_SELECTOR, SEARCH_INPUT_SELECTOR))
+
+
+def _visible_password_inputs(driver: Any) -> list[Any]:
+    return _visible_elements(driver.find_elements(By.CSS_SELECTOR, "input[type='password']"))
+
+
+def _visible_elements(elements: list[Any]) -> list[Any]:
+    return [
+        element
+        for element in elements
+        if element.rect.get("width", 0) > 0 and element.rect.get("height", 0) > 0
+    ]
+
+
+def _recover_extension_window(driver: Any) -> None:
+    handles = driver.window_handles
+    if not handles:
+        raise NoSuchWindowException("LINE browser window is no longer available")
+    try:
+        current_handle = driver.current_window_handle
+    except NoSuchWindowException:
+        current_handle = ""
+    target_handle = current_handle if current_handle in handles else handles[-1]
+    driver.switch_to.window(target_handle)

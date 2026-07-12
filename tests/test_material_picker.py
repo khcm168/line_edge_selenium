@@ -1,6 +1,7 @@
 import unittest
 
 from app.material_catalog import MaterialRecord, material_hashtags
+from app.material_catalog import material_label
 from app.material_picker import find_materials
 
 
@@ -30,6 +31,22 @@ def record(**overrides):
 
 
 class MaterialPickerTest(unittest.TestCase):
+    def test_material_label_is_human_readable(self):
+        item = record(filename="健管師/投影片2.JPG", topic="健康照護")
+
+        self.assertEqual(
+            material_label(item),
+            "健管師/投影片2.JPG | 健康照護",
+        )
+
+    def test_material_label_adds_product_for_legacy_basenames(self):
+        item = record(filename="投影片6.JPG", product="品牌/全產品", topic="企業願景")
+
+        self.assertEqual(
+            material_label(item),
+            "品牌/全產品 | 投影片6.JPG | 企業願景",
+        )
+
     def test_hashtags_are_searchable_and_human_readable(self):
         item = record()
 

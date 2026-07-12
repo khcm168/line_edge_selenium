@@ -106,11 +106,21 @@ powershell -ExecutionPolicy Bypass -File automations\10_LINE_Message_Test\start_
 automations\10_LINE_Message_Test\worker_status.cmd
 ```
 
+The hidden launcher defaults to virtual desktop 2 before it opens the shared
+Selenium Edge window. Set `LINE_WORKER_VIRTUAL_DESKTOP_INDEX` to another
+positive desktop number, or set `LINE_WORKER_SKIP_DESKTOP_SWITCH=1` to launch
+on the current desktop. If Windows virtual desktop state is unavailable, the
+launcher warns and still starts the worker.
+
 Capture a passive screenshot/state observation:
 
 ```powershell
 automations\10_LINE_Message_Test\observe.cmd
 ```
+
+Snapshots for audit are written by Selenium through the worker session, not by
+foreground desktop screen capture. Keeping LINE on virtual desktop 2 therefore
+does not block `data/snapshots/*.png`, snapshot JSON, or JSONL audit evidence.
 
 Before starting the worker, close old automation-controlled Edge windows that use this project profile. Only one process can own `edge-profile` at a time.
 

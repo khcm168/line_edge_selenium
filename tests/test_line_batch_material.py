@@ -68,6 +68,30 @@ class LineBatchMaterialTest(unittest.TestCase):
         self.assertEqual(resolved["sha256"], self.record.sha256)
         self.assertEqual(Path(resolved["resolved_path"]), self.image.resolve())
 
+    def test_accepts_task_basename_for_nested_catalog_filename(self):
+        nested = self.material_root / "health_manager"
+        nested.mkdir()
+        image = nested / "slide2.jpg"
+        image.write_bytes(b"approved-nested-picture")
+        record = MaterialRecord(
+            **{
+                **self.record.__dict__,
+                "filename": "health_manager/slide2.jpg",
+                "sha256": sha256_file(image),
+            }
+        )
+        write_catalog(self.catalog_path, [record])
+
+        resolved = _resolve_task_material(
+            self.task(
+                image_path="slide2.jpg",
+                material_sha256=record.sha256,
+            ),
+            self.settings,
+        )
+
+        self.assertEqual(Path(resolved["resolved_path"]), image.resolve())
+
     def test_rejects_task_hash_mismatch(self):
         with self.assertRaisesRegex(ValueError, "Task hash"):
             _resolve_task_material(
