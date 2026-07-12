@@ -39,6 +39,7 @@ LINE_SAFE_RETRY_STATUSES = {
     "worker_status_failed",
     "result_timeout",
 }
+MOJIBAKE_MARKERS = ("???", "\ufffd")
 
 
 @dataclass(frozen=True)
@@ -327,6 +328,34 @@ def build_line_task(
     )
 
 
+def project_health_task_mojibake_fields(task: MessageTask) -> tuple[str, ...]:
+    fields = {
+        "query": task.query,
+        "line_contact": task.line_contact,
+        "message": task.message,
+    }
+    if task.source:
+        fields["source.summary_reason"] = str(task.source.get("summary_reason") or "")
+    return tuple(
+        name
+        for name, value in fields.items()
+        if _looks_mojibake(str(value or ""))
+    )
+
+
+def assert_project_health_task_safe(task: MessageTask) -> None:
+    bad_fields = project_health_task_mojibake_fields(task)
+    if bad_fields:
+        raise ValueError(
+            "Refusing to submit nightly project health LINE task because "
+            f"mojibake was detected in: {', '.join(bad_fields)}"
+        )
+
+
+def _looks_mojibake(text: str) -> bool:
+    return any(marker in text for marker in MOJIBAKE_MARKERS)
+
+
 def default_project_health_ledger(
     probe: ProbeSummary,
     *,
@@ -375,7 +404,13 @@ def finalize_delivery_state(ledger: dict[str, Any]) -> str:
         return "gmail_sent_line_skipped"
     if gmail_status == "failed":
         return "delivery_failed"
-    if line_status in {"sent", "retryable_failure", "blocked_uncertain", "worker_not_live"}:
+    if line_status in {
+        "sent",
+        "retryable_failure",
+        "blocked_uncertain",
+        "worker_not_live",
+        "blocked_mojibake",
+    }:
         return "delivery_failed"
     if ledger.get("report_generated"):
         return "report_only"

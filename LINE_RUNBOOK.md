@@ -53,6 +53,13 @@ powershell -ExecutionPolicy Bypass -File automations\10_LINE_Message_Test\start_
 automations\10_LINE_Message_Test\worker_status.cmd
 ```
 
+The hidden launcher switches to virtual desktop 2 before opening the shared
+Selenium Edge window. Set `LINE_WORKER_VIRTUAL_DESKTOP_INDEX` to another
+desktop number, or set `LINE_WORKER_SKIP_DESKTOP_SWITCH=1` to keep the worker
+on the current desktop. Selenium snapshots and JSONL audit evidence are still
+written through the worker session under `data\snapshots\` and `data\logs\`;
+they do not depend on LINE being visible on desktop 1.
+
 Capture passive observations without sending:
 
 ```powershell

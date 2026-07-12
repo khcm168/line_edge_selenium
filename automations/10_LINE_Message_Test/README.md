@@ -31,6 +31,11 @@ worker_status.cmd
 observe.cmd
 ```
 
+`start_worker_hidden.ps1` switches to virtual desktop 2 before launching the
+shared Selenium Edge window. Override this with
+`LINE_WORKER_VIRTUAL_DESKTOP_INDEX`, or set `LINE_WORKER_SKIP_DESKTOP_SWITCH=1`
+to keep the worker on the current desktop.
+
 `observe.cmd` captures the current LINE screen and visible state without
 searching, typing, uploading, or sending. Submit approved work to the same
 worker instead of launching another browser. Stop it deliberately with

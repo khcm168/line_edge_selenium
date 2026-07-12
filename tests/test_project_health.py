@@ -6,16 +6,18 @@ from uuid import uuid4
 
 from app.project_health import (
     append_line_attempt,
+    assert_project_health_task_safe,
     build_gmail_payload,
     build_line_task,
     default_project_health_ledger,
     finalize_delivery_state,
     load_registry_validation,
     parse_orchestrator_output,
+    project_health_task_mojibake_fields,
     should_retry_line_attempt,
     summarize_handoff_result,
 )
-from app.task_builder import read_tasks, write_tasks
+from app.task_builder import MessageTask, read_tasks, write_tasks
 
 
 class ProjectHealthTest(unittest.TestCase):
@@ -137,6 +139,21 @@ class ProjectHealthTest(unittest.TestCase):
         self.assertEqual(tasks[0].query, "洪啓明")
         self.assertEqual(tasks[0].line_contact, "洪啓明")
         self.assertEqual(tasks[0].match_policy, "exact_friend")
+        self.assertEqual(project_health_task_mojibake_fields(tasks[0]), ())
+
+    def test_project_health_task_rejects_mojibake_before_line_submission(self):
+        task = MessageTask(
+            action="send_message",
+            query="???",
+            match_policy="exact_friend",
+            message="????????? 2026-07-12?",
+            line_contact="???",
+            customer_id="nightly_project_health",
+            source={"summary_reason": "WebApp health ???????? probe ???"},
+        )
+
+        with self.assertRaises(ValueError):
+            assert_project_health_task_safe(task)
 
     def test_gmail_payload_targets_self_account(self):
         summary = parse_orchestrator_output(

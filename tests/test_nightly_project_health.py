@@ -32,6 +32,8 @@ class NightlyProjectHealthTest(unittest.TestCase):
         self.assertIsInstance(env, dict)
         for name in PROXY_ENV_VARS:
             self.assertNotIn(name, env)
+        self.assertEqual(env.get("PYTHONIOENCODING"), "utf-8")
+        self.assertEqual(env.get("PYTHONUTF8"), "1")
         self.assertEqual(captured["command"], ["python", "--version"])
 
     def test_run_command_preserves_unrelated_environment(self):

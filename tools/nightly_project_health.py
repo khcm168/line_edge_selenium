@@ -23,6 +23,7 @@ from app.project_health import (
     build_line_task,
     default_project_health_ledger,
     finalize_delivery_state,
+    assert_project_health_task_safe,
     load_registry_validation,
     mark_gmail_sent,
     parse_orchestrator_output,
@@ -71,6 +72,8 @@ def run_command(command: list[str], *, cwd: Path) -> subprocess.CompletedProcess
     env = os.environ.copy()
     for name in PROXY_ENV_VARS:
         env.pop(name, None)
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
     completed = subprocess.run(
         command,
         cwd=str(cwd),
@@ -332,6 +335,28 @@ def main(argv: list[str] | None = None) -> int:
         worker_live=worker_status.get("handoff_worker_live") == "true",
         worker_status=worker_status.get("status", ""),
     )
+    try:
+        assert_project_health_task_safe(task)
+    except ValueError as exc:
+        ledger["line"]["status"] = "blocked_mojibake"
+        ledger["line"]["task_validation_error"] = str(exc)
+        ledger["final_delivery_state"] = finalize_delivery_state(ledger)
+        ledger_path = write_project_health_ledger(paths["ledger"], ledger)
+        print(
+            json.dumps(
+                {
+                    "automation_id": AUTOMATION_ID,
+                    "ledger_path": str(ledger_path),
+                    "task_path": "",
+                    "gmail": ledger["gmail"],
+                    "line": ledger["line"],
+                    "final_delivery_state": ledger["final_delivery_state"],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return 1
     task_path = write_tasks(paths["task"], [task])
     ledger["line"]["task_path"] = str(task_path)
 
