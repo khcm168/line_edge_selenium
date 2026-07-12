@@ -163,7 +163,7 @@ def _run_task(
             "task": asdict(task),
             "material": material,
             "decision": decision,
-            "current_chat_header": current_chat_header(client.driver),
+            "current_chat_header": _safe_current_chat_header(client.driver),
             "visible_text": client.visible_text()[:3000],
         },
         driver=client.driver,
@@ -177,6 +177,7 @@ def _run_task(
             build_audit_record(
                 action=task.action,
                 status=decision.status,
+                phase="match",
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
@@ -194,6 +195,7 @@ def _run_task(
             build_audit_record(
                 action=task.action,
                 status=status,
+                phase="match",
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
@@ -230,6 +232,7 @@ def _run_task(
             build_audit_record(
                 action=task.action,
                 status="manual_approval_opened",
+                phase="open_chat",
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
@@ -252,6 +255,7 @@ def _run_task(
             build_audit_record(
                 action=task.action,
                 status="preview_matched",
+                phase="match",
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
@@ -288,6 +292,7 @@ def _run_task(
             build_audit_record(
                 action=task.action,
                 status=health.status,
+                phase="compose",
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
@@ -318,6 +323,7 @@ def _run_task(
             build_audit_record(
                 action="upload_image",
                 status="attachment_ready",
+                phase="send",
                 query=task.query,
                 policy=task.match_policy,
                 message=task.message,
@@ -356,6 +362,7 @@ def _run_task(
         build_audit_record(
             action=task.action,
             status="sent",
+            phase="send",
             query=task.query,
             policy=task.match_policy,
             message=task.message,
@@ -411,6 +418,13 @@ def _sanitize_task_message(task: MessageTask) -> MessageTask:
     if message == task.message:
         return task
     return replace(task, message=message)
+
+
+def _safe_current_chat_header(driver: object) -> str:
+    try:
+        return current_chat_header(driver)
+    except AttributeError:
+        return ""
 
 
 def _resolve_task_material(task: MessageTask, settings: Settings) -> dict[str, str]:

@@ -83,6 +83,34 @@ Live-send approved rows:
 
 Live sending still requires a nonblank approved draft, `Send_Mode=live`, quota allowance, safe risk flags, and an unambiguous LINE match. Group rows are blocked unless the target is listed in `LINE_ALLOWED_GROUP_TARGETS`.
 
+## Presence Engine
+
+The Presence Engine creates lightweight relationship-maintenance drafts only. It
+reuses `LINE_Drafts`; it does not send LINE messages.
+
+Control selected clinics in `LINE_Presence_Profiles` with:
+
+```text
+Enabled, Customer_ID, Clinic_Name, Line_Query, Line_Contact,
+Line_Message_Style, Interest_Tags, Cadence_Days, Preferred_Send_Time,
+Last_Category, Last_Generated_Date, Remark
+```
+
+Preview locally without writing Sheets:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.line_presence_engine --date 2026-06-30 --source-json data\fixtures\presence_sources_sample.json --no-write --no-ai
+```
+
+Generate review rows into `LINE_Drafts`:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.line_presence_engine --max-clinics 10
+```
+
+Presence rows are written as `Status=pending_review` and `Send_Mode=review`.
+The generated `洪啓明` notice is also draft-only.
+
 ## PSR-Style Automations
 
 Safe first commands:

@@ -44,12 +44,24 @@ if (-not $env:LINE_MATERIAL_ROOT) {
         $MaterialBase
     }
 }
+$env:LINE_WORKER_LAUNCH_SOURCE = "automations\\10_LINE_Message_Test\\start_worker_hidden.ps1"
+
+$PathValue = [Environment]::GetEnvironmentVariable("Path", "Process")
+if (-not $PathValue) {
+    $PathValue = [Environment]::GetEnvironmentVariable("PATH", "Process")
+}
+[Environment]::SetEnvironmentVariable("PATH", $null, "Process")
+if ($PathValue) {
+    [Environment]::SetEnvironmentVariable("Path", $PathValue, "Process")
+}
 
 & $PythonExe -m app.handoff_worker --status *> $null
 if ($LASTEXITCODE -eq 0) {
     Write-Output "handoff_worker_already_running=true"
     exit 0
 }
+
+& $PythonExe -m app.handoff_worker --reclaim-stale-owner *> $null
 
 $LogDir = Join-Path $ProjectRoot "data\handoff"
 New-Item -ItemType Directory -Force -Path $LogDir | Out-Null

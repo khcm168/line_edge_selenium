@@ -9,7 +9,7 @@ from app.ai_drafter import has_unresolved_placeholder
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
-from app.line_profile import is_line_query_eligible
+from app.line_profile import is_line_contact_eligible, is_line_query_eligible
 from app.line_batch import _run_task
 from app.line_client import LineClient
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
@@ -228,6 +228,8 @@ def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] 
         return "missing line query"
     if not is_line_query_eligible(draft.customer_id, draft.line_query):
         return "missing eligible line query"
+    if not is_line_contact_eligible(draft.customer_id, draft.line_contact):
+        return "missing eligible line contact"
     if draft.message_kind not in {"text", "image", "image_text"}:
         return "unsupported message kind"
     sanitized_message = sanitize_bmp_text(draft.draft_message)

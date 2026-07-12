@@ -184,6 +184,20 @@ class SheetGatewayTest(unittest.TestCase):
         self.assertIn("Message_Kind", worksheet.values[0])
         self.assertIn("Material_SHA256", worksheet.values[0])
         self.assertIn("Material_Label", worksheet.values[0])
+        self.assertIn("Presence_Date", worksheet.values[0])
+        self.assertIn("Presence_Category", worksheet.values[0])
+        self.assertIn("Image_Suggestion", worksheet.values[0])
+
+    def test_ensures_presence_profile_sheet(self):
+        spreadsheet = FakeSpreadsheet()
+        gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
+
+        gateway.ensure_presence_profile_sheet()
+
+        headers = spreadsheet.sheets["LINE_Presence_Profiles"].values[0]
+        self.assertEqual(headers[0], "Enabled")
+        self.assertIn("Interest_Tags", headers)
+        self.assertIn("Preferred_Send_Time", headers)
 
 
 if __name__ == "__main__":

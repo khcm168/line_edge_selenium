@@ -36,6 +36,21 @@ class DraftSheetRow:
 
 
 class SheetGateway:
+    PRESENCE_PROFILE_HEADERS = (
+        "Enabled",
+        "Customer_ID",
+        "Clinic_Name",
+        "Line_Query",
+        "Line_Contact",
+        "Line_Message_Style",
+        "Interest_Tags",
+        "Cadence_Days",
+        "Preferred_Send_Time",
+        "Last_Category",
+        "Last_Generated_Date",
+        "Remark",
+    )
+
     MATERIAL_HEADERS = (
         "Material_ID",
         "Filename",
@@ -65,11 +80,13 @@ class SheetGateway:
         draft_sheet_name: str,
         log_sheet_name: str,
         material_sheet_name: str = "LINE_Material",
+        presence_profile_sheet_name: str = "LINE_Presence_Profiles",
     ) -> None:
         self.spreadsheet = spreadsheet
         self.draft_sheet_name = draft_sheet_name
         self.log_sheet_name = log_sheet_name
         self.material_sheet_name = material_sheet_name
+        self.presence_profile_sheet_name = presence_profile_sheet_name
 
     @classmethod
     def from_settings(cls, settings: Settings) -> "SheetGateway":
@@ -88,6 +105,7 @@ class SheetGateway:
             draft_sheet_name=settings.draft_sheet_name,
             log_sheet_name=settings.sheet_log_name,
             material_sheet_name=settings.material_sheet_name,
+            presence_profile_sheet_name=settings.presence_profile_sheet_name,
         )
 
     def fetch_sources(self, tab_names: tuple[str, ...]) -> dict[str, list[list[str]]]:
@@ -151,6 +169,10 @@ class SheetGateway:
             rows.append(DraftSheetRow(row_number=row_number, draft=draft_from_row(mapped), raw=mapped))
         return rows
 
+    def read_presence_profile_rows(self) -> list[dict[str, str]]:
+        worksheet = self.ensure_presence_profile_sheet()
+        return _worksheet_dict_rows(worksheet)
+
     def update_draft_result(
         self,
         row_number: int,
@@ -185,6 +207,9 @@ class SheetGateway:
     def ensure_material_sheet(self) -> Any:
         return self._ensure_sheet(self.material_sheet_name, self.MATERIAL_HEADERS)
 
+    def ensure_presence_profile_sheet(self) -> Any:
+        return self._ensure_sheet(self.presence_profile_sheet_name, self.PRESENCE_PROFILE_HEADERS)
+
     def _ensure_sheet(self, title: str, headers: tuple[str, ...]) -> Any:
         worksheet = self._maybe_worksheet(title)
         if worksheet is None:
@@ -209,6 +234,23 @@ class SheetGateway:
 
 def _header_positions(headers: list[str]) -> dict[str, int]:
     return {str(header).strip(): index for index, header in enumerate(headers, start=1) if str(header).strip()}
+
+
+def _worksheet_dict_rows(worksheet: Any) -> list[dict[str, str]]:
+    values = worksheet.get_all_values()
+    if len(values) < 2:
+        return []
+    headers = [str(cell).strip() for cell in values[0]]
+    rows = []
+    for raw in values[1:]:
+        rows.append(
+            {
+                headers[index]: str(value).strip()
+                for index, value in enumerate(raw)
+                if index < len(headers) and headers[index]
+            }
+        )
+    return rows
 
 
 def _a1(row: int, column: int) -> str:
