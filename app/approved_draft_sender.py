@@ -41,6 +41,13 @@ class ApprovalSelection:
     skipped: tuple[ScenarioEvent, ...]
 
 
+ROUTINE_SKIP_RESULTS = {
+    "not approved",
+    "send mode is not live",
+    "already sent",
+}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Preview or send approved LINE_Drafts rows.")
     parser.add_argument("--send-approved", action="store_true", help="Live-send approved rows.")
@@ -60,7 +67,6 @@ def main(argv: list[str] | None = None) -> int:
         max_rows=args.max_rows,
         draft_ids=(args.draft_id,) if args.draft_id else (),
     )
-    gateway.append_log_events(selection.skipped)
 
     tasks = [item.task for item in selection.approved]
     if args.write_tasks:
@@ -75,6 +81,7 @@ def main(argv: list[str] | None = None) -> int:
         print("send_approved=false")
         return 0
 
+    gateway.append_log_events(loggable_skip_events(selection.skipped))
     if not tasks:
         print("approved_count=0")
         print("nothing_to_send=true")
@@ -215,6 +222,10 @@ def select_approved_drafts(
         if max_rows > 0 and len(approved) >= max_rows:
             break
     return ApprovalSelection(tuple(approved), tuple(skipped))
+
+
+def loggable_skip_events(events: tuple[ScenarioEvent, ...]) -> tuple[ScenarioEvent, ...]:
+    return tuple(event for event in events if event.result not in ROUTINE_SKIP_RESULTS)
 
 
 def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] = ()) -> str:

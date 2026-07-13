@@ -134,14 +134,18 @@ class SheetGateway:
             if draft.draft_id:
                 batch_ids.add(draft.draft_id)
         if pending_rows:
-            worksheet.append_rows(pending_rows, value_input_option="USER_ENTERED")
+            append_managed_rows(worksheet, pending_rows, width=len(DRAFT_HEADERS))
         return len(pending_rows)
 
     def append_log_events(self, events: list[ScenarioEvent] | tuple[ScenarioEvent, ...]) -> int:
         if not events:
             return 0
         worksheet = self.ensure_log_sheet()
-        worksheet.append_rows([event_to_log_row(event) for event in events], value_input_option="USER_ENTERED")
+        append_managed_rows(
+            worksheet,
+            [event_to_log_row(event) for event in events],
+            width=len(LOG_HEADERS),
+        )
         return len(events)
 
     def replace_material_catalog(
@@ -267,6 +271,39 @@ def update_values(worksheet: Any, range_name: str, values: list[list[str]]) -> N
         worksheet.update(range_name, values, value_input_option="USER_ENTERED")
     except TypeError:
         worksheet.update(values, range_name=range_name, value_input_option="USER_ENTERED")
+
+
+def append_managed_rows(worksheet: Any, rows: list[list[str]], *, width: int) -> None:
+    if not rows:
+        return
+    values = [_fit_row(row, width) for row in rows]
+    existing_values = worksheet.get_all_values()
+    _shrink_blank_trailing_columns(worksheet, min_cols=width, existing_values=existing_values)
+    next_row = len(existing_values) + 1
+    last_row = next_row + len(values) - 1
+    row_count = int(getattr(worksheet, "row_count", 0) or 0)
+    if row_count and last_row > row_count:
+        worksheet.resize(rows=last_row)
+    update_values(worksheet, f"{_a1(next_row, 1)}:{_a1(last_row, width)}", values)
+
+
+def _fit_row(row: list[str], width: int) -> list[str]:
+    return (list(row) + [""] * width)[:width]
+
+
+def _shrink_blank_trailing_columns(
+    worksheet: Any,
+    *,
+    min_cols: int,
+    existing_values: list[list[str]],
+) -> None:
+    col_count = int(getattr(worksheet, "col_count", 0) or 0)
+    if not col_count or col_count <= min_cols:
+        return
+    content_width = max((len(row) for row in existing_values), default=0)
+    target_cols = max(min_cols, content_width)
+    if target_cols < col_count:
+        worksheet.resize(cols=target_cols)
 
 
 def _sanitize_draft(draft: ScenarioDraft) -> ScenarioDraft:
