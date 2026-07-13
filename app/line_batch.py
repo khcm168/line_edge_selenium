@@ -163,7 +163,7 @@ def _run_task(
             "task": asdict(task),
             "material": material,
             "decision": decision,
-            "current_chat_header": current_chat_header(client.driver),
+            "current_chat_header": _current_chat_header_or_empty(client.driver),
             "visible_text": client.visible_text()[:3000],
         },
         driver=client.driver,
@@ -308,7 +308,7 @@ def _run_task(
                 "task": asdict(task),
                 "material": material,
                 "upload": upload,
-                "selected": decision.selected,
+                "selected": decision.selected if decision is not None else None,
             },
             driver=client.driver,
         )
@@ -371,6 +371,12 @@ def _run_task(
     )
     print(f"sent={task.query} method={method}")
     return "sent"
+
+
+def _current_chat_header_or_empty(driver: object) -> str:
+    if not hasattr(driver, "execute_script"):
+        return ""
+    return current_chat_header(driver)
 
 
 def _validate_live_scope(

@@ -28,7 +28,7 @@ class LineProfileTest(unittest.TestCase):
         self.assertEqual(profiles["P247034"].line_message_style, "清新 幽默 像家人")
         self.assertEqual(profiles["P247034"].source_row, 3)
 
-    def test_applies_line_contact_as_query_when_present(self):
+    def test_keeps_customer_code_as_query_when_line_contact_present(self):
         profiles = parse_line_profiles(
             [
                 ["customer_id", "line_contact", "line_message_style"],
@@ -42,7 +42,7 @@ class LineProfileTest(unittest.TestCase):
             profiles=profiles,
         )
 
-        self.assertEqual(query, "Clinic Contact")
+        self.assertEqual(query, "P100")
         self.assertEqual(contact, "Clinic Contact")
         self.assertEqual(style, "friendly")
         self.assertTrue(is_line_contact_eligible("P100", contact))

@@ -58,7 +58,7 @@ class TaskBuilderTest(unittest.TestCase):
         self.assertEqual(tasks[0].source["tab"], "DY2")
         self.assertEqual(tasks[0].reminder_type, "shipping")
 
-    def test_shipping_tasks_use_line_contact_when_profile_exists(self):
+    def test_shipping_tasks_keep_customer_code_query_when_profile_exists(self):
         rows = parse_dy2_rows(
             [
                 ["product", "", "", "", "", "", "", "", "sales_date"] + [""] * 20 + ["customer_id"],
@@ -78,7 +78,7 @@ class TaskBuilderTest(unittest.TestCase):
             },
         )
 
-        self.assertEqual(tasks[0].query, "Dr. Wu LINE")
+        self.assertEqual(tasks[0].query, "P104062")
         self.assertEqual(tasks[0].customer_id, "P104062")
         self.assertEqual(tasks[0].line_contact, "Dr. Wu LINE")
         self.assertEqual(tasks[0].line_message_style, "formal")

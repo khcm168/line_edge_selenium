@@ -63,10 +63,10 @@ class ApprovedDraftSenderTest(unittest.TestCase):
         self.assertTrue(selection.approved[0].task.allow_group)
         self.assertEqual(selection.approved[0].task.match_policy, "unique_contains_group")
 
-    def test_blocks_rows_without_line_contact_even_when_approved(self):
+    def test_blocks_rows_without_customer_query_even_when_approved(self):
         self.assertEqual(
-            skip_reason(draft(line_query="P100", line_contact="")),
-            "missing eligible line contact",
+            skip_reason(draft(line_query="")),
+            "missing line query",
         )
 
     def test_blocks_privacy_and_overclaim_flags(self):
