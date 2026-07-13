@@ -87,6 +87,84 @@ class ScenarioEngineTest(unittest.TestCase):
         self.assertEqual(len(result.drafts), 1)
         self.assertEqual(result.drafts[0].customer_id, "P102")
 
+    def test_stocking_reorder_requires_explicit_signal(self):
+        old_sale = build_scenario_drafts(
+            {
+                "Bridge_Logic": [
+                    ["product", "customer_id", "sales_date"],
+                    ["A+HA", "P101", "2026-01-01"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("stocking_reorder",),
+        )
+        explicit = build_scenario_drafts(
+            {
+                "Bridge_Logic": [
+                    ["product", "customer_id", "interval_days", "qty", "status", "reorder_risk"],
+                    ["A+HA", "P101", "21", "", "", ""],
+                    ["B+HA", "P102", "", "1", "", ""],
+                    ["C+HA", "P103", "", "", "needs restock", ""],
+                    ["D+HA", "P104", "", "", "", "Y"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("stocking_reorder",),
+        )
+
+        self.assertEqual(old_sale.drafts, ())
+        self.assertEqual({draft.customer_id for draft in explicit.drafts}, {"P101", "P102", "P103", "P104"})
+
+    def test_usage_reminder_requires_explicit_usage_flag(self):
+        product_name_only = build_scenario_drafts(
+            {
+                "DY2": [
+                    ["product", "customer_id"],
+                    ["A+HA", "P100"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("usage_reminder",),
+        )
+        explicit = build_scenario_drafts(
+            {
+                "DY2": [
+                    ["product", "customer_id", "usage_education_needed"],
+                    ["A+HA", "P100", "Y"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("usage_reminder",),
+        )
+
+        self.assertEqual(product_name_only.drafts, ())
+        self.assertEqual(len(explicit.drafts), 1)
+
+    def test_new_customer_requires_created_date_today(self):
+        missing_date = build_scenario_drafts(
+            {
+                "adr": [
+                    ["customer_id", "customer_name", "created_date"],
+                    ["P104", "Clinic A", ""],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("new_customer",),
+        )
+        today_date = build_scenario_drafts(
+            {
+                "adr": [
+                    ["customer_id", "customer_name", "created_date"],
+                    ["P104", "Clinic A", "2026-06-06"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("new_customer",),
+        )
+
+        self.assertEqual(missing_date.drafts, ())
+        self.assertEqual(len(today_date.drafts), 1)
+
 
     def test_draft_round_trips_through_sheet_row(self):
         result = build_scenario_drafts(

@@ -416,12 +416,11 @@ def _detect_stocking_reorder(sources: dict[str, list[list[str]]], today: date, c
             line_query = _line_query(row)
             if not product or not line_query:
                 continue
-            interval = _int_value(row, "interval_days", "days_since_sale", "days_after_sale")
-            qty = _int_value(row, "qty", "quantity", "數量")
-            status = _value(row, "status", "flag", "reorder_risk").casefold()
-            sales_date = _date_value(row, "sales_date", "sale_date", "date")
-            old_sale = sales_date is not None and sales_date <= today - timedelta(days=30)
-            if interval >= 21 or qty <= 1 or old_sale or "reorder" in status or "stock" in status:
+            interval = _optional_int_value(row, "interval_days", "days_since_sale", "days_after_sale")
+            qty = _optional_int_value(row, "qty", "quantity", "數量")
+            status = _value(row, "status", "flag").casefold()
+            reorder_flag = _value(row, "reorder_risk", "reorder_flag", "stocking_reorder", "stocking_reorder_flag")
+            if ((interval is not None and interval >= 21) or (qty is not None and qty <= 1) or "reorder" in status or "stock" in status or _truthy(reorder_flag)):
                 drafts.append(
                     _draft(
                         created_at,
@@ -522,7 +521,7 @@ def _detect_usage_reminder(sources: dict[str, list[list[str]]], today: date, cre
             product = _value(row, "product", "品項", "產品")
             line_query = _line_query(row)
             needs_education = _truthy(_value(row, "usage_education_needed", "usage_reminder", "needs_usage"))
-            if line_query and product and ("ha" in product.casefold() or needs_education):
+            if line_query and product and needs_education:
                 drafts.append(
                     _draft(
                         created_at,
@@ -543,7 +542,7 @@ def _detect_new_customer(sources: dict[str, list[list[str]]], today: date, creat
     for row in _row_dicts(sources, "adr"):
         created = _date_value(row, "created_date", "append_date", "date", "建立日期")
         line_query = _line_query(row)
-        if line_query and (created is None or created == today):
+        if line_query and created == today:
             drafts.append(
                 _draft(
                     created_at,
@@ -817,11 +816,18 @@ def _date_value(row: dict[str, str], *names: str) -> date | None:
 
 
 def _int_value(row: dict[str, str], *names: str) -> int:
+    parsed = _optional_int_value(row, *names)
+    return parsed if parsed is not None else 0
+
+
+def _optional_int_value(row: dict[str, str], *names: str) -> int | None:
     text = _value(row, *names).replace(",", "")
+    if not text:
+        return None
     try:
         return int(float(text))
     except ValueError:
-        return 0
+        return None
 
 
 def _truthy(value: str) -> bool:
