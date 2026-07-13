@@ -130,6 +130,23 @@ class ScenarioEngineTest(unittest.TestCase):
         self.assertEqual(len(result.drafts), 1)
         self.assertEqual(result.drafts[0].trigger_type, "usage_reminder")
 
+    def test_new_product_requires_recent_sale_date(self):
+        result = build_scenario_drafts(
+            {
+                "DY2": [
+                    ["product", "customer_id", "sales_date", "new_product_flag"],
+                    ["A+HA", "P100", "2026-01-01", "Y"],
+                    ["Q10HA", "P101", "", "Y"],
+                    ["iMuso", "P102", "2026-06-01", "Y"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("new_product",),
+        )
+
+        self.assertEqual(len(result.drafts), 1)
+        self.assertEqual(result.drafts[0].customer_id, "P102")
+
     def test_new_customer_requires_created_date_today(self):
         missing_date = build_scenario_drafts(
             {

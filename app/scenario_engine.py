@@ -529,6 +529,9 @@ def _detect_new_product(sources: dict[str, list[list[str]]], today: date, create
         if flag not in {"y", "yes", "true", "1", "新品"}:
             continue
         product = _value(row, "product", "品項", "產品")
+        sales_date = _date_value(row, "sales_date", "sale_date", "date")
+        if sales_date is None or sales_date < today - timedelta(days=30) or sales_date > today:
+            continue
         line_query = _line_query(row)
         if product and line_query:
             drafts.append(
