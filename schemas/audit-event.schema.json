@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/agent-governance/audit-event.schema.json",
+  "title": "AgentAuditEvent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ts",
+    "host",
+    "project",
+    "agent",
+    "run_id",
+    "event",
+    "status",
+    "scope",
+    "reason_code",
+    "detail_short"
+  ],
+  "properties": {
+    "ts": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "host": {
+      "type": "string",
+      "minLength": 1
+    },
+    "project": {
+      "type": "string",
+      "enum": [
+        "psr-aios-v1",
+        "ARM",
+        "line_edge_selenium",
+        "easyflow",
+        "CRM"
+      ]
+    },
+    "agent": {
+      "type": "string",
+      "enum": [
+        "monitor",
+        "diagnose",
+        "repair",
+        "summary",
+        "delivery",
+        "arbiter"
+      ]
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event": {
+      "type": "string",
+      "enum": [
+        "probe_started",
+        "probe_finished",
+        "lease_checked",
+        "repair_attempted",
+        "repair_succeeded",
+        "repair_failed",
+        "delivery_blocked",
+        "summary_emitted"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "warn",
+        "error",
+        "blocked"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "project_local",
+        "shared_config",
+        "shared_runtime",
+        "external_dependency",
+        "human_required"
+      ]
+    },
+    "reason_code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "detail_short": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lock_key": {
+      "type": "string"
+    }
+  }
+}

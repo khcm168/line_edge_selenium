@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local/agent-governance/shared-lock.schema.json",
+  "title": "SharedAgentLock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "lock_key",
+    "owner_project",
+    "owner_agent",
+    "run_id",
+    "host",
+    "pid",
+    "started_at",
+    "expires_at",
+    "scope",
+    "reentrant",
+    "status"
+  ],
+  "properties": {
+    "lock_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "owner_project": {
+      "type": "string",
+      "enum": [
+        "psr-aios-v1",
+        "ARM",
+        "line_edge_selenium",
+        "easyflow",
+        "CRM"
+      ]
+    },
+    "owner_agent": {
+      "type": "string",
+      "enum": [
+        "monitor",
+        "diagnose",
+        "repair",
+        "summary",
+        "delivery",
+        "arbiter"
+      ]
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "host": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pid": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "browser",
+        "queue_preview",
+        "deployment",
+        "message_delivery",
+        "local_runtime"
+      ]
+    },
+    "reentrant": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "held",
+        "released",
+        "expired",
+        "failed"
+      ]
+    }
+  }
+}

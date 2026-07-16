@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 import json
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -6,7 +6,10 @@ from pathlib import Path
 from unittest.mock import patch
 from uuid import uuid4
 
+from app.agent_lease import lease_path, write_lease
 from app.handoff_worker import (
+    check_submit_send_leases,
+    line_agent_lease_mode,
     read_worker_state,
     request_rate_settings,
     submit_request,
@@ -29,6 +32,24 @@ class HandoffWorkerTest(unittest.TestCase):
                 path.rmdir()
         self.root.rmdir()
 
+    def lease(self, lock_key, owner_agent, scope):
+        return {
+            "lock_key": lock_key,
+            "owner_project": "line_edge_selenium",
+            "owner_agent": owner_agent,
+            "run_id": "nightly-health-2026-07-15",
+            "host": "Z13",
+            "pid": 22164,
+            "started_at": "2026-07-15T00:00:00+00:00",
+            "expires_at": "2099-07-15T00:10:00+00:00",
+            "scope": scope,
+            "reentrant": False,
+            "status": "held",
+        }
+
+    def fake_settings(self):
+        return type("FakeSettings", (), {"task_dir": self.root / "tasks"})()
+
     def test_observation_request_never_implies_send(self):
         args = argparse.Namespace(
             stop=False,
@@ -49,6 +70,53 @@ class HandoffWorkerTest(unittest.TestCase):
         self.assertTrue(request["observe"])
         self.assertFalse(request["send"])
         self.assertEqual(request["tasks"], "")
+
+    def test_line_agent_lease_mode_defaults_to_observe_only(self):
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertEqual(line_agent_lease_mode(), "observe_only")
+
+    def test_submit_send_lease_observe_only_warns_but_allows_missing_lease(self):
+        settings = self.fake_settings()
+
+        allowed = check_submit_send_leases(settings=settings, mode="observe_only")
+
+        self.assertTrue(allowed)
+        audits = list((self.root / "audit").glob("agent_lease_*.jsonl"))
+        self.assertEqual(len(audits), 1)
+        record = json.loads(audits[0].read_text(encoding="utf-8").strip())
+        self.assertEqual(record["event"], "lease_checked")
+        self.assertEqual(record["status"], "warn")
+
+    def test_submit_send_lease_warn_block_preview_blocks_missing_lease(self):
+        settings = self.fake_settings()
+
+        allowed = check_submit_send_leases(settings=settings, mode="warn_block_preview")
+
+        self.assertFalse(allowed)
+        audits = list((self.root / "audit").glob("agent_lease_*.jsonl"))
+        self.assertEqual(len(audits), 1)
+        record = json.loads(audits[0].read_text(encoding="utf-8").strip())
+        self.assertEqual(record["status"], "blocked")
+
+    def test_submit_send_lease_enforce_live_allows_valid_leases(self):
+        settings = self.fake_settings()
+        lease_dir = self.root / "leases"
+        write_lease(
+            lease_path(lease_dir, "browser:line-primary"),
+            self.lease("browser:line-primary", "arbiter", "browser"),
+        )
+        write_lease(
+            lease_path(lease_dir, "delivery:line:hqming"),
+            self.lease("delivery:line:hqming", "delivery", "message_delivery"),
+        )
+
+        allowed = check_submit_send_leases(settings=settings, mode="enforce_live")
+
+        self.assertTrue(allowed)
+        audits = list((self.root / "audit").glob("agent_lease_*.jsonl"))
+        self.assertEqual(len(audits), 1)
+        record = json.loads(audits[0].read_text(encoding="utf-8").strip())
+        self.assertEqual(record["status"], "ok")
 
     def test_worker_state_heartbeat_reports_live(self):
         path = self.root / "worker_state.json"
@@ -111,3 +179,4 @@ class HandoffWorkerTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

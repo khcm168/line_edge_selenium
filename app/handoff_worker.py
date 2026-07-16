@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -10,6 +10,8 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
+from app.agent_audit import append_agent_audit_event, build_agent_audit_event
+from app.agent_lease import LeaseValidationError, require_line_delivery_leases
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
 from app.line_batch import _run_task, _validate_live_scope
@@ -22,6 +24,8 @@ from app.ui_health import check_login_state, check_search_box
 
 POLL_SECONDS = 1.0
 HEARTBEAT_STALE_SECONDS = 180.0
+LINE_AGENT_LEASE_MODE_ENV = "LINE_AGENT_LEASE_MODE"
+LINE_AGENT_LEASE_MODES = {"observe_only", "warn_block_preview", "enforce_live"}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -57,6 +61,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.status:
         return print_worker_status(state_path)
 
+    if args.submit and args.send:
+        if not check_submit_send_leases(settings=settings):
+            return 2
+
     if args.submit or args.stop or args.observe:
         request_path = submit_request(args=args, inbox=inbox)
         print(f"handoff_request={request_path}")
@@ -72,6 +80,73 @@ def main(argv: list[str] | None = None) -> int:
     )
 
 
+def line_agent_lease_mode(value: str | None = None) -> str:
+    raw = value if value is not None else os.getenv(LINE_AGENT_LEASE_MODE_ENV, "observe_only")
+    mode = str(raw or "observe_only").strip().casefold()
+    if mode not in LINE_AGENT_LEASE_MODES:
+        allowed = ", ".join(sorted(LINE_AGENT_LEASE_MODES))
+        raise ValueError(f"{LINE_AGENT_LEASE_MODE_ENV} must be one of: {allowed}")
+    return mode
+
+
+def check_submit_send_leases(
+    *,
+    settings: Settings,
+    mode: str | None = None,
+    now: datetime | None = None,
+) -> bool:
+    active_mode = line_agent_lease_mode(mode)
+    lease_dir = settings.task_dir.parent / "leases"
+    try:
+        require_line_delivery_leases(lease_dir, now=now)
+    except LeaseValidationError as exc:
+        detail = f"LINE submit --send lease check failed: {exc}"
+        status = "warn" if active_mode == "observe_only" else "blocked"
+        record_submit_send_lease_event(
+            settings=settings,
+            mode=active_mode,
+            status=status,
+            reason_code="line_delivery_lease_failed",
+            detail_short=detail,
+        )
+        if active_mode == "observe_only":
+            print(f"line_agent_lease_warning={detail}", file=sys.stderr, flush=True)
+            return True
+        print(f"line_agent_lease_blocked={detail}", file=sys.stderr, flush=True)
+        return False
+
+    record_submit_send_lease_event(
+        settings=settings,
+        mode=active_mode,
+        status="ok",
+        reason_code="line_delivery_lease_ok",
+        detail_short="LINE submit --send lease check passed.",
+    )
+    return True
+
+
+def record_submit_send_lease_event(
+    *,
+    settings: Settings,
+    mode: str,
+    status: str,
+    reason_code: str,
+    detail_short: str,
+) -> Path:
+    audit_dir = settings.task_dir.parent / "audit"
+    audit_path = audit_dir / f"agent_lease_{utc_stamp()}.jsonl"
+    event = build_agent_audit_event(
+        project="line_edge_selenium",
+        agent="delivery",
+        run_id=f"handoff-submit-{utc_stamp()}",
+        event="lease_checked",
+        status=status,
+        scope="shared_runtime",
+        reason_code=reason_code,
+        detail_short=f"mode={mode}; {detail_short}",
+        lock_key="delivery:line:hqming",
+    )
+    return append_agent_audit_event(audit_path, event)
 def submit_request(*, args: argparse.Namespace, inbox: Path) -> Path:
     request = {
         "id": uuid4().hex,
@@ -464,3 +539,6 @@ def _positive_override(
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+

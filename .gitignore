@@ -1,4 +1,4 @@
-.venv/
+﻿.venv/
 __pycache__/
 *.pyc
 edge-profile/
@@ -13,3 +13,7 @@ data/portable_exports/
 data/responses/
 data/material_ingest/
 Material/
+data/leases/
+data/audit/
+data/summary/
+
