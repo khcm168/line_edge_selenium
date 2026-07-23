@@ -30,6 +30,7 @@ DEFAULT_LIST_TAB = "List"
 DEFAULT_DRAFT_SHEET = "LINE_Drafts"
 DEFAULT_LOG_SHEET = "log"
 DEFAULT_MATERIAL_SHEET = "LINE_Material"
+DEFAULT_PRESENCE_PROFILE_SHEET = "LINE_Presence_Profiles"
 DEFAULT_LOG_DIR = ROOT / "data" / "logs"
 DEFAULT_SNAPSHOT_DIR = ROOT / "data" / "snapshots"
 DEFAULT_TASK_DIR = ROOT / "data" / "tasks"
@@ -66,6 +67,7 @@ class Settings:
     draft_sheet_name: str
     sheet_log_name: str
     material_sheet_name: str
+    presence_profile_sheet_name: str
     material_root: Path
     material_catalog_path: Path
     google_credentials_path: Path
@@ -118,6 +120,10 @@ class Settings:
             material_sheet_name=os.getenv(
                 "LINE_MATERIAL_SHEET",
                 DEFAULT_MATERIAL_SHEET,
+            ),
+            presence_profile_sheet_name=os.getenv(
+                "LINE_PRESENCE_PROFILE_SHEET",
+                DEFAULT_PRESENCE_PROFILE_SHEET,
             ),
             material_root=Path(os.getenv("LINE_MATERIAL_ROOT", "")),
             material_catalog_path=Path(

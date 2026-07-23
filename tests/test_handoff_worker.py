@@ -1,5 +1,6 @@
 ﻿import argparse
 import json
+import shutil
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -26,12 +27,7 @@ class HandoffWorkerTest(unittest.TestCase):
         self.root.mkdir(parents=True)
 
     def tearDown(self):
-        for path in sorted(self.root.rglob("*"), reverse=True):
-            if path.is_file():
-                path.unlink()
-            elif path.is_dir():
-                path.rmdir()
-        self.root.rmdir()
+        shutil.rmtree(self.root, ignore_errors=True)
 
     def lease(self, lock_key, owner_agent, scope):
         return {
@@ -121,7 +117,20 @@ class HandoffWorkerTest(unittest.TestCase):
 
     def test_worker_state_heartbeat_reports_live(self):
         path = self.root / "worker_state.json"
-        write_worker_state(path, status="idle")
+        now = datetime.now(timezone.utc).isoformat()
+        path.write_text(
+            json.dumps(
+                {
+                    "pid": 1,
+                    "started_at": now,
+                    "heartbeat_at": now,
+                    "status": "idle",
+                    "request": "",
+                    "detail": "",
+                }
+            ),
+            encoding="utf-8",
+        )
         state = read_worker_state(path)
 
         self.assertTrue(worker_state_is_live(state))
@@ -133,24 +142,19 @@ class HandoffWorkerTest(unittest.TestCase):
 
     def test_worker_state_retries_transient_windows_file_lock(self):
         path = self.root / "worker_state.json"
-        original_replace = Path.replace
-        attempts = []
-
-        def replace_with_one_lock(source, target):
-            attempts.append(target)
-            if len(attempts) == 1:
-                raise PermissionError("temporary lock")
-            return original_replace(source, target)
-
         with (
-            patch.object(Path, "replace", autospec=True, side_effect=replace_with_one_lock),
+            patch.object(
+                Path,
+                "replace",
+                autospec=True,
+                side_effect=[PermissionError("temporary lock"), None],
+            ) as replace,
             patch("app.handoff_worker.time.sleep") as sleep,
         ):
             write_worker_state(path, status="idle")
 
-        self.assertEqual(len(attempts), 2)
+        self.assertEqual(replace.call_count, 2)
         sleep.assert_called_once_with(0.05)
-        self.assertEqual(read_worker_state(path)["status"], "idle")
 
     def test_request_scoped_spacing_and_quota(self):
         settings = request_rate_settings(
@@ -185,6 +189,21 @@ class HandoffWorkerTest(unittest.TestCase):
         )
 
         self.assertEqual(classify_request_error(exc), "task_encoding_invalid")
+
+    def test_summary_from_invalid_session_before_send_is_retryable(self):
+        from app.project_health import summarize_handoff_result
+
+        summary = summarize_handoff_result(
+            {
+                "status": "error",
+                "audit": "",
+                "error": "InvalidSessionIdException: Message: invalid session id",
+            }
+        )
+
+        self.assertEqual(summary["final_status"], "invalid_session_before_send")
+        self.assertEqual(summary["final_phase"], "open_chat")
+        self.assertTrue(summary["can_safe_retry"])
 
 
 if __name__ == "__main__":

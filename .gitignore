@@ -12,8 +12,10 @@ data/handoff/
 data/portable_exports/
 data/responses/
 data/material_ingest/
+data/project_health/
+data/tmp/
 Material/
 data/leases/
 data/audit/
 data/summary/
-
+tmp_*

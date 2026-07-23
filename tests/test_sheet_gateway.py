@@ -1,7 +1,8 @@
+import re
 import unittest
 from dataclasses import replace
 
-from app.scenario_engine import ScenarioDraft, ScenarioEvent
+from app.scenario_engine import LOG_HEADERS, ScenarioDraft, ScenarioEvent
 from app.sheet_gateway import SheetGateway
 
 
@@ -10,6 +11,8 @@ class FakeWorksheet:
         self.title = title
         self.values = []
         self.batch_updates = []
+        self.row_count = 1000
+        self.col_count = 20
 
     def row_values(self, row):
         if row <= len(self.values):
@@ -17,12 +20,18 @@ class FakeWorksheet:
         return []
 
     def update(self, cell, values, value_input_option=None):
-        if cell != "A1":
-            raise AssertionError(cell)
-        if self.values:
-            self.values[0] = values[0]
-        else:
-            self.values.append(values[0])
+        row, col = _range_start(cell)
+        while len(self.values) < row - 1:
+            self.values.append([])
+        for row_offset, value_row in enumerate(values):
+            target_row = row + row_offset
+            while len(self.values) < target_row:
+                self.values.append([])
+            current = self.values[target_row - 1]
+            required_width = col - 1 + len(value_row)
+            if len(current) < required_width:
+                current.extend([""] * (required_width - len(current)))
+            current[col - 1 : required_width] = value_row
 
     def append_rows(self, rows, value_input_option=None):
         self.values.extend(rows)
@@ -32,6 +41,12 @@ class FakeWorksheet:
 
     def batch_update(self, cells, value_input_option=None):
         self.batch_updates.extend(cells)
+
+    def resize(self, rows=None, cols=None):
+        if rows is not None:
+            self.row_count = rows
+        if cols is not None:
+            self.col_count = cols
 
 
 class FakeSpreadsheet:
@@ -45,8 +60,24 @@ class FakeSpreadsheet:
 
     def add_worksheet(self, title, rows, cols):
         worksheet = FakeWorksheet(title)
+        worksheet.row_count = rows
+        worksheet.col_count = cols
         self.sheets[title] = worksheet
         return worksheet
+
+
+def _range_start(range_name):
+    match = re.match(r"([A-Z]+)(\d+)", range_name)
+    if not match:
+        raise AssertionError(range_name)
+    return int(match.group(2)), _column_index(match.group(1))
+
+
+def _column_index(letters):
+    index = 0
+    for letter in letters:
+        index = index * 26 + ord(letter) - 64
+    return index
 
 
 def sample_draft():
@@ -90,6 +121,29 @@ class SheetGatewayTest(unittest.TestCase):
         self.assertEqual(spreadsheet.sheets["LINE_Drafts"].values[1][0], "draft1")
         self.assertEqual(spreadsheet.sheets["log"].values[0][0], "Timestamp")
         self.assertEqual(spreadsheet.sheets["log"].values[1][2], "new_customer")
+
+    def test_append_log_events_shrinks_blank_trailing_columns(self):
+        spreadsheet = FakeSpreadsheet()
+        worksheet = FakeWorksheet("log")
+        worksheet.col_count = 200
+        worksheet.values = [list(LOG_HEADERS)]
+        spreadsheet.sheets["log"] = worksheet
+        gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
+
+        gateway.append_log_events(
+            [
+                ScenarioEvent(
+                    timestamp="2026-06-06T09:00:00+08:00",
+                    trigger_type="new_customer",
+                    source_sheets=("adr",),
+                    draft_status="generated",
+                    result="ok",
+                )
+            ]
+        )
+
+        self.assertEqual(worksheet.col_count, len(LOG_HEADERS))
+        self.assertEqual(worksheet.values[1][2], "new_customer")
 
     def test_append_drafts_skips_existing_draft_ids(self):
         spreadsheet = FakeSpreadsheet()
@@ -184,6 +238,20 @@ class SheetGatewayTest(unittest.TestCase):
         self.assertIn("Message_Kind", worksheet.values[0])
         self.assertIn("Material_SHA256", worksheet.values[0])
         self.assertIn("Material_Label", worksheet.values[0])
+        self.assertIn("Presence_Date", worksheet.values[0])
+        self.assertIn("Presence_Category", worksheet.values[0])
+        self.assertIn("Image_Suggestion", worksheet.values[0])
+
+    def test_ensures_presence_profile_sheet(self):
+        spreadsheet = FakeSpreadsheet()
+        gateway = SheetGateway(spreadsheet, draft_sheet_name="LINE_Drafts", log_sheet_name="log")
+
+        gateway.ensure_presence_profile_sheet()
+
+        headers = spreadsheet.sheets["LINE_Presence_Profiles"].values[0]
+        self.assertEqual(headers[0], "Enabled")
+        self.assertIn("Interest_Tags", headers)
+        self.assertIn("Preferred_Send_Time", headers)
 
 
 if __name__ == "__main__":

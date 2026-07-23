@@ -602,26 +602,62 @@ def _task_to_payload(task: MessageTask) -> dict[str, Any]:
 
 
 def read_tasks(path: str | Path) -> list[MessageTask]:
-    data = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    source_path = Path(path)
+    data = json.loads(source_path.read_text(encoding="utf-8-sig"))
     return [
-        MessageTask(
-            action=item["action"],
-            query=item["query"],
-            match_policy=item["match_policy"],
-            message=sanitize_bmp_text(str(item["message"])),
-            allow_group=bool(item.get("allow_group", False)),
-            customer_id=str(item.get("customer_id") or ""),
-            line_contact=str(item.get("line_contact") or ""),
-            line_message_style=str(item.get("line_message_style") or ""),
-            material_id=str(item.get("material_id") or ""),
-            image_path=str(item.get("image_path") or ""),
-            message_kind=str(item.get("message_kind") or "text"),
-            material_sha256=str(item.get("material_sha256") or ""),
-            source=item.get("source") or {},
-            reminder_type=str(item.get("reminder_type") or ""),
-            due_date=str(item.get("due_date") or ""),
-            quota_key=str(item.get("quota_key") or ""),
-            manual_required=bool(item.get("manual_required", False)),
-        )
-        for item in data
+        _message_task_from_payload(item, source_path, index)
+        for index, item in enumerate(_task_payloads(data, source_path))
     ]
+
+
+def _task_payloads(data: Any, path: Path) -> list[dict[str, Any]]:
+    if isinstance(data, list):
+        payloads = data
+    elif isinstance(data, dict) and isinstance(data.get("tasks"), list):
+        payloads = data["tasks"]
+    elif isinstance(data, dict) and _looks_like_task_payload(data):
+        payloads = [data]
+    else:
+        raise ValueError(
+            f"{path} must contain a JSON task list, a {{'tasks': [...]}} envelope, "
+            "or one MessageTask object."
+        )
+
+    for index, item in enumerate(payloads):
+        if not isinstance(item, dict):
+            raise ValueError(f"{path} task[{index}] must be an object.")
+    return payloads
+
+
+def _looks_like_task_payload(item: dict[str, Any]) -> bool:
+    return all(field in item for field in ("action", "query", "match_policy", "message"))
+
+
+def _message_task_from_payload(item: dict[str, Any], path: Path, index: int) -> MessageTask:
+    missing = [
+        field for field in ("action", "query", "match_policy", "message") if field not in item
+    ]
+    if missing:
+        raise ValueError(f"{path} task[{index}] is missing required field(s): {', '.join(missing)}.")
+    source = item.get("source") or {}
+    if not isinstance(source, dict):
+        raise ValueError(f"{path} task[{index}].source must be an object when present.")
+    return MessageTask(
+        action=str(item["action"]),
+        query=str(item["query"]),
+        match_policy=str(item["match_policy"]),
+        message=sanitize_bmp_text(str(item["message"])),
+        allow_group=bool(item.get("allow_group", False)),
+        customer_id=str(item.get("customer_id") or ""),
+        line_contact=str(item.get("line_contact") or ""),
+        line_message_style=str(item.get("line_message_style") or ""),
+        material_id=str(item.get("material_id") or ""),
+        image_path=str(item.get("image_path") or ""),
+        message_kind=str(item.get("message_kind") or "text"),
+        material_sha256=str(item.get("material_sha256") or ""),
+        source=source,
+        reminder_type=str(item.get("reminder_type") or ""),
+        due_date=str(item.get("due_date") or ""),
+        quota_key=str(item.get("quota_key") or ""),
+        manual_required=bool(item.get("manual_required", False)),
+    )

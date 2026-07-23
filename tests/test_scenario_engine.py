@@ -69,6 +69,66 @@ class ScenarioEngineTest(unittest.TestCase):
         self.assertEqual(result.events[0].draft_status, "skipped")
         self.assertIn("no matching signal", result.events[0].result)
 
+    def test_old_sale_alone_does_not_create_stocking_reorder(self):
+        result = build_scenario_drafts(
+            {
+                "Bridge_Logic": [
+                    ["product", "customer_id", "sales_date"],
+                    ["A+HA", "P101", "2026-01-01"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("stocking_reorder",),
+        )
+
+        self.assertEqual(result.drafts, ())
+
+    def test_explicit_stocking_reorder_signals_still_create_drafts(self):
+        result = build_scenario_drafts(
+            {
+                "Bridge_Logic": [
+                    ["product", "customer_id", "interval_days", "qty", "status", "reorder_risk"],
+                    ["A+HA", "P101", "21", "", "", ""],
+                    ["B+HA", "P102", "", "1", "", ""],
+                    ["C+HA", "P103", "", "", "needs restock", ""],
+                    ["D+HA", "P104", "", "", "", "Y"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("stocking_reorder",),
+        )
+
+        self.assertEqual(len(result.drafts), 4)
+        self.assertEqual({draft.customer_id for draft in result.drafts}, {"P101", "P102", "P103", "P104"})
+
+    def test_ha_product_alone_does_not_create_usage_reminder(self):
+        result = build_scenario_drafts(
+            {
+                "DY2": [
+                    ["product", "customer_id"],
+                    ["A+HA", "P100"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("usage_reminder",),
+        )
+
+        self.assertEqual(result.drafts, ())
+
+    def test_explicit_usage_flag_creates_usage_reminder(self):
+        result = build_scenario_drafts(
+            {
+                "DY2": [
+                    ["product", "customer_id", "usage_education_needed"],
+                    ["A+HA", "P100", "Y"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("usage_reminder",),
+        )
+
+        self.assertEqual(len(result.drafts), 1)
+        self.assertEqual(result.drafts[0].trigger_type, "usage_reminder")
 
     def test_new_product_requires_recent_sale_date(self):
         result = build_scenario_drafts(
@@ -86,59 +146,6 @@ class ScenarioEngineTest(unittest.TestCase):
 
         self.assertEqual(len(result.drafts), 1)
         self.assertEqual(result.drafts[0].customer_id, "P102")
-
-    def test_stocking_reorder_requires_explicit_signal(self):
-        old_sale = build_scenario_drafts(
-            {
-                "Bridge_Logic": [
-                    ["product", "customer_id", "sales_date"],
-                    ["A+HA", "P101", "2026-01-01"],
-                ]
-            },
-            today=date(2026, 6, 6),
-            trigger_types=("stocking_reorder",),
-        )
-        explicit = build_scenario_drafts(
-            {
-                "Bridge_Logic": [
-                    ["product", "customer_id", "interval_days", "qty", "status", "reorder_risk"],
-                    ["A+HA", "P101", "21", "", "", ""],
-                    ["B+HA", "P102", "", "1", "", ""],
-                    ["C+HA", "P103", "", "", "needs restock", ""],
-                    ["D+HA", "P104", "", "", "", "Y"],
-                ]
-            },
-            today=date(2026, 6, 6),
-            trigger_types=("stocking_reorder",),
-        )
-
-        self.assertEqual(old_sale.drafts, ())
-        self.assertEqual({draft.customer_id for draft in explicit.drafts}, {"P101", "P102", "P103", "P104"})
-
-    def test_usage_reminder_requires_explicit_usage_flag(self):
-        product_name_only = build_scenario_drafts(
-            {
-                "DY2": [
-                    ["product", "customer_id"],
-                    ["A+HA", "P100"],
-                ]
-            },
-            today=date(2026, 6, 6),
-            trigger_types=("usage_reminder",),
-        )
-        explicit = build_scenario_drafts(
-            {
-                "DY2": [
-                    ["product", "customer_id", "usage_education_needed"],
-                    ["A+HA", "P100", "Y"],
-                ]
-            },
-            today=date(2026, 6, 6),
-            trigger_types=("usage_reminder",),
-        )
-
-        self.assertEqual(product_name_only.drafts, ())
-        self.assertEqual(len(explicit.drafts), 1)
 
     def test_new_customer_requires_created_date_today(self):
         missing_date = build_scenario_drafts(
@@ -164,7 +171,6 @@ class ScenarioEngineTest(unittest.TestCase):
 
         self.assertEqual(missing_date.drafts, ())
         self.assertEqual(len(today_date.drafts), 1)
-
 
     def test_draft_round_trips_through_sheet_row(self):
         result = build_scenario_drafts(
@@ -254,6 +260,37 @@ class ScenarioEngineTest(unittest.TestCase):
             parsed.material_label,
             "健管師/投影片2.JPG | 健康照護",
         )
+
+    def test_draft_round_trips_presence_metadata(self):
+        draft = build_scenario_drafts(
+            {
+                "adr": [
+                    ["customer_id", "customer_name", "created_date"],
+                    ["P104", "Clinic A", "2026-06-06"],
+                ]
+            },
+            today=date(2026, 6, 6),
+            trigger_types=("new_customer",),
+        ).drafts[0]
+        draft = draft.__class__(
+            **{
+                **draft.__dict__,
+                "presence_date": "2026-06-30",
+                "presence_category": "Sleep",
+                "presence_theme": "睡眠與日常修復",
+                "image_suggestion": "sleep, night",
+                "hashtag": "#健康生活\n#好好睡覺",
+                "preferred_send_time": "09:30",
+                "remark": "presence draft",
+            }
+        )
+
+        parsed = draft_from_row(dict(zip(DRAFT_HEADERS, draft_to_row(draft))))
+
+        self.assertEqual(parsed.presence_date, "2026-06-30")
+        self.assertEqual(parsed.presence_category, "Sleep")
+        self.assertEqual(parsed.image_suggestion, "sleep, night")
+        self.assertEqual(parsed.hashtag, "#健康生活\n#好好睡覺")
 
     def test_draft_to_log_event_uses_final_risk_and_result(self):
         result = build_scenario_drafts(

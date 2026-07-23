@@ -1,7 +1,7 @@
 import unittest
 from dataclasses import replace
 
-from app.approved_draft_sender import select_approved_drafts, skip_reason
+from app.approved_draft_sender import loggable_skip_events, select_approved_drafts, skip_reason
 from app.scenario_engine import DRAFT_STATUS_APPROVED, SEND_MODE_LIVE, ScenarioDraft
 from app.sheet_gateway import DraftSheetRow
 
@@ -45,6 +45,20 @@ class ApprovedDraftSenderTest(unittest.TestCase):
         self.assertEqual(selection.approved[0].task.line_contact, "Clinic A LINE")
         self.assertEqual(selection.approved[0].task.match_policy, "unique_contains_friend")
         self.assertEqual(len(selection.skipped), 4)
+
+    def test_routine_skips_are_not_logged(self):
+        rows = [
+            DraftSheetRow(2, draft(status="pending_review"), {}),
+            DraftSheetRow(3, draft(draft_id="draft2", sent_at="2026-06-06T10:00:00+08:00"), {}),
+            DraftSheetRow(4, draft(draft_id="draft3", risk_level="high"), {}),
+        ]
+
+        selection = select_approved_drafts(rows)
+
+        self.assertEqual(
+            [event.result for event in loggable_skip_events(selection.skipped)],
+            ["high risk blocked"],
+        )
 
     def test_allows_known_group_targets_only(self):
         blocked = draft(line_query="001N1備份區")

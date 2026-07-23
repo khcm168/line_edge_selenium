@@ -9,7 +9,7 @@ from app.ai_drafter import has_unresolved_placeholder
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
-from app.line_profile import is_line_query_eligible
+from app.line_profile import is_line_contact_eligible, is_line_query_eligible
 from app.line_batch import _run_task
 from app.line_client import LineClient
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
@@ -41,6 +41,13 @@ class ApprovalSelection:
     skipped: tuple[ScenarioEvent, ...]
 
 
+ROUTINE_SKIP_RESULTS = {
+    "not approved",
+    "send mode is not live",
+    "already sent",
+}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Preview or send approved LINE_Drafts rows.")
     parser.add_argument("--send-approved", action="store_true", help="Live-send approved rows.")
@@ -60,7 +67,6 @@ def main(argv: list[str] | None = None) -> int:
         max_rows=args.max_rows,
         draft_ids=(args.draft_id,) if args.draft_id else (),
     )
-    gateway.append_log_events(selection.skipped)
 
     tasks = [item.task for item in selection.approved]
     if args.write_tasks:
@@ -75,6 +81,7 @@ def main(argv: list[str] | None = None) -> int:
         print("send_approved=false")
         return 0
 
+    gateway.append_log_events(loggable_skip_events(selection.skipped))
     if not tasks:
         print("approved_count=0")
         print("nothing_to_send=true")
@@ -217,6 +224,10 @@ def select_approved_drafts(
     return ApprovalSelection(tuple(approved), tuple(skipped))
 
 
+def loggable_skip_events(events: tuple[ScenarioEvent, ...]) -> tuple[ScenarioEvent, ...]:
+    return tuple(event for event in events if event.result not in ROUTINE_SKIP_RESULTS)
+
+
 def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] = ()) -> str:
     if draft.status.casefold() != DRAFT_STATUS_APPROVED:
         return "not approved"
@@ -228,6 +239,8 @@ def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] 
         return "missing line query"
     if not is_line_query_eligible(draft.customer_id, draft.line_query):
         return "missing eligible line query"
+    if not is_line_contact_eligible(draft.customer_id, draft.line_contact):
+        return "missing eligible line contact"
     if draft.message_kind not in {"text", "image", "image_text"}:
         return "unsupported message kind"
     sanitized_message = sanitize_bmp_text(draft.draft_message)

@@ -16,10 +16,12 @@ from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stam
 from app.config import Settings
 from app.line_batch import _run_task, _validate_live_scope
 from app.line_client import LineClient
+from app.project_health import summarize_handoff_result
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
 from app.reminder_rules import ReminderRules
 from app.task_builder import MessageTask, build_test_tasks, read_tasks
 from app.ui_health import check_login_state, check_search_box
+from login_probe import edge_profile_dir, prepare_edge_profile_dir
 
 
 POLL_SECONDS = 1.0
@@ -46,6 +48,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--delay-max-seconds", type=int)
     parser.add_argument("--per-recipient-quota", type=int)
     parser.add_argument("--daily-message-quota", type=int)
+    parser.add_argument(
+        "--reclaim-stale-owner",
+        action="store_true",
+        help="Clear only a dead handoff worker's ownership metadata and stale profile markers.",
+    )
     args = parser.parse_args(argv)
 
     settings = Settings.from_env()
@@ -54,6 +61,7 @@ def main(argv: list[str] | None = None) -> int:
     done = handoff_dir / "done"
     errors = handoff_dir / "error"
     state_path = handoff_dir / "worker_state.json"
+    owner_path = handoff_dir / "worker_owner.json"
     inbox.mkdir(parents=True, exist_ok=True)
     done.mkdir(parents=True, exist_ok=True)
     errors.mkdir(parents=True, exist_ok=True)
@@ -64,6 +72,15 @@ def main(argv: list[str] | None = None) -> int:
     if args.submit and args.send:
         if not check_submit_send_leases(settings=settings):
             return 2
+
+    if args.reclaim_stale_owner:
+        return print_reclaim_result(
+            reclaim_stale_owner(
+                owner_path=owner_path,
+                state_path=state_path,
+                profile_dir=edge_profile_dir(),
+            )
+        )
 
     if args.submit or args.stop or args.observe:
         request_path = submit_request(args=args, inbox=inbox)
@@ -77,6 +94,7 @@ def main(argv: list[str] | None = None) -> int:
         done=done,
         errors=errors,
         state_path=state_path,
+        owner_path=owner_path,
     )
 
 
@@ -174,12 +192,15 @@ def run_worker(
     done: Path,
     errors: Path,
     state_path: Path,
+    owner_path: Path,
 ) -> int:
     settings.log_dir.mkdir(parents=True, exist_ok=True)
     settings.snapshot_dir.mkdir(parents=True, exist_ok=True)
     write_worker_state(state_path, status="starting")
-    client = LineClient.open()
+    write_worker_owner(owner_path)
+    client = None
     try:
+        client = LineClient.open()
         client.driver.maximize_window()
         health = check_login_state(client)
         if not health.ok:
@@ -250,10 +271,14 @@ def run_worker(
         )
         raise
     finally:
-        client.close()
-        current = read_worker_state(state_path)
-        if current.get("status") != "error":
-            write_worker_state(state_path, status="stopped")
+        try:
+            if client is not None:
+                client.close()
+        finally:
+            current = read_worker_state(state_path)
+            if current.get("status") != "error":
+                write_worker_state(state_path, status="stopped")
+            clear_worker_owner(owner_path)
 
 
 def next_request(inbox: Path) -> Path | None:
@@ -278,10 +303,19 @@ def handle_request(
         "audit": "",
         "error": "",
         "error_code": "",
+        "summary": {},
     }
     try:
         if request.get("stop"):
             result["status"] = "stopped"
+            result["summary"] = {
+                "final_status": "stopped",
+                "final_phase": "worker_precheck",
+                "sent_count": 0,
+                "sent": False,
+                "can_safe_retry": False,
+                "retry_reason": "",
+            }
             return True
 
         if request.get("observe"):
@@ -310,6 +344,14 @@ def handle_request(
             )
             result["status"] = "ok"
             result["audit"] = str(audit_path)
+            result["summary"] = {
+                "final_status": "observe_captured",
+                "final_phase": "worker_precheck",
+                "sent_count": 0,
+                "sent": False,
+                "can_safe_retry": False,
+                "retry_reason": "",
+            }
             return False
 
         tasks = load_request_tasks(request)
@@ -377,6 +419,7 @@ def handle_request(
                 break
         result["status"] = "ok"
         result["audit"] = str(audit_path)
+        result["summary"] = summarize_handoff_result(result, str(audit_path))
         return False
     except Exception as exc:
         result["status"] = "error"
@@ -387,10 +430,12 @@ def handle_request(
             build_audit_record(
                 action="handoff_request",
                 status=result["error_code"] or "error",
+                phase="request",
                 detail=result["error"],
                 source={"request": request},
             ),
         )
+        result["summary"] = summarize_handoff_result(result, str(result.get("audit") or ""))
         return False
     finally:
         result["finished_at"] = utc_stamp()
@@ -501,11 +546,159 @@ def worker_state_is_live(
 
 def print_worker_status(path: Path) -> int:
     state = read_worker_state(path)
+    owner = read_worker_owner(path.with_name("worker_owner.json"))
     live = worker_state_is_live(state)
     print(f"handoff_worker_live={str(live).lower()}")
     for field in ("status", "pid", "started_at", "heartbeat_at", "request", "detail"):
         print(f"{field}={state.get(field, '')}")
+    for field in ("launch_source", "cwd", "parent_pid", "command_line"):
+        print(f"owner_{field}={owner.get(field, '')}")
+    print(f"owner_pid={owner.get('pid', '')}")
+    print(f"owner_profile_dir={owner.get('profile_dir', '')}")
     return 0 if live else 1
+
+
+def write_worker_owner(path: Path) -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    payload = {
+        "created_by": "app.handoff_worker",
+        "pid": os.getpid(),
+        "created_at": now,
+        "command_line": _current_process_command_line(),
+        "argv": sys.argv,
+        "cwd": os.getcwd(),
+        "profile_dir": str(edge_profile_dir()),
+        "launch_source": os.getenv("LINE_WORKER_LAUNCH_SOURCE", "").strip(),
+        "parent_pid": os.getppid(),
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def read_worker_owner(path: Path) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
+def clear_worker_owner(path: Path) -> None:
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        return
+    except OSError:
+        return
+
+
+def reclaim_stale_owner(*, owner_path: Path, state_path: Path, profile_dir: Path) -> dict[str, str]:
+    owner = read_worker_owner(owner_path)
+    if not owner:
+        state = read_worker_state(state_path)
+        if worker_state_is_live(state):
+            return {"status": "blocked", "detail": "worker heartbeat is still live"}
+        try:
+            state_path.unlink()
+        except FileNotFoundError:
+            return {"status": "noop", "detail": "no owner file"}
+        except OSError:
+            return {"status": "blocked", "detail": f"unable to clear stale state: {state_path}"}
+        return {"status": "reclaimed", "detail": "stale worker state cleared; no owner file existed"}
+    if str(owner.get("created_by") or "") != "app.handoff_worker":
+        return {"status": "blocked", "detail": "owner file was not created by app.handoff_worker"}
+    owner_pid = _parse_pid(owner.get("pid"))
+    if owner_pid and pid_is_running(owner_pid):
+        return {"status": "blocked", "detail": f"owner pid is still running: {owner_pid}"}
+    state = read_worker_state(state_path)
+    if worker_state_is_live(state):
+        return {"status": "blocked", "detail": "worker heartbeat is still live"}
+    try:
+        prepare_edge_profile_dir(profile_dir)
+    except RuntimeError as exc:
+        return {"status": "blocked", "detail": str(exc)}
+    clear_worker_owner(owner_path)
+    try:
+        state_path.unlink()
+    except FileNotFoundError:
+        pass
+    except OSError:
+        return {"status": "blocked", "detail": f"unable to clear stale state: {state_path}"}
+    return {"status": "reclaimed", "detail": f"stale worker owner cleared for {profile_dir}"}
+
+
+def print_reclaim_result(result: dict[str, str]) -> int:
+    print(f"handoff_reclaim_status={result.get('status', '')}")
+    print(f"detail={result.get('detail', '')}")
+    return 0 if result.get("status") in {"reclaimed", "noop"} else 1
+
+
+def pid_is_running(pid: int) -> bool:
+    if os.name == "nt":
+        return _windows_pid_is_running(pid)
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _parse_pid(value: object) -> int:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return 0
+    return parsed if parsed > 0 else 0
+
+
+def _windows_pid_is_running(pid: int) -> bool:
+    try:
+        import ctypes
+        from ctypes import wintypes
+    except Exception:
+        return False
+
+    process_query_limited_information = 0x1000
+    synchronize = 0x00100000
+    still_active = 259
+
+    kernel32 = ctypes.windll.kernel32
+    kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+    kernel32.OpenProcess.restype = wintypes.HANDLE
+    kernel32.GetExitCodeProcess.argtypes = [wintypes.HANDLE, ctypes.POINTER(wintypes.DWORD)]
+    kernel32.GetExitCodeProcess.restype = wintypes.BOOL
+    kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+    kernel32.CloseHandle.restype = wintypes.BOOL
+
+    handle = kernel32.OpenProcess(
+        process_query_limited_information | synchronize,
+        False,
+        pid,
+    )
+    if not handle:
+        return False
+    try:
+        exit_code = wintypes.DWORD()
+        if not kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+            return True
+        return exit_code.value == still_active
+    finally:
+        kernel32.CloseHandle(handle)
+
+
+def _current_process_command_line() -> str:
+    if os.name == "nt":
+        try:
+            import ctypes
+
+            ctypes.windll.kernel32.GetCommandLineW.restype = ctypes.c_wchar_p
+            return str(ctypes.windll.kernel32.GetCommandLineW() or "")
+        except Exception:
+            pass
+    return " ".join([sys.executable, *sys.argv])
 
 
 def request_rate_settings(
