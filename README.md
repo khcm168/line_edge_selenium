@@ -2,6 +2,11 @@
 
 This project drives Microsoft Edge with the LINE extension loaded.
 
+The current branch extends the project from one-off LINE automation into a
+review-first operating loop: draft relationship-maintenance messages, index
+approved picture material, keep one owned browser worker, and report nightly
+project health without bypassing human approval.
+
 ## Daily Operator Menu
 
 Run `OPEN_LINE_RUNBOOK.bat` for picture-material search, draft preparation,
@@ -109,7 +114,14 @@ Generate review rows into `LINE_Drafts`:
 ```
 
 Presence rows are written as `Status=pending_review` and `Send_Mode=review`.
-The generated `洪啓明` notice is also draft-only.
+The generated presence-notification notice is also draft-only.
+
+## Nightly Project Health
+
+The `line` automation builds one combined health summary across the registered
+projects and hands it to the existing LINE worker inbox. It writes local ledger
+evidence under `data\project_health\` and never sends directly from the
+orchestrator.
 
 ## PSR-Style Automations
 

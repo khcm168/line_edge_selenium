@@ -140,8 +140,8 @@ Write review rows:
 python -m app.line_presence_engine --max-clinics 10
 ```
 
-The `洪啓明` generation notice is also draft-only. It is not sent unless a human
-later approves the row and changes `Send_Mode` to `live`.
+The presence-notification draft is also draft-only. It is not sent unless a
+human later approves the row and changes `Send_Mode` to `live`.
 
 ## Material Tags
 
