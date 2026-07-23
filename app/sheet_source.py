@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from app.config import Settings
+from app.reminder_rules import DEFAULT_RULES
 
 try:
     import gspread
@@ -38,7 +39,7 @@ ACTS_COLUMNS = {
     "speaker_fee": 12,
     "two_season_sales": 13,
 }
-SHIPPING_NOTICE_TEMPLATE = "{product}產品預計三個工作天({arrival_date})到貨，請留意"
+SHIPPING_NOTICE_TEMPLATE = str(DEFAULT_RULES["reminders"]["shipping"]["template"])
 
 
 @dataclass(frozen=True)
@@ -194,8 +195,7 @@ def add_business_days(start: date, days: int) -> date:
 
 def build_shipping_message(row: ShipmentRow) -> str:
     arrival = add_business_days(row.sales_date, 3)
-    template = "{product} 預計三個工作天（{arrival_date}）到貨，先跟您提醒，請再留意一下。"
-    return template.format(
+    return SHIPPING_NOTICE_TEMPLATE.format(
         product=row.product,
         arrival_date=arrival.isoformat(),
         sales_date=row.sales_date.isoformat(),
