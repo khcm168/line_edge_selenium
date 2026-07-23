@@ -8,6 +8,7 @@ from uuid import uuid4
 
 from app.agent_lease import lease_path, write_lease
 from app.handoff_worker import (
+    classify_request_error,
     check_submit_send_leases,
     line_agent_lease_mode,
     read_worker_state,
@@ -175,6 +176,15 @@ class HandoffWorkerTest(unittest.TestCase):
                 },
                 defaults=RateLimitSettings(),
             )
+
+    def test_classify_request_error_flags_bom_json_decode(self):
+        exc = json.JSONDecodeError(
+            "Unexpected UTF-8 BOM (decode using utf-8-sig)",
+            "\ufeff[]",
+            0,
+        )
+
+        self.assertEqual(classify_request_error(exc), "task_encoding_invalid")
 
 
 if __name__ == "__main__":

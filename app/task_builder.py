@@ -602,7 +602,7 @@ def _task_to_payload(task: MessageTask) -> dict[str, Any]:
 
 
 def read_tasks(path: str | Path) -> list[MessageTask]:
-    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    data = json.loads(Path(path).read_text(encoding="utf-8-sig"))
     return [
         MessageTask(
             action=item["action"],

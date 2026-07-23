@@ -21,6 +21,16 @@ LINE_EXTENSION_DIR = pathlib.Path(
     rf"C:\Users\khcm1\AppData\Local\Microsoft\Edge\User Data\Default\Extensions\{LINE_EXTENSION_ID}\3.7.2_0"
 )
 LINE_EXTENSION_URL = f"chrome-extension://{LINE_EXTENSION_ID}/index.html"
+LOGIN_SUBMIT_TEXT_MARKERS = (
+    "login",
+    "log in",
+    "sign in",
+    "next",
+    "continue",
+    "登入",
+    "下一步",
+    "繼續",
+)
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
@@ -134,16 +144,43 @@ def maybe_login(driver: webdriver.Edge) -> bool:
         )
 
     try:
-        login_button = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))
-        )
+        login_button = WebDriverWait(driver, 10).until(find_login_submit_button)
         login_button.click()
     except Exception as exc:
         print(f"login_button_fallback={type(exc).__name__}")
-        login_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
+        login_button = find_login_submit_button(driver)
+        if login_button is None:
+            raise RuntimeError("LINE login submit control was not found") from exc
         driver.execute_script("arguments[0].click();", login_button)
     print("login_submitted=true")
     return True
+
+
+def find_login_submit_button(driver: webdriver.Edge):
+    for selector in ("button[type='submit']", "button", "[role='button']"):
+        for element in driver.find_elements(By.CSS_SELECTOR, selector):
+            try:
+                if not is_visible(element):
+                    continue
+                label = (
+                    element.get_attribute("aria-label")
+                    or element.get_attribute("title")
+                    or element.text
+                    or ""
+                ).strip().casefold()
+                button_type = (element.get_attribute("type") or "").strip().casefold()
+            except Exception:
+                continue
+            if button_type == "submit":
+                return element
+            if any(marker in label for marker in LOGIN_SUBMIT_TEXT_MARKERS):
+                return element
+    return None
+
+
+def is_visible(element: webdriver.Edge) -> bool:
+    rect = element.rect
+    return rect["width"] > 0 and rect["height"] > 0
 
 
 def wait_for_phone_verification(driver: webdriver.Edge) -> None:

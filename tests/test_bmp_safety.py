@@ -38,6 +38,24 @@ class BmpSafetyTest(unittest.TestCase):
         self.assertEqual(payload[0]["message"], "nightly health ")
         self.assertEqual(read_tasks(path)[0].message, "nightly health ")
 
+    def test_read_tasks_accepts_utf8_bom(self):
+        path = self.root / "tasks_bom.json"
+        payload = [
+            {
+                "action": "send_message",
+                "query": "洪啓明",
+                "match_policy": "exact_friend",
+                "message": "【每日專案健康報告 2026-07-15】",
+            }
+        ]
+
+        path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8-sig")
+
+        tasks = read_tasks(path)
+
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].query, "洪啓明")
+
 
 if __name__ == "__main__":
     unittest.main()

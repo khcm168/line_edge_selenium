@@ -277,6 +277,7 @@ def handle_request(
         "status": "started",
         "audit": "",
         "error": "",
+        "error_code": "",
     }
     try:
         if request.get("stop"):
@@ -380,11 +381,12 @@ def handle_request(
     except Exception as exc:
         result["status"] = "error"
         result["error"] = f"{type(exc).__name__}: {exc}"
+        result["error_code"] = classify_request_error(exc)
         append_jsonl(
             settings.log_dir / f"line_handoff_error_{utc_stamp()}.jsonl",
             build_audit_record(
                 action="handoff_request",
-                status="error",
+                status=result["error_code"] or "error",
                 detail=result["error"],
                 source={"request": request},
             ),
@@ -409,6 +411,21 @@ def load_request_tasks(request: dict[str, object]) -> list[MessageTask]:
     if not task_path:
         raise ValueError("Handoff request requires --tasks or --test-targets.")
     return read_tasks(task_path)
+
+
+def classify_request_error(exc: Exception) -> str:
+    if isinstance(exc, json.JSONDecodeError):
+        detail = str(exc)
+        if "utf-8-sig" in detail or "UTF-8 BOM" in detail:
+            return "task_encoding_invalid"
+        return "task_json_invalid"
+    if isinstance(exc, FileNotFoundError):
+        return "task_file_missing"
+    if isinstance(exc, ValueError):
+        return "task_validation_failed"
+    if isinstance(exc, RuntimeError):
+        return "delivery_runtime_failed"
+    return "unexpected_request_error"
 
 
 def write_worker_state(

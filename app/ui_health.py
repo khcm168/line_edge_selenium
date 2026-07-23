@@ -20,6 +20,9 @@ def check_login_state(client: LineClient) -> UiHealth:
     try:
         client.ensure_friends()
     except Exception as exc:
+        fallback = infer_login_state(client.driver)
+        if fallback is not None:
+            return fallback_with_context(fallback, exc)
         return UiHealth(False, "login_state_failed", f"{type(exc).__name__}: {exc}")
     return UiHealth(True, "login_state_ok", "LINE friends view is reachable")
 
@@ -36,3 +39,54 @@ def check_composer(driver: Any) -> UiHealth:
     if shadow_message_field(driver) is not None or visible_message_fields(driver):
         return UiHealth(True, "composer_ok", "LINE composer textbox is visible")
     return UiHealth(False, "composer_missing", "LINE composer textbox was not visible")
+
+
+def infer_login_state(driver: Any) -> UiHealth | None:
+    if _has_visible_search_box(driver):
+        return UiHealth(True, "friends_view_visible", "LINE friends view appears reachable")
+    if _has_visible_password_input(driver):
+        return UiHealth(
+            False,
+            "login_prompt_visible",
+            "LINE login prompt is visible and needs an updated submit-path check",
+        )
+    text = _visible_body_text(driver)
+    if any(term in text.casefold() for term in ("log in", "login", "sign in", "verify")):
+        return UiHealth(
+            False,
+            "login_prompt_visible",
+            "LINE login or verification prompt is visible",
+        )
+    if text.strip():
+        return UiHealth(
+            False,
+            "unknown_dom_changed",
+            "LINE page loaded visible content, but expected friends/login selectors did not match",
+        )
+    return None
+
+
+def fallback_with_context(health: UiHealth, exc: Exception) -> UiHealth:
+    return UiHealth(
+        health.ok,
+        health.status,
+        f"{health.detail}; original={type(exc).__name__}: {exc}",
+    )
+
+
+def _has_visible_search_box(driver: Any) -> bool:
+    fields = driver.find_elements(By.CSS_SELECTOR, SEARCH_INPUT_SELECTOR)
+    return any(field.rect["width"] > 0 and field.rect["height"] > 0 for field in fields)
+
+
+def _has_visible_password_input(driver: Any) -> bool:
+    fields = driver.find_elements(By.CSS_SELECTOR, "input[type='password']")
+    return any(field.rect["width"] > 0 and field.rect["height"] > 0 for field in fields)
+
+
+def _visible_body_text(driver: Any) -> str:
+    try:
+        body = driver.find_element(By.TAG_NAME, "body")
+    except Exception:
+        return ""
+    return body.text or ""
