@@ -5,6 +5,7 @@ edge-profile/
 screenshots/
 .env
 data/logs/
+data/audit/
 data/snapshots/
 data/tasks/
 data/test_tmp/
