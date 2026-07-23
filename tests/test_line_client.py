@@ -2,12 +2,30 @@ import unittest
 from selenium.common.exceptions import NoSuchWindowException
 from unittest.mock import patch
 
-from app.line_client import SEARCH_INPUT_SELECTOR, LineClient, _recover_extension_window
+from app.line_client import (
+    SEARCH_INPUT_SELECTOR,
+    LineClient,
+    _dismiss_auto_logout_modal,
+    _recover_extension_window,
+)
 
 
 class FakeElement:
-    def __init__(self, width=100, height=20):
+    def __init__(self, width=100, height=20, *, text="", aria_label="", title=""):
         self.rect = {"width": width, "height": height}
+        self.text = text
+        self.aria_label = aria_label
+        self.title = title
+        self.clicks = 0
+
+    def get_attribute(self, name):
+        return {
+            "aria-label": self.aria_label,
+            "title": self.title,
+        }.get(name, "")
+
+    def click(self):
+        self.clicks += 1
 
 
 class FakeDriver:
@@ -65,6 +83,17 @@ class LineClientTest(unittest.TestCase):
 
         with self.assertRaises(NoSuchWindowException):
             _recover_extension_window(driver)
+
+    def test_dismisses_auto_logout_confirmation(self):
+        button = FakeElement(text="確定")
+        driver = FakeDriver()
+
+        with patch("app.line_client.visible_text", return_value="您已自動登出，請重新登入。"):
+            with patch.object(driver, "find_elements", return_value=[button]):
+                dismissed = _dismiss_auto_logout_modal(driver)
+
+        self.assertTrue(dismissed)
+        self.assertEqual(button.clicks, 1)
 
 
 if __name__ == "__main__":

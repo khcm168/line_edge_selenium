@@ -3,9 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from selenium.common.exceptions import InvalidSessionIdException
 from selenium.webdriver.common.by import By
 
-from app.line_client import SEARCH_INPUT_SELECTOR, LineClient
+from app.line_client import AUTO_LOGOUT_TERMS, SEARCH_INPUT_SELECTOR, LineClient
 from app.line_messaging import shadow_message_field, visible_message_fields
 
 
@@ -20,7 +21,14 @@ def check_login_state(client: LineClient) -> UiHealth:
     try:
         client.ensure_friends()
     except Exception as exc:
-        fallback = infer_login_state(client.driver)
+        try:
+            fallback = infer_login_state(client.driver)
+        except InvalidSessionIdException:
+            return UiHealth(
+                False,
+                "browser_session_lost",
+                f"LINE browser session was lost; original={type(exc).__name__}: {exc}",
+            )
         if fallback is not None:
             return fallback_with_context(fallback, exc)
         return UiHealth(False, "login_state_failed", f"{type(exc).__name__}: {exc}")
@@ -44,13 +52,19 @@ def check_composer(driver: Any) -> UiHealth:
 def infer_login_state(driver: Any) -> UiHealth | None:
     if _has_visible_search_box(driver):
         return UiHealth(True, "friends_view_visible", "LINE friends view appears reachable")
+    text = _visible_body_text(driver)
+    if any(term.casefold() in text.casefold() for term in AUTO_LOGOUT_TERMS):
+        return UiHealth(
+            False,
+            "auto_logout_prompt_visible",
+            "LINE auto-logout prompt is visible and needs confirmation before login can continue",
+        )
     if _has_visible_password_input(driver):
         return UiHealth(
             False,
             "login_prompt_visible",
             "LINE login prompt is visible and needs an updated submit-path check",
         )
-    text = _visible_body_text(driver)
     if any(term in text.casefold() for term in ("log in", "login", "sign in", "verify")):
         return UiHealth(
             False,

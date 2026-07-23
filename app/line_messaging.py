@@ -929,15 +929,46 @@ def open_chat(driver: Any, decision: MatchDecision) -> None:
         '[class*="chatlistItem-module__button_chatlist_item"]',
     )
     driver.execute_script("arguments[0].click();", button)
-    expected_name = (decision.selected.display_name or "").splitlines()[0]
     WebDriverWait(driver, 20).until(
-        lambda d: (
-            d.find_elements(By.CSS_SELECTOR, ".chatroomHeader-module__button_name__US7lb")
-            or shadow_message_field(d) is not None
-            or visible_message_fields(d)
-            or (expected_name and expected_name in _visible_text(d))
-        )
+        lambda d: _chat_ready(d) or _profile_chat_button(d) is not None
     )
+    if not _chat_ready(driver):
+        profile_button = _profile_chat_button(driver)
+        if profile_button is not None:
+            driver.execute_script("arguments[0].click();", profile_button)
+    WebDriverWait(driver, 20).until(_chat_ready)
+
+
+def _chat_ready(driver: Any) -> bool:
+    try:
+        header = current_chat_header(driver)
+    except Exception:
+        header = ""
+    return bool(
+        header
+        or shadow_message_field(driver) is not None
+        or visible_message_fields(driver)
+    )
+
+
+def _profile_chat_button(driver: Any) -> Any | None:
+    for selector in ("button", "[role='button']", "a"):
+        for element in driver.find_elements(By.CSS_SELECTOR, selector):
+            try:
+                rect = element.rect
+                if rect.get("width", 0) <= 0 or rect.get("height", 0) <= 0:
+                    continue
+                label = (
+                    element.get_attribute("aria-label")
+                    or element.get_attribute("title")
+                    or element.text
+                    or ""
+                ).strip()
+            except Exception:
+                continue
+            if label.casefold() in {"chat", "聊天"}:
+                return element
+    return None
 
 
 def current_chat_header(driver: Any) -> str:

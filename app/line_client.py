@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchWindowException
+from selenium.common.exceptions import InvalidSessionIdException, NoSuchWindowException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
@@ -27,6 +27,15 @@ from login_probe import (
 
 SEARCH_INPUT_SELECTOR = ".searchInput-module__input__ekGp7"
 DEFAULT_HANDOFF_PORT = "9227"
+AUTO_LOGOUT_TERMS = (
+    "auto logged out",
+    "automatically logged out",
+    "logged out",
+    "已自動登出",
+    "自動登出",
+    "重新登入",
+)
+AUTO_LOGOUT_CONFIRM_TERMS = ("ok", "okay", "confirm", "確定")
 
 
 @dataclass
@@ -65,22 +74,30 @@ class LineClient:
         self.driver.quit()
 
     def ensure_friends(self) -> None:
-        self._open_friends_view()
-        if _visible_search_inputs(self.driver):
-            time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
-            return
-        if _visible_password_inputs(self.driver):
-            if maybe_login(self.driver):
-                try:
-                    wait_for_phone_verification(self.driver)
-                except NoSuchWindowException:
-                    _recover_extension_window(self.driver)
-                time.sleep(float(os.getenv("LINE_POST_LOGIN_SETTLE_SECONDS", "8")))
+        try:
+            self._open_friends_view()
+            if _dismiss_auto_logout_modal(self.driver):
+                time.sleep(float(os.getenv("LINE_POST_MODAL_SETTLE_SECONDS", "1")))
                 self._open_friends_view()
-        WebDriverWait(self.driver, 30).until(
-            lambda d: _visible_search_inputs(d)
-        )
-        time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+            if _visible_search_inputs(self.driver):
+                time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+                return
+            if _visible_password_inputs(self.driver):
+                if maybe_login(self.driver):
+                    try:
+                        wait_for_phone_verification(self.driver)
+                    except NoSuchWindowException:
+                        _recover_extension_window(self.driver)
+                    time.sleep(float(os.getenv("LINE_POST_LOGIN_SETTLE_SECONDS", "8")))
+                    self._open_friends_view()
+            WebDriverWait(self.driver, 30).until(_friends_search_ready)
+            time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+        except InvalidSessionIdException as exc:
+            raise RuntimeError(
+                "LINE browser session was lost before startup completed. "
+                "Close any stale automation Edge windows, reclaim the worker owner if needed, "
+                "then start the persistent worker again."
+            ) from exc
 
     def _open_friends_view(self) -> None:
         _recover_extension_window(self.driver)
@@ -130,6 +147,38 @@ def _visible_elements(elements: list[Any]) -> list[Any]:
         for element in elements
         if element.rect.get("width", 0) > 0 and element.rect.get("height", 0) > 0
     ]
+
+
+def _friends_search_ready(driver: Any) -> list[Any] | bool:
+    if _dismiss_auto_logout_modal(driver):
+        return False
+    return _visible_search_inputs(driver)
+
+
+def _dismiss_auto_logout_modal(driver: Any) -> bool:
+    text = visible_text(driver).casefold()
+    if not any(term.casefold() in text for term in AUTO_LOGOUT_TERMS):
+        return False
+    for selector in ("button", "[role='button']"):
+        for element in driver.find_elements(By.CSS_SELECTOR, selector):
+            try:
+                if not _visible_elements([element]):
+                    continue
+                label = (
+                    element.get_attribute("aria-label")
+                    or element.get_attribute("title")
+                    or element.text
+                    or ""
+                ).strip().casefold()
+            except Exception:
+                continue
+            if any(term.casefold() in label for term in AUTO_LOGOUT_CONFIRM_TERMS):
+                try:
+                    element.click()
+                except Exception:
+                    driver.execute_script("arguments[0].click();", element)
+                return True
+    return False
 
 
 def _recover_extension_window(driver: Any) -> None:

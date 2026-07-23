@@ -100,6 +100,7 @@ def main(argv: list[str] | None = None) -> int:
     snapshot_writer = SnapshotWriter(settings.snapshot_dir)
     client = LineClient.open()
     sent_events: list[ScenarioEvent] = []
+    skipped_events: list[ScenarioEvent] = []
     try:
         client.driver.maximize_window()
         client.ensure_friends()
@@ -136,6 +137,23 @@ def main(argv: list[str] | None = None) -> int:
                     audit_path=audit_path,
                     snapshot_writer=snapshot_writer,
                 )
+                if not is_successful_send_status(status):
+                    gateway.update_draft_result(
+                        item.row_number,
+                        status=DRAFT_STATUS_ERROR,
+                        result=status,
+                        error_message=f"send skipped: {status}",
+                    )
+                    skipped_events.append(
+                        _send_event(
+                            item.draft,
+                            "skipped",
+                            item.draft.risk_level,
+                            status,
+                            f"send skipped: {status}",
+                        )
+                    )
+                    continue
                 sent_at = taipei_now_iso()
                 gateway.update_draft_result(
                     item.row_number,
@@ -167,10 +185,12 @@ def main(argv: list[str] | None = None) -> int:
                 sent_events.append(_send_event(item.draft, "error", "medium", "send failed", error))
                 raise
     finally:
-        gateway.append_log_events(sent_events)
+        gateway.append_log_events([*sent_events, *skipped_events])
         if not args.keep_open:
             client.close()
     print(f"sent_count={len(sent_events)}")
+    if skipped_events:
+        print(f"skipped_count={len(skipped_events)}")
     print(f"audit={audit_path}")
     return 0
 
@@ -226,6 +246,10 @@ def select_approved_drafts(
 
 def loggable_skip_events(events: tuple[ScenarioEvent, ...]) -> tuple[ScenarioEvent, ...]:
     return tuple(event for event in events if event.result not in ROUTINE_SKIP_RESULTS)
+
+
+def is_successful_send_status(status: str) -> bool:
+    return status == "sent"
 
 
 def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] = ()) -> str:

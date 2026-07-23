@@ -1,7 +1,12 @@
 import unittest
 from dataclasses import replace
 
-from app.approved_draft_sender import loggable_skip_events, select_approved_drafts, skip_reason
+from app.approved_draft_sender import (
+    is_successful_send_status,
+    loggable_skip_events,
+    select_approved_drafts,
+    skip_reason,
+)
 from app.scenario_engine import DRAFT_STATUS_APPROVED, SEND_MODE_LIVE, ScenarioDraft
 from app.sheet_gateway import DraftSheetRow
 
@@ -143,6 +148,12 @@ class ApprovedDraftSenderTest(unittest.TestCase):
             [item.draft.draft_id for item in selection.approved],
             ["acceptance"],
         )
+
+    def test_only_sent_status_counts_as_successful_live_send(self):
+        self.assertTrue(is_successful_send_status("sent"))
+        self.assertFalse(is_successful_send_status("ambiguous"))
+        self.assertFalse(is_successful_send_status("no_match"))
+        self.assertFalse(is_successful_send_status("composer_missing"))
 
 
 if __name__ == "__main__":
