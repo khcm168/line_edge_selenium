@@ -43,7 +43,7 @@ stop Edge after the report.
 <!-- PRO-AI GOVERNANCE START -->
 ## Shared Multi-Project Agent Governance
 
-This repository participates in a four-project autonomous health system on a
+This repository participates in a multi-project autonomous health system on a
 single Lenovo Z13 operated by one programmer with Codex capability, internet,
 and VPN access.
 
@@ -79,7 +79,7 @@ Nightly summary must include:
 
 1. `???亙?獢摨瑕??YYYY-MM-DD?
 2. overall `?` or `?`
-3. one line for each of the four projects
+3. one line for each registered project
 4. shared release / audit / worker status when known
 5. one short next-action line
 

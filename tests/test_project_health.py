@@ -40,6 +40,7 @@ class ProjectHealthTest(unittest.TestCase):
                         {"name": "ARM"},
                         {"name": "line_edge_selenium"},
                         {"name": "easyflow"},
+                        {"name": "CRM"},
                     ]
                 },
                 ensure_ascii=False,
@@ -48,11 +49,11 @@ class ProjectHealthTest(unittest.TestCase):
         )
         return path
 
-    def test_registry_validation_requires_exact_four_projects(self):
+    def test_registry_validation_requires_exact_registered_projects(self):
         ok, projects, missing, unexpected = load_registry_validation(self._registry_path())
 
         self.assertTrue(ok)
-        self.assertEqual(projects, ("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow"))
+        self.assertEqual(projects, ("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"))
         self.assertEqual(missing, ())
         self.assertEqual(unexpected, ())
 
@@ -65,12 +66,13 @@ class ProjectHealthTest(unittest.TestCase):
                 "[PASSED] ARM: contract health\n"
                 "[PASSED] line_edge_selenium: shared spreadsheet compatibility\n"
                 "[PASSED] easyflow: shared spreadsheet compatibility\n"
+                "[PASSED] CRM: shared spreadsheet compatibility\n"
                 "[ERROR] WebApp audit-log request failed: HTTP Error 404: Not Found\n"
             ),
             stderr_text="",
             exit_code=1,
             registry_ok=True,
-            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow"),
+            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"),
             missing_projects=(),
             unexpected_projects=(),
         )
@@ -87,7 +89,7 @@ class ProjectHealthTest(unittest.TestCase):
             stderr_text="",
             exit_code=1,
             registry_ok=True,
-            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow"),
+            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"),
             missing_projects=(),
             unexpected_projects=(),
         )
@@ -95,7 +97,7 @@ class ProjectHealthTest(unittest.TestCase):
         self.assertEqual(summary.summary_status, "red")
         self.assertEqual(
             [project.status for project in summary.projects],
-            ["not_run", "not_run", "not_run", "not_run"],
+            ["not_run", "not_run", "not_run", "not_run", "not_run"],
         )
         self.assertTrue(all("before project probes ran" in project.detail for project in summary.projects))
 
@@ -109,7 +111,7 @@ class ProjectHealthTest(unittest.TestCase):
             stderr_text="",
             exit_code=1,
             registry_ok=True,
-            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow"),
+            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"),
             missing_projects=(),
             unexpected_projects=(),
         )
@@ -126,7 +128,7 @@ class ProjectHealthTest(unittest.TestCase):
             stderr_text="",
             exit_code=0,
             registry_ok=True,
-            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow"),
+            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"),
             missing_projects=(),
             unexpected_projects=(),
         )
@@ -162,7 +164,7 @@ class ProjectHealthTest(unittest.TestCase):
             stderr_text="",
             exit_code=0,
             registry_ok=True,
-            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow"),
+            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"),
             missing_projects=(),
             unexpected_projects=(),
         )
@@ -179,7 +181,7 @@ class ProjectHealthTest(unittest.TestCase):
             stderr_text="",
             exit_code=0,
             registry_ok=True,
-            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow"),
+            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"),
             missing_projects=(),
             unexpected_projects=(),
         )

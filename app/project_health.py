@@ -16,6 +16,7 @@ EXPECTED_PROJECTS = (
     "ARM",
     "line_edge_selenium",
     "easyflow",
+    "CRM",
 )
 LINE_TARGET_QUERY = "洪啓明"
 LINE_TARGET_POLICY = "exact_friend"
@@ -213,7 +214,7 @@ def parse_orchestrator_output(
     if not registry_ok:
         reason = (
             "CONFIG FAIL: arm_webapp_registry.json must be the canonical psr-gas registry "
-            "and contain exactly psr-aios-v1, ARM, line_edge_selenium, easyflow"
+            "and contain exactly psr-aios-v1, ARM, line_edge_selenium, easyflow, CRM"
         )
         summary_status = "red"
     elif release_mismatch:
