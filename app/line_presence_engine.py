@@ -13,7 +13,7 @@ from urllib import request
 from app.ai_drafter import normalize_risk, normalize_safety_flags, validate_message
 from app.audit import append_jsonl, build_audit_record, utc_stamp
 from app.bmp_safety import sanitize_bmp_text
-from app.config import Settings
+from app.config import DEFAULT_LINE_SUPERVISOR_DESTINATION, Settings
 from app.scenario_engine import (
     DRAFT_STATUS_PENDING,
     SEND_MODE_REVIEW,
@@ -28,7 +28,7 @@ from app.sheet_gateway import SheetGateway
 
 TRIGGER_TYPE = "presence"
 NOTIFICATION_TRIGGER_TYPE = "presence_notification"
-NOTIFY_LINE_QUERY = "洪啓明"
+NOTIFY_LINE_QUERY = DEFAULT_LINE_SUPERVISOR_DESTINATION
 
 PRESENCE_CATEGORIES = (
     "Health Knowledge",
@@ -233,7 +233,15 @@ def build_presence_drafts(
         if max_clinics > 0 and len(drafts) >= max_clinics:
             break
 
-    notification = build_notification_draft(drafts, run_date=run_date) if include_notification and drafts else None
+    notification = (
+        build_notification_draft(
+            drafts,
+            run_date=run_date,
+            line_supervisor_destination=settings.line_supervisor_destination,
+        )
+        if include_notification and drafts
+        else None
+    )
     return PresenceDraftResult(tuple(drafts), notification, tuple(events))
 
 
@@ -283,9 +291,11 @@ def build_notification_draft(
     drafts: list[ScenarioDraft] | tuple[ScenarioDraft, ...],
     *,
     run_date: date,
+    line_supervisor_destination: str = NOTIFY_LINE_QUERY,
 ) -> ScenarioDraft | None:
     if not drafts:
         return None
+    destination = line_supervisor_destination.strip() or NOTIFY_LINE_QUERY
     first = drafts[0]
     total_length = sum(len(draft.draft_message) for draft in drafts)
     average_length = round(total_length / len(drafts))
@@ -309,9 +319,9 @@ def build_notification_draft(
             "first_draft_id": first.draft_id,
             "notice_type": "draft_only",
         },
-        customer_id=NOTIFY_LINE_QUERY,
-        customer_name=NOTIFY_LINE_QUERY,
-        line_query=NOTIFY_LINE_QUERY,
+        customer_id=destination,
+        customer_name=destination,
+        line_query=destination,
         product="",
         signal_summary="Draft-only Presence Engine generation notice.",
         draft_message=message,

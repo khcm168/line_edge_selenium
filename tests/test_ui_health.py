@@ -62,6 +62,18 @@ class UiHealthTest(unittest.TestCase):
 
         self.assertEqual(health.status, "auto_logout_prompt_visible")
 
+    def test_infer_login_state_detects_temporary_error_logout_prompt(self):
+        driver = FakeDriver(
+            {
+                "body": FakeElement(text="由於發生暫時性錯誤，已為您登出，請重新登入。"),
+                "input[type='password']": [FakeElement()],
+            }
+        )
+
+        health = infer_login_state(driver)
+
+        self.assertEqual(health.status, "auto_logout_prompt_visible")
+
     def test_check_login_state_returns_fallback_classification(self):
         driver = FakeDriver({"input[type='password']": [FakeElement()]})
         client = FakeClient(exc=RuntimeError("submit button missing"), driver=driver)

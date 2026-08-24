@@ -15,7 +15,7 @@ from app.agent_lease import LeaseValidationError, require_line_delivery_leases
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.config import Settings
 from app.line_batch import _run_task, _validate_live_scope
-from app.line_client import LineClient
+from app.line_client import LineClient, maybe_maximize_window
 from app.project_health import summarize_handoff_result
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
 from app.reminder_rules import ReminderRules
@@ -200,8 +200,8 @@ def run_worker(
     write_worker_owner(owner_path)
     client = None
     try:
-        client = LineClient.open()
-        client.driver.maximize_window()
+        client = LineClient.open_handoff()
+        maybe_maximize_window(client.driver)
         health = check_login_state(client)
         if not health.ok:
             snapshot_writer = SnapshotWriter(settings.snapshot_dir)

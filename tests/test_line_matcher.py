@@ -91,6 +91,8 @@ class LineMatcherTest(unittest.TestCase):
 
         self.assertEqual(decision.status, "ambiguous")
         self.assertFalse(decision.ok)
+        self.assertIn("雅涵媽，賢 生泉 P104062", decision.detail)
+        self.assertIn("另一位 P104062", decision.detail)
 
     def test_unique_contains_group_accepts_count_suffix(self):
         decision = apply_match_policy(

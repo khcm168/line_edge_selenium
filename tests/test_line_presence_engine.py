@@ -111,6 +111,20 @@ class LinePresenceEngineTest(unittest.TestCase):
         self.assertEqual(result.notification.line_query, NOTIFY_LINE_QUERY)
         self.assertEqual(result.notification.send_mode, "review")
 
+    def test_notification_uses_configured_supervisor_destination(self):
+        configured = replace(settings(ai_enabled=False), line_supervisor_destination="Supervisor Friend")
+
+        result = build_presence_drafts(
+            (profile(),),
+            existing_drafts=(),
+            run_date=date(2026, 6, 30),
+            settings=configured,
+        )
+
+        self.assertIsNotNone(result.notification)
+        self.assertEqual(result.notification.line_query, "Supervisor Friend")
+        self.assertEqual(result.notification.line_contact, "")
+
     def test_existing_same_day_draft_is_skipped(self):
         result = build_presence_drafts(
             (profile(),),

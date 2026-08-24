@@ -113,13 +113,17 @@ def apply_match_policy(
     if not matches:
         return MatchDecision("no_match", policy, query, None, rows, "no matching row")
     if len(matches) > 1 and policy != "all_exact":
+        names = ", ".join(
+            f"{row.row_index}:{row.display_name}" for row in matches[:5]
+        )
+        suffix = "..." if len(matches) > 5 else ""
         return MatchDecision(
             "ambiguous",
             policy,
             query,
             None,
             rows,
-            f"{len(matches)} candidates matched",
+            f"{len(matches)} candidates matched: {names}{suffix}",
         )
 
     selected = matches[0]

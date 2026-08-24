@@ -20,6 +20,7 @@ from login_probe import (
     edge_profile_dir,
     maybe_login,
     prepare_edge_profile_dir,
+    _tcp_port_is_listening,
     visible_text,
     wait_for_phone_verification,
 )
@@ -27,27 +28,39 @@ from login_probe import (
 
 SEARCH_INPUT_SELECTOR = ".searchInput-module__input__ekGp7"
 DEFAULT_HANDOFF_PORT = "9227"
+MAXIMIZE_WINDOW_ENV = "LINE_MAXIMIZE_WINDOW"
 AUTO_LOGOUT_TERMS = (
     "auto logged out",
     "automatically logged out",
     "logged out",
+    "temporary error",
     "已自動登出",
     "自動登出",
+    "暫時性錯誤",
+    "已為您登出",
     "重新登入",
 )
 AUTO_LOGOUT_CONFIRM_TERMS = ("ok", "okay", "confirm", "確定")
+LOGIN_RECOVERY_ATTEMPTS_ENV = "LINE_LOGIN_RECOVERY_ATTEMPTS"
 
 
 @dataclass
 class LineClient:
     driver: Any
+    preserve_on_close: bool = False
 
     @classmethod
     def open(cls) -> "LineClient":
         return cls(build_driver())
 
     @classmethod
-    def open_handoff(cls) -> "LineClient":
+    def open_reuse_or_handoff(cls) -> "LineClient":
+        if handoff_session_is_live():
+            return cls.attach_existing(preserve_on_close=True)
+        return cls.open_handoff(preserve_on_close=True)
+
+    @classmethod
+    def open_handoff(cls, *, preserve_on_close: bool = True) -> "LineClient":
         options = Options()
         options.binary_location = str(EDGE_BINARY)
         options.add_argument(f"--user-data-dir={prepare_edge_profile_dir(edge_profile_dir())}")
@@ -59,39 +72,50 @@ class LineClient:
         options.add_argument(f"--remote-debugging-port={handoff_port()}")
         options.set_capability("webSocketUrl", True)
         options.add_experimental_option("detach", True)
-        return cls(webdriver.Edge(options=options))
+        return cls(webdriver.Edge(options=options), preserve_on_close=preserve_on_close)
 
     @classmethod
-    def attach_existing(cls) -> "LineClient":
+    def attach_existing(cls, *, preserve_on_close: bool = False) -> "LineClient":
         debugger_address = read_debugger_address()
         options = Options()
         options.binary_location = str(EDGE_BINARY)
         options.add_experimental_option("debuggerAddress", debugger_address)
         options.set_capability("webSocketUrl", True)
-        return cls(webdriver.Edge(options=options))
+        return cls(webdriver.Edge(options=options), preserve_on_close=preserve_on_close)
 
     def close(self) -> None:
+        if self.preserve_on_close:
+            return
         self.driver.quit()
 
     def ensure_friends(self) -> None:
         try:
             self._open_friends_view()
-            if _dismiss_auto_logout_modal(self.driver):
-                time.sleep(float(os.getenv("LINE_POST_MODAL_SETTLE_SECONDS", "1")))
-                self._open_friends_view()
-            if _visible_search_inputs(self.driver):
-                time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
-                return
-            if _visible_password_inputs(self.driver):
-                if maybe_login(self.driver):
+            for _attempt in range(_login_recovery_attempts()):
+                state = _friends_or_reauth_ready(self.driver)
+                if state == "friends":
+                    time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+                    return
+                if state == "auto_logout":
+                    time.sleep(float(os.getenv("LINE_POST_MODAL_SETTLE_SECONDS", "1")))
+                    self._open_friends_view()
+                    continue
+                if state == "login" and maybe_login(self.driver):
                     try:
                         wait_for_phone_verification(self.driver)
                     except NoSuchWindowException:
                         _recover_extension_window(self.driver)
                     time.sleep(float(os.getenv("LINE_POST_LOGIN_SETTLE_SECONDS", "8")))
                     self._open_friends_view()
-            WebDriverWait(self.driver, 30).until(_friends_search_ready)
-            time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+                    continue
+                state = WebDriverWait(self.driver, 30).until(_friends_or_reauth_ready)
+                if state == "friends":
+                    time.sleep(float(os.getenv("LINE_FRIENDS_SETTLE_SECONDS", "2")))
+                    return
+            raise RuntimeError(
+                "LINE login recovery did not reach the friends view after "
+                f"{_login_recovery_attempts()} attempts"
+            )
         except InvalidSessionIdException as exc:
             raise RuntimeError(
                 "LINE browser session was lost before startup completed. "
@@ -133,6 +157,16 @@ def handoff_port() -> str:
     return os.getenv("LINE_HANDOFF_DEBUGGING_PORT", DEFAULT_HANDOFF_PORT).strip()
 
 
+def handoff_session_is_live() -> bool:
+    port = handoff_port()
+    return port.isdigit() and _tcp_port_is_listening(int(port))
+
+
+def maybe_maximize_window(driver: Any) -> None:
+    if os.getenv(MAXIMIZE_WINDOW_ENV, "").strip().casefold() in {"1", "true", "yes", "on"}:
+        driver.maximize_window()
+
+
 def _visible_search_inputs(driver: Any) -> list[Any]:
     return _visible_elements(driver.find_elements(By.CSS_SELECTOR, SEARCH_INPUT_SELECTOR))
 
@@ -149,10 +183,22 @@ def _visible_elements(elements: list[Any]) -> list[Any]:
     ]
 
 
-def _friends_search_ready(driver: Any) -> list[Any] | bool:
+def _friends_or_reauth_ready(driver: Any) -> str | bool:
+    if _visible_search_inputs(driver):
+        return "friends"
     if _dismiss_auto_logout_modal(driver):
-        return False
-    return _visible_search_inputs(driver)
+        return "auto_logout"
+    if _visible_password_inputs(driver):
+        return "login"
+    return False
+
+
+def _login_recovery_attempts() -> int:
+    raw = os.getenv(LOGIN_RECOVERY_ATTEMPTS_ENV, "3")
+    try:
+        return max(1, int(raw))
+    except ValueError:
+        return 3
 
 
 def _dismiss_auto_logout_modal(driver: Any) -> bool:

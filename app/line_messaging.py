@@ -6,11 +6,11 @@ import time
 import threading
 import ctypes
 from ctypes import wintypes
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -32,6 +32,14 @@ class ImageUploadResult:
     baseline_message_image_count: int = 0
     picker_method: str = ""
     auto_send_verified: bool = False
+
+
+@dataclass(frozen=True)
+class OpenChatResult:
+    status: str
+    detail: str
+    header: str = ""
+    evidence: dict[str, str] = field(default_factory=dict)
 
 
 def _attachment_state(
@@ -920,7 +928,13 @@ def _visible_text(driver: Any) -> str:
         return ""
 
 
-def open_chat(driver: Any, decision: MatchDecision) -> None:
+def open_chat(
+    driver: Any,
+    decision: MatchDecision,
+    *,
+    timeout_seconds: float = 20.0,
+    profile_fallback_snapshot: Callable[[str], str] | None = None,
+) -> OpenChatResult:
     if not decision.ok or decision.selected is None:
         raise RuntimeError(f"Cannot open chat: {decision.status} {decision.detail}")
     button = decision.selected.element.find_element(
@@ -929,26 +943,71 @@ def open_chat(driver: Any, decision: MatchDecision) -> None:
         '[class*="chatlistItem-module__button_chatlist_item"]',
     )
     driver.execute_script("arguments[0].click();", button)
-    WebDriverWait(driver, 20).until(
-        lambda d: _chat_ready(d) or _profile_chat_button(d) is not None
-    )
+    try:
+        WebDriverWait(driver, timeout_seconds).until(
+            lambda d: _chat_ready(d) or _profile_chat_button(d) is not None
+        )
+    except TimeoutException as exc:
+        raise RuntimeError(
+            "LINE chat did not open and profile page did not expose a visible chat button"
+        ) from exc
+    fallback_used = False
+    evidence: dict[str, str] = {}
     if not _chat_ready(driver):
-        profile_button = _profile_chat_button(driver)
-        if profile_button is not None:
-            driver.execute_script("arguments[0].click();", profile_button)
-    WebDriverWait(driver, 20).until(_chat_ready)
+        if profile_fallback_snapshot is not None:
+            evidence["before_profile_chat_button"] = profile_fallback_snapshot(
+                "before_profile_chat_button"
+            )
+        if not _click_profile_chat_button(driver):
+            raise RuntimeError("LINE profile page did not expose a visible chat button")
+        fallback_used = True
+    WebDriverWait(driver, timeout_seconds).until(_chat_ready)
+    if fallback_used and profile_fallback_snapshot is not None:
+        evidence["after_profile_chat_button"] = profile_fallback_snapshot(
+            "after_profile_chat_button"
+        )
+    header = current_chat_header(driver)
+    if not _header_matches_decision(header, decision):
+        raise RuntimeError(
+            "LINE opened an unexpected chat after profile fallback; "
+            f"header={header!r} expected={decision.selected.display_name!r}"
+        )
+    if fallback_used:
+        return OpenChatResult(
+            "opened_profile_chat_button",
+            "profile page chat button opened the composer",
+            header,
+            evidence,
+        )
+    return OpenChatResult("chat_ready", "matched row opened the composer", header)
 
 
 def _chat_ready(driver: Any) -> bool:
-    try:
-        header = current_chat_header(driver)
-    except Exception:
-        header = ""
     return bool(
-        header
-        or shadow_message_field(driver) is not None
+        shadow_message_field(driver) is not None
         or visible_message_fields(driver)
     )
+
+
+def _header_matches_decision(header: str, decision: MatchDecision) -> bool:
+    if decision.selected is None:
+        return False
+    normalized_header = _normalize_header_text(header)
+    if not normalized_header:
+        return False
+    selected = _normalize_header_text(decision.selected.display_name)
+    query = _normalize_header_text(decision.query)
+    if normalized_header == selected:
+        return True
+    if query and query in normalized_header:
+        return True
+    if selected and (normalized_header in selected or selected in normalized_header):
+        return True
+    return False
+
+
+def _normalize_header_text(value: str) -> str:
+    return " ".join(str(value or "").split()).casefold()
 
 
 def _profile_chat_button(driver: Any) -> Any | None:
@@ -969,6 +1028,72 @@ def _profile_chat_button(driver: Any) -> Any | None:
             if label.casefold() in {"chat", "聊天"}:
                 return element
     return None
+
+
+def _click_profile_chat_button(driver: Any) -> bool:
+    profile_button = _profile_chat_button(driver)
+    if profile_button is not None:
+        try:
+            profile_button.click()
+            time.sleep(0.2)
+            if _chat_ready(driver):
+                return True
+        except Exception:
+            pass
+        try:
+            driver.execute_script("arguments[0].click();", profile_button)
+            time.sleep(0.2)
+            if _chat_ready(driver):
+                return True
+        except Exception:
+            pass
+        rect = profile_button.rect
+        cdp_mouse_click(
+            driver,
+            rect.get("x", 0) + rect.get("width", 0) / 2,
+            rect.get("y", 0) + rect.get("height", 0) / 2,
+        )
+        return True
+    clicked = driver.execute_script(
+        """
+        const candidates = [...document.querySelectorAll(
+          'button, [role="button"], a, [class*="button"]'
+        )];
+        const visible = element => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          return rect.width > 0 && rect.height > 0
+            && style.visibility !== 'hidden'
+            && style.display !== 'none';
+        };
+        const button = candidates.find(element => {
+          const label = (
+            element.getAttribute('aria-label')
+            || element.getAttribute('title')
+            || element.innerText
+            || element.textContent
+            || ''
+          ).trim().toLowerCase();
+          return visible(element) && (label === 'chat' || label === '聊天');
+        });
+        if (!button) return false;
+        button.scrollIntoView({block: 'center', inline: 'center'});
+        button.click();
+        return true;
+        """
+    )
+    if clicked:
+        return True
+    target = _profile_chat_button(driver)
+    if target is None:
+        return False
+    rect = target.rect
+    cdp_mouse_click(
+        driver,
+        rect.get("x", 0) + rect.get("width", 0) / 2,
+        rect.get("y", 0) + rect.get("height", 0) / 2,
+    )
+    return True
 
 
 def current_chat_header(driver: Any) -> str:

@@ -24,6 +24,11 @@ DEFAULT_RULES: dict[str, Any] = {
         "delay_min_seconds": 45,
         "delay_max_seconds": 120,
     },
+    "quota_profiles": {
+        "vaccine": {
+            "daily_message_quota": 100,
+        },
+    },
     "reminders": {
         "shipping": {
             "enabled": True,
@@ -89,6 +94,18 @@ class ReminderRules:
             return int(value)
         except (TypeError, ValueError):
             return default
+
+    def quota_profile_int(self, profile: str, name: str, default: int) -> int:
+        normalized = profile.strip().casefold()
+        if not normalized or normalized == "default":
+            return self.default_int(name, default)
+        value = self.data.get("quota_profiles", {}).get(normalized, {}).get(name)
+        if value is None:
+            raise ValueError(f"Unknown quota profile or setting: {profile}.{name}")
+        try:
+            return int(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"Invalid quota profile setting: {profile}.{name}") from exc
 
 
 def write_default_rules(path: str | Path) -> Path:

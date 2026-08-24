@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-from app.config import ROOT
+from app.config import DEFAULT_LINE_SUPERVISOR_DESTINATION, ROOT
 from app.task_builder import MessageTask
 
 
@@ -18,7 +18,7 @@ EXPECTED_PROJECTS = (
     "easyflow",
     "CRM",
 )
-LINE_TARGET_QUERY = "洪啓明"
+LINE_TARGET_QUERY = DEFAULT_LINE_SUPERVISOR_DESTINATION
 LINE_TARGET_POLICY = "exact_friend"
 LINE_TARGET_CUSTOMER_ID = "nightly_project_health"
 AUTOMATION_ID = "line"
@@ -300,18 +300,21 @@ def build_line_task(
     *,
     worker_live: bool,
     worker_status: str,
+    line_supervisor_destination: str = LINE_TARGET_QUERY,
 ) -> MessageTask:
+    destination = line_supervisor_destination.strip() or LINE_TARGET_QUERY
     return MessageTask(
         action="send_message",
-        query=LINE_TARGET_QUERY,
+        query=destination,
         match_policy=LINE_TARGET_POLICY,
         message=build_line_message(probe, worker_live=worker_live, worker_status=worker_status),
         allow_group=False,
         customer_id=LINE_TARGET_CUSTOMER_ID,
-        line_contact=LINE_TARGET_QUERY,
+        line_contact=destination,
         source={
             "automation_id": AUTOMATION_ID,
             "kind": "nightly_project_health",
+            "line_supervisor_destination": destination,
             "taipei_date": probe.taipei_date,
             "orchestrator_exit_code": probe.orchestrator_exit_code,
             "webapp_release": probe.webapp_release,

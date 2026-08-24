@@ -143,6 +143,29 @@ class ProjectHealthTest(unittest.TestCase):
         self.assertEqual(tasks[0].match_policy, "exact_friend")
         self.assertEqual(project_health_task_mojibake_fields(tasks[0]), ())
 
+    def test_line_task_can_use_configured_supervisor_destination(self):
+        summary = parse_orchestrator_output(
+            taipei_day="2026-07-01",
+            stdout_text="[OK] Live ARM Shared WebApp API 2.0.0 release 37\n",
+            stderr_text="",
+            exit_code=0,
+            registry_ok=True,
+            registry_projects=("psr-aios-v1", "ARM", "line_edge_selenium", "easyflow", "CRM"),
+            missing_projects=(),
+            unexpected_projects=(),
+        )
+
+        task = build_line_task(
+            summary,
+            worker_live=True,
+            worker_status="idle",
+            line_supervisor_destination="Supervisor Friend",
+        )
+
+        self.assertEqual(task.query, "Supervisor Friend")
+        self.assertEqual(task.line_contact, "Supervisor Friend")
+        self.assertEqual(task.source["line_supervisor_destination"], "Supervisor Friend")
+
     def test_project_health_task_rejects_mojibake_before_line_submission(self):
         task = MessageTask(
             action="send_message",

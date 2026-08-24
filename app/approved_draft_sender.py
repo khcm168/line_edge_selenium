@@ -11,7 +11,7 @@ from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
 from app.line_profile import is_line_contact_eligible, is_line_query_eligible
 from app.line_batch import _run_task
-from app.line_client import LineClient
+from app.line_client import LineClient, maybe_maximize_window
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
 from app.reminder_rules import ReminderRules
 from app.response_loop import append_follow_ups, schedule_follow_ups
@@ -55,6 +55,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--draft-id", default="", help="Process one exact Draft_ID only.")
     parser.add_argument("--write-tasks", help="Write approved rows to a local task JSON file and exit.")
     parser.add_argument("--keep-open", action="store_true", help="Leave Edge open after live send.")
+    parser.add_argument(
+        "--quota-profile",
+        default="default",
+        help="Use a named quota profile from reminder_rules.json, e.g. vaccine.",
+    )
     args = parser.parse_args(argv)
 
     settings = Settings.from_env(require_google=True)
@@ -89,20 +94,27 @@ def main(argv: list[str] | None = None) -> int:
 
     audit_path = settings.log_dir / f"approved_draft_sender_{utc_stamp()}.jsonl"
     rules = ReminderRules.load(settings.reminder_rules_path)
-    rate_settings = RateLimitSettings(
-        delay_min_seconds=rules.default_int("delay_min_seconds", 45),
-        delay_max_seconds=rules.default_int("delay_max_seconds", 120),
-        daily_message_quota=rules.default_int("daily_message_quota", 20),
-        per_recipient_daily_quota=rules.default_int("per_recipient_daily_quota", 1),
-    )
+    rate_settings = rate_limit_settings_for_profile(rules, args.quota_profile)
     quota = MessageQuota(settings.task_dir.parent / "handoff" / "quota.json", rate_settings)
     delay = RandomDelay(rate_settings)
     snapshot_writer = SnapshotWriter(settings.snapshot_dir)
-    client = LineClient.open()
+    client = LineClient.open_reuse_or_handoff()
     sent_events: list[ScenarioEvent] = []
     skipped_events: list[ScenarioEvent] = []
     try:
-        client.driver.maximize_window()
+        append_jsonl(
+            audit_path,
+            build_audit_record(
+                action="quota_profile",
+                status="selected",
+                detail=(
+                    f"profile={args.quota_profile}; "
+                    f"daily_message_quota={rate_settings.daily_message_quota}; "
+                    f"per_recipient_daily_quota={rate_settings.per_recipient_daily_quota}"
+                ),
+            ),
+        )
+        maybe_maximize_window(client.driver)
         client.ensure_friends()
         for index, item in enumerate(selection.approved):
             allowed, detail = quota.check(item.task, day=date.today())
@@ -183,6 +195,8 @@ def main(argv: list[str] | None = None) -> int:
                     error_message=error,
                 )
                 sent_events.append(_send_event(item.draft, "error", "medium", "send failed", error))
+                if can_continue_after_presend_failure(exc):
+                    continue
                 raise
     finally:
         gateway.append_log_events([*sent_events, *skipped_events])
@@ -212,12 +226,13 @@ def select_approved_drafts(
         if reason:
             skipped.append(_send_event(row.draft, "skipped", row.draft.risk_level, reason, ""))
             continue
+        delivery_query = _delivery_query(row.draft, allowed_group_targets)
         task = MessageTask(
             action="send_message",
-            query=row.draft.line_query,
+            query=delivery_query,
             match_policy=_match_policy(row.draft, allowed_group_targets),
             message=sanitize_bmp_text(row.draft.draft_message),
-            allow_group=row.draft.line_query in allowed_group_targets,
+            allow_group=delivery_query in allowed_group_targets,
             customer_id=row.draft.customer_id,
             line_contact=row.draft.line_contact,
             line_message_style=row.draft.line_message_style,
@@ -248,8 +263,38 @@ def loggable_skip_events(events: tuple[ScenarioEvent, ...]) -> tuple[ScenarioEve
     return tuple(event for event in events if event.result not in ROUTINE_SKIP_RESULTS)
 
 
+def rate_limit_settings_for_profile(
+    rules: ReminderRules,
+    quota_profile: str = "default",
+) -> RateLimitSettings:
+    return RateLimitSettings(
+        delay_min_seconds=rules.default_int("delay_min_seconds", 45),
+        delay_max_seconds=rules.default_int("delay_max_seconds", 120),
+        daily_message_quota=rules.quota_profile_int(
+            quota_profile,
+            "daily_message_quota",
+            rules.default_int("daily_message_quota", 20),
+        ),
+        per_recipient_daily_quota=rules.default_int("per_recipient_daily_quota", 1),
+    )
+
+
 def is_successful_send_status(status: str) -> bool:
     return status == "sent"
+
+
+def can_continue_after_presend_failure(exc: Exception) -> bool:
+    detail = f"{type(exc).__name__}: {exc}".casefold()
+    return any(
+        marker in detail
+        for marker in (
+            "profile page did not expose",
+            "unexpected chat",
+            "composer textbox was not visible",
+            "no current chat header was visible",
+            "current chat header was",
+        )
+    )
 
 
 def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] = ()) -> str:
@@ -293,6 +338,12 @@ def _match_policy(draft: ScenarioDraft, allowed_group_targets: tuple[str, ...]) 
     if draft.line_query in allowed_group_targets:
         return "unique_contains_group"
     return "unique_contains_friend"
+
+
+def _delivery_query(draft: ScenarioDraft, allowed_group_targets: tuple[str, ...]) -> str:
+    if draft.line_query in allowed_group_targets:
+        return draft.line_query
+    return draft.line_contact.strip() or draft.line_query
 
 
 def _looks_like_group(query: str) -> bool:

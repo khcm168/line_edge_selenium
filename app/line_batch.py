@@ -3,12 +3,13 @@ from __future__ import annotations
 import argparse
 from dataclasses import asdict, replace
 from pathlib import Path
+from typing import Callable
 
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
 from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
 from app.line_profile import is_line_contact_eligible
-from app.line_client import LineClient
+from app.line_client import LineClient, maybe_maximize_window
 from app.line_messaging import (
     current_chat_header,
     open_chat,
@@ -68,13 +69,13 @@ def main(argv: list[str] | None = None) -> int:
 
     _validate_live_scope(tasks, send=args.send, settings=settings)
     if args.attach_existing:
-        client = LineClient.attach_existing()
+        client = LineClient.attach_existing(preserve_on_close=True)
     elif args.handoff_start:
         client = LineClient.open_handoff()
     else:
-        client = LineClient.open()
+        client = LineClient.open_reuse_or_handoff()
     try:
-        client.driver.maximize_window()
+        maybe_maximize_window(client.driver)
         client.ensure_friends()
         if args.handoff_start:
             print("handoff_ready=true")
@@ -123,6 +124,8 @@ def _run_task(
 ) -> str:
     task = _sanitize_task_message(task)
     material = _resolve_task_material(task, settings)
+    if task.match_policy not in {CURRENT_CHAT_EXACT_FRIEND, CURRENT_CHAT_CONFIRMED}:
+        client.ensure_friends()
     if task.match_policy == CURRENT_CHAT_EXACT_FRIEND:
         header = current_chat_header(client.driver)
         if not header:
@@ -209,7 +212,26 @@ def _run_task(
 
     if manual_approve:
         if decision is not None:
-            open_chat(client.driver, decision)
+            open_result = open_chat(
+                client.driver,
+                decision,
+                profile_fallback_snapshot=_profile_fallback_snapshotter(
+                    client=client,
+                    task=task,
+                    material=material,
+                    decision=decision,
+                    snapshot_writer=snapshot_writer,
+                ),
+            )
+            _audit_open_chat_result(
+                client=client,
+                task=task,
+                material=material,
+                decision=decision,
+                open_result=open_result,
+                audit_path=audit_path,
+                snapshot_writer=snapshot_writer,
+            )
         health = (
             check_composer(client.driver)
             if task.message_kind in TEXT_MESSAGE_KINDS
@@ -270,7 +292,26 @@ def _run_task(
         return "preview_matched"
 
     if decision is not None:
-        open_chat(client.driver, decision)
+        open_result = open_chat(
+            client.driver,
+            decision,
+            profile_fallback_snapshot=_profile_fallback_snapshotter(
+                client=client,
+                task=task,
+                material=material,
+                decision=decision,
+                snapshot_writer=snapshot_writer,
+            ),
+        )
+        _audit_open_chat_result(
+            client=client,
+            task=task,
+            material=material,
+            decision=decision,
+            open_result=open_result,
+            audit_path=audit_path,
+            snapshot_writer=snapshot_writer,
+        )
     health = (
         check_composer(client.driver)
         if task.message_kind in TEXT_MESSAGE_KINDS
@@ -378,6 +419,81 @@ def _run_task(
     )
     print(f"sent={task.query} method={method}")
     return "sent"
+
+
+def _audit_open_chat_result(
+    *,
+    client: LineClient,
+    task: MessageTask,
+    material: dict[str, str],
+    decision: object,
+    open_result: object,
+    audit_path: Path,
+    snapshot_writer: SnapshotWriter,
+) -> None:
+    status = getattr(open_result, "status", "")
+    if status != "opened_profile_chat_button":
+        return
+    evidence = getattr(open_result, "evidence", {}) or {}
+    snapshot = evidence.get("after_profile_chat_button")
+    if not snapshot:
+        snapshot = snapshot_writer.write(
+            label=f"profile_chat_button_{task.query}",
+            payload={
+                "task": asdict(task),
+                "material": material,
+                "decision": decision,
+                "open_chat": open_result,
+                "current_chat_header": _safe_current_chat_header(client.driver),
+                "visible_text": client.visible_text()[:3000],
+            },
+            driver=client.driver,
+        )
+    append_jsonl(
+        audit_path,
+        build_audit_record(
+            action=task.action,
+            status=status,
+            phase="open_chat",
+            query=task.query,
+            policy=task.match_policy,
+            message=task.message,
+            detail=getattr(open_result, "detail", ""),
+            source={
+                **(task.source or {}),
+                "profile_chat_button_evidence": evidence,
+            },
+            candidates=list(decision.candidates) if decision is not None else [],
+            selected=decision.selected if decision is not None else None,
+            snapshot=snapshot,
+        ),
+    )
+
+
+def _profile_fallback_snapshotter(
+    *,
+    client: LineClient,
+    task: MessageTask,
+    material: dict[str, str],
+    decision: object,
+    snapshot_writer: SnapshotWriter,
+) -> Callable[[str], str]:
+    def capture(stage: str) -> str:
+        snapshot = snapshot_writer.write(
+            label=f"{stage}_{task.query}",
+            payload={
+                "task": asdict(task),
+                "material": material,
+                "decision": decision,
+                "stage": stage,
+                "current_chat_header": _safe_current_chat_header(client.driver),
+                "visible_text": client.visible_text()[:3000],
+            },
+            driver=client.driver,
+        )
+        return str(snapshot)
+
+    return capture
 
 
 def _validate_live_scope(
