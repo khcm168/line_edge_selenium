@@ -5,7 +5,7 @@ from typing import Any
 
 from app.audit import SnapshotWriter
 from app.config import Settings
-from app.line_client import LineClient
+from app.line_client import LineClient, maybe_maximize_window
 from app.line_messaging import open_chat, resolve_match
 from app.response_loop import (
     ObservationLedger,
@@ -150,12 +150,12 @@ def main(argv: list[str] | None = None) -> int:
 
     settings = Settings.from_env(require_google=True)
     client = (
-        LineClient.attach_existing()
+        LineClient.attach_existing(preserve_on_close=True)
         if args.attach_existing
-        else LineClient.open()
+        else LineClient.open_reuse_or_handoff()
     )
     try:
-        client.driver.maximize_window()
+        maybe_maximize_window(client.driver)
         client.ensure_friends()
         gateway = SheetGateway.from_settings(settings)
         written = run_once(

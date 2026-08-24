@@ -1,7 +1,15 @@
 import unittest
 from dataclasses import replace
 
-from app.approved_draft_sender import select_approved_drafts, skip_reason
+from app.approved_draft_sender import (
+    can_continue_after_presend_failure,
+    is_successful_send_status,
+    loggable_skip_events,
+    rate_limit_settings_for_profile,
+    select_approved_drafts,
+    skip_reason,
+)
+from app.reminder_rules import ReminderRules
 from app.scenario_engine import DRAFT_STATUS_APPROVED, SEND_MODE_LIVE, ScenarioDraft
 from app.sheet_gateway import DraftSheetRow
 
@@ -46,6 +54,34 @@ class ApprovedDraftSenderTest(unittest.TestCase):
         self.assertEqual(selection.approved[0].task.match_policy, "unique_contains_friend")
         self.assertEqual(len(selection.skipped), 4)
 
+    def test_live_send_uses_line_contact_to_avoid_short_query_ambiguity(self):
+        selection = select_approved_drafts(
+            [
+                DraftSheetRow(
+                    2,
+                    draft(line_query="Chao", line_contact="Chao Yi Clinic LINE"),
+                    {},
+                )
+            ]
+        )
+
+        self.assertEqual(selection.approved[0].task.query, "Chao Yi Clinic LINE")
+        self.assertEqual(selection.approved[0].task.source["line_contact"], "Chao Yi Clinic LINE")
+
+    def test_routine_skips_are_not_logged(self):
+        rows = [
+            DraftSheetRow(2, draft(status="pending_review"), {}),
+            DraftSheetRow(3, draft(draft_id="draft2", sent_at="2026-06-06T10:00:00+08:00"), {}),
+            DraftSheetRow(4, draft(draft_id="draft3", risk_level="high"), {}),
+        ]
+
+        selection = select_approved_drafts(rows)
+
+        self.assertEqual(
+            [event.result for event in loggable_skip_events(selection.skipped)],
+            ["high risk blocked"],
+        )
+
     def test_allows_known_group_targets_only(self):
         blocked = draft(line_query="001N1備份區")
         allowed = draft(draft_id="draft2", line_query="001N1備份區")
@@ -63,10 +99,10 @@ class ApprovedDraftSenderTest(unittest.TestCase):
         self.assertTrue(selection.approved[0].task.allow_group)
         self.assertEqual(selection.approved[0].task.match_policy, "unique_contains_group")
 
-    def test_blocks_rows_without_line_contact_even_when_approved(self):
+    def test_blocks_rows_without_customer_query_even_when_approved(self):
         self.assertEqual(
-            skip_reason(draft(line_query="P100", line_contact="")),
-            "missing eligible line contact",
+            skip_reason(draft(line_query="")),
+            "missing line query",
         )
 
     def test_blocks_privacy_and_overclaim_flags(self):
@@ -106,6 +142,16 @@ class ApprovedDraftSenderTest(unittest.TestCase):
             "",
         )
 
+    def test_blocks_unresolved_message_placeholder(self):
+        self.assertEqual(
+            skip_reason(
+                draft(
+                    draft_message="您好，[LINE暱稱]，這張資料提供您參考。",
+                )
+            ),
+            "unresolved message placeholder",
+        )
+
     def test_can_select_one_exact_draft_id(self):
         selection = select_approved_drafts(
             [
@@ -118,6 +164,52 @@ class ApprovedDraftSenderTest(unittest.TestCase):
         self.assertEqual(
             [item.draft.draft_id for item in selection.approved],
             ["acceptance"],
+        )
+
+    def test_only_sent_status_counts_as_successful_live_send(self):
+        self.assertTrue(is_successful_send_status("sent"))
+        self.assertFalse(is_successful_send_status("ambiguous"))
+        self.assertFalse(is_successful_send_status("no_match"))
+        self.assertFalse(is_successful_send_status("composer_missing"))
+
+    def test_vaccine_quota_profile_overrides_daily_cap_only(self):
+        rules = ReminderRules(
+            {
+                "defaults": {
+                    "daily_message_quota": 20,
+                    "per_recipient_daily_quota": 1,
+                    "delay_min_seconds": 45,
+                    "delay_max_seconds": 120,
+                },
+                "quota_profiles": {
+                    "vaccine": {
+                        "daily_message_quota": 100,
+                    }
+                },
+            }
+        )
+
+        settings = rate_limit_settings_for_profile(rules, "vaccine")
+
+        self.assertEqual(settings.daily_message_quota, 100)
+        self.assertEqual(settings.per_recipient_daily_quota, 1)
+        self.assertEqual(settings.delay_min_seconds, 45)
+
+    def test_presend_ui_failures_can_continue_but_uncertain_send_failures_stop(self):
+        self.assertTrue(
+            can_continue_after_presend_failure(
+                RuntimeError("LINE profile page did not expose a visible chat button")
+            )
+        )
+        self.assertTrue(
+            can_continue_after_presend_failure(
+                RuntimeError("LINE opened an unexpected chat after profile fallback")
+            )
+        )
+        self.assertFalse(
+            can_continue_after_presend_failure(
+                RuntimeError("LINE image submission is uncertain after Enter")
+            )
         )
 
 

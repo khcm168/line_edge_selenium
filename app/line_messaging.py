@@ -6,15 +6,16 @@ import time
 import threading
 import ctypes
 from ctypes import wintypes
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
-from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
+from app.bmp_safety import sanitize_bmp_text
 from app.line_client import SEARCH_INPUT_SELECTOR
 from app.line_matcher import LineCandidate, MatchDecision, apply_match_policy
 
@@ -31,6 +32,14 @@ class ImageUploadResult:
     baseline_message_image_count: int = 0
     picker_method: str = ""
     auto_send_verified: bool = False
+
+
+@dataclass(frozen=True)
+class OpenChatResult:
+    status: str
+    detail: str
+    header: str = ""
+    evidence: dict[str, str] = field(default_factory=dict)
 
 
 def _attachment_state(
@@ -724,11 +733,18 @@ def _submit_editor_image_once(
     )
 
 
-RESULT_SELECTOR = ".friendlistItem-module__item__1tuZn"
-NAME_SELECTOR = ".friendlistItem-module__name_box__fUKhX"
+RESULT_SELECTOR = (
+    '[class*="friendlistItem-module__item"], '
+    '[class*="chatlistItem-module__chatlist_item"]'
+)
+NAME_SELECTOR = (
+    '[class*="friendlistItem-module__name_box"], '
+    '[class*="chatlistItem-module__title_box"]'
+)
 CATEGORY_OR_ROW_SELECTOR = (
     ".categoryLayout-module__button_category__nqIZM, "
-    ".friendlistItem-module__item__1tuZn"
+    '[class*="friendlistItem-module__item"], '
+    '[class*="chatlistItem-module__chatlist_item"]'
 )
 NO_RESULT_TERMS = ("無搜尋結果", "找不到", "No results", "No search")
 
@@ -784,7 +800,7 @@ def search_value(driver: Any) -> str:
 def collect_candidate_preview(driver: Any) -> list[LineCandidate]:
     return [
         LineCandidate(
-            category=row.get("category") or "",
+            category=_candidate_category(row),
             display_name=row.get("displayName") or "",
             row_index=int(row.get("rowIndex", 0)),
         )
@@ -798,7 +814,7 @@ def collect_candidates(driver: Any) -> list[LineCandidate]:
     for row in rows:
         candidates.append(
             LineCandidate(
-                category=row.get("category") or "",
+                category=_candidate_category(row),
                 display_name=row.get("displayName") or "",
                 row_index=int(row.get("rowIndex", len(candidates))),
                 element=row.get("element"),
@@ -811,7 +827,9 @@ def raw_candidate_rows(driver: Any) -> list[dict[str, Any]]:
     return driver.execute_script(
         """
         const elements = [...document.querySelectorAll(
-          '[class*="categoryLayout-module__button_category"], [class*="friendlistItem-module__item"]'
+          '[class*="categoryLayout-module__button_category"], '
+          + '[class*="friendlistItem-module__item"], '
+          + '[class*="chatlistItem-module__chatlist_item"]'
         )];
         let category = '';
         const rows = [];
@@ -823,14 +841,39 @@ def raw_candidate_rows(driver: Any) -> list[dict[str, Any]]:
             category = (el.innerText || el.textContent || '').split('\\n')[0].trim();
             continue;
           }
-          if (!className.includes('friendlistItem-module__item')) continue;
-          const nameEl = el.querySelector('[class*="friendlistItem-module__name_box"]');
+          const legacyRow = className.includes('friendlistItem-module__item');
+          const chatRow = className.includes('chatlistItem-module__chatlist_item');
+          if (!legacyRow && !chatRow) continue;
+          const nameEl = el.querySelector(
+            '[class*="friendlistItem-module__name_box"], '
+            + '[class*="chatlistItem-module__title_box"]'
+          );
           const displayName = ((nameEl && nameEl.innerText) || el.innerText || el.textContent || '').trim();
-          rows.push({category, displayName, rowIndex: rows.length, element: el});
+          const hasMemberCount = Boolean(
+            el.querySelector(
+              '[class*="chatlistItem-module__member_count"], '
+              + '[class*="friendlistItem-module__member_count"]'
+            )
+          );
+          rows.push({
+            category,
+            displayName,
+            rowIndex: rows.length,
+            rowType: chatRow ? 'chat' : 'legacy',
+            hasMemberCount,
+            ariaCurrent: String(el.getAttribute('aria-current') || ''),
+            element: el
+          });
         }
         return rows;
         """
     )
+
+
+def _candidate_category(row: dict[str, Any]) -> str:
+    if row.get("rowType") in {"chat", "legacy"}:
+        return "group" if row.get("hasMemberCount") else "friend"
+    return row.get("category") or ""
 
 
 def visible_result_rows(driver: Any) -> list[Any]:
@@ -885,23 +928,189 @@ def _visible_text(driver: Any) -> str:
         return ""
 
 
-def open_chat(driver: Any, decision: MatchDecision) -> None:
+def open_chat(
+    driver: Any,
+    decision: MatchDecision,
+    *,
+    timeout_seconds: float = 20.0,
+    profile_fallback_snapshot: Callable[[str], str] | None = None,
+) -> OpenChatResult:
     if not decision.ok or decision.selected is None:
         raise RuntimeError(f"Cannot open chat: {decision.status} {decision.detail}")
     button = decision.selected.element.find_element(
         By.CSS_SELECTOR,
-        '[class*="friendlistItem-module__button_friendlist_item"]',
+        '[class*="friendlistItem-module__button_friendlist_item"], '
+        '[class*="chatlistItem-module__button_chatlist_item"]',
     )
     driver.execute_script("arguments[0].click();", button)
-    expected_name = (decision.selected.display_name or "").splitlines()[0]
-    WebDriverWait(driver, 20).until(
-        lambda d: (
-            d.find_elements(By.CSS_SELECTOR, ".chatroomHeader-module__button_name__US7lb")
-            or shadow_message_field(d) is not None
-            or visible_message_fields(d)
-            or (expected_name and expected_name in _visible_text(d))
+    try:
+        WebDriverWait(driver, timeout_seconds).until(
+            lambda d: _chat_ready(d) or _profile_chat_button(d) is not None
         )
+    except TimeoutException as exc:
+        raise RuntimeError(
+            "LINE chat did not open and profile page did not expose a visible chat button"
+        ) from exc
+    fallback_used = False
+    evidence: dict[str, str] = {}
+    if not _chat_ready(driver):
+        if profile_fallback_snapshot is not None:
+            evidence["before_profile_chat_button"] = profile_fallback_snapshot(
+                "before_profile_chat_button"
+            )
+        if not _click_profile_chat_button(driver):
+            raise RuntimeError("LINE profile page did not expose a visible chat button")
+        fallback_used = True
+    WebDriverWait(driver, timeout_seconds).until(_chat_ready)
+    if fallback_used and profile_fallback_snapshot is not None:
+        evidence["after_profile_chat_button"] = profile_fallback_snapshot(
+            "after_profile_chat_button"
+        )
+    header = current_chat_header(driver)
+    if not _header_matches_decision(header, decision):
+        raise RuntimeError(
+            "LINE opened an unexpected chat after profile fallback; "
+            f"header={header!r} expected={decision.selected.display_name!r}"
+        )
+    if fallback_used:
+        return OpenChatResult(
+            "opened_profile_chat_button",
+            "profile page chat button opened the composer",
+            header,
+            evidence,
+        )
+    return OpenChatResult("chat_ready", "matched row opened the composer", header)
+
+
+def _chat_ready(driver: Any) -> bool:
+    return bool(
+        shadow_message_field(driver) is not None
+        or visible_message_fields(driver)
     )
+
+
+def _header_matches_decision(header: str, decision: MatchDecision) -> bool:
+    if decision.selected is None:
+        return False
+    normalized_header = _normalize_header_text(header)
+    if not normalized_header:
+        return False
+    selected = _normalize_header_text(decision.selected.display_name)
+    query = _normalize_header_text(decision.query)
+    if normalized_header == selected:
+        return True
+    if query and query in normalized_header:
+        return True
+    if selected and (normalized_header in selected or selected in normalized_header):
+        return True
+    return False
+
+
+def _normalize_header_text(value: str) -> str:
+    return " ".join(str(value or "").split()).casefold()
+
+
+def _profile_chat_button(driver: Any) -> Any | None:
+    for selector in ("button", "[role='button']", "a"):
+        for element in driver.find_elements(By.CSS_SELECTOR, selector):
+            try:
+                rect = element.rect
+                if rect.get("width", 0) <= 0 or rect.get("height", 0) <= 0:
+                    continue
+                label = (
+                    element.get_attribute("aria-label")
+                    or element.get_attribute("title")
+                    or element.text
+                    or ""
+                ).strip()
+            except Exception:
+                continue
+            if label.casefold() in {"chat", "聊天"}:
+                return element
+    return None
+
+
+def _click_profile_chat_button(driver: Any) -> bool:
+    profile_button = _profile_chat_button(driver)
+    if profile_button is not None:
+        try:
+            profile_button.click()
+            time.sleep(0.2)
+            if _chat_ready(driver):
+                return True
+        except Exception:
+            pass
+        try:
+            driver.execute_script("arguments[0].click();", profile_button)
+            time.sleep(0.2)
+            if _chat_ready(driver):
+                return True
+        except Exception:
+            pass
+        rect = profile_button.rect
+        cdp_mouse_click(
+            driver,
+            rect.get("x", 0) + rect.get("width", 0) / 2,
+            rect.get("y", 0) + rect.get("height", 0) / 2,
+        )
+        return True
+    clicked = driver.execute_script(
+        """
+        const candidates = [...document.querySelectorAll(
+          'button, [role="button"], a, [class*="button"]'
+        )];
+        const visible = element => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          return rect.width > 0 && rect.height > 0
+            && style.visibility !== 'hidden'
+            && style.display !== 'none';
+        };
+        const button = candidates.find(element => {
+          const label = (
+            element.getAttribute('aria-label')
+            || element.getAttribute('title')
+            || element.innerText
+            || element.textContent
+            || ''
+          ).trim().toLowerCase();
+          return visible(element) && (label === 'chat' || label === '聊天');
+        });
+        if (!button) return false;
+        button.scrollIntoView({block: 'center', inline: 'center'});
+        button.click();
+        return true;
+        """
+    )
+    if clicked:
+        return True
+    target = _profile_chat_button(driver)
+    if target is None:
+        return False
+    rect = target.rect
+    cdp_mouse_click(
+        driver,
+        rect.get("x", 0) + rect.get("width", 0) / 2,
+        rect.get("y", 0) + rect.get("height", 0) / 2,
+    )
+    return True
+
+
+def current_chat_header(driver: Any) -> str:
+    texts = driver.execute_script(
+        """
+        const nodes = [...document.querySelectorAll(
+          '.chatroomHeader-module__button_name__US7lb, [class*="chatroomHeader-module__button_name"]'
+        )];
+        return nodes
+          .map(node => (node.textContent || '').trim())
+          .filter(Boolean);
+        """
+    ) or []
+    for text in texts:
+        if str(text).strip():
+            return str(text).strip()
+    return ""
 
 
 def visible_message_fields(driver: Any) -> list[tuple[Any, dict[str, float], str]]:
@@ -962,6 +1171,7 @@ def cdp_mouse_click(driver: Any, x: float, y: float) -> None:
 
 
 def cdp_type_and_enter(driver: Any, message: str) -> None:
+    message = sanitize_bmp_text(message)
     driver.execute_cdp_cmd("Input.insertText", {"text": message})
     time.sleep(0.1)
     for event_type in ("keyDown", "keyUp"):
@@ -992,6 +1202,7 @@ def composer_click_point(driver: Any) -> tuple[float, float]:
 
 
 def send_message(driver: Any, message: str) -> str:
+    message = sanitize_bmp_text(message)
     if not message.strip():
         raise ValueError("Refusing to send a blank message.")
     shadow_field = shadow_message_field(driver)

@@ -30,6 +30,7 @@ DEFAULT_LIST_TAB = "List"
 DEFAULT_DRAFT_SHEET = "LINE_Drafts"
 DEFAULT_LOG_SHEET = "log"
 DEFAULT_MATERIAL_SHEET = "LINE_Material"
+DEFAULT_PRESENCE_PROFILE_SHEET = "LINE_Presence_Profiles"
 DEFAULT_LOG_DIR = ROOT / "data" / "logs"
 DEFAULT_SNAPSHOT_DIR = ROOT / "data" / "snapshots"
 DEFAULT_TASK_DIR = ROOT / "data" / "tasks"
@@ -44,6 +45,7 @@ DEFAULT_ALLOWED_LIVE_TARGETS = (
     "Ya.ping",
 )
 DEFAULT_ALLOWED_GROUP_TARGETS = ("001N1備份區", "100分的自己")
+DEFAULT_LINE_SUPERVISOR_DESTINATION = "洪啓明"
 DEFAULT_OPENAI_MODEL = "gpt-4.1-mini"
 DEFAULT_AI_PROVIDER = "ollama"
 DEFAULT_OLLAMA_BASE_URL = "http://127.0.0.1:11434"
@@ -66,6 +68,7 @@ class Settings:
     draft_sheet_name: str
     sheet_log_name: str
     material_sheet_name: str
+    presence_profile_sheet_name: str
     material_root: Path
     material_catalog_path: Path
     google_credentials_path: Path
@@ -76,6 +79,7 @@ class Settings:
     reminder_rules_path: Path
     allowed_live_targets: tuple[str, ...]
     allowed_group_targets: tuple[str, ...]
+    line_supervisor_destination: str
     openai_model: str
     ai_provider: str
     ollama_base_url: str
@@ -119,6 +123,10 @@ class Settings:
                 "LINE_MATERIAL_SHEET",
                 DEFAULT_MATERIAL_SHEET,
             ),
+            presence_profile_sheet_name=os.getenv(
+                "LINE_PRESENCE_PROFILE_SHEET",
+                DEFAULT_PRESENCE_PROFILE_SHEET,
+            ),
             material_root=Path(os.getenv("LINE_MATERIAL_ROOT", "")),
             material_catalog_path=Path(
                 os.getenv("LINE_MATERIAL_CATALOG", DEFAULT_MATERIAL_CATALOG)
@@ -139,6 +147,10 @@ class Settings:
                 os.getenv("LINE_ALLOWED_GROUP_TARGETS"),
                 DEFAULT_ALLOWED_GROUP_TARGETS,
             ),
+            line_supervisor_destination=os.getenv(
+                "LINE_SUPERVISOR_DESTINATION",
+                DEFAULT_LINE_SUPERVISOR_DESTINATION,
+            ).strip() or DEFAULT_LINE_SUPERVISOR_DESTINATION,
             openai_model=os.getenv("OPENAI_MODEL", DEFAULT_OPENAI_MODEL),
             ai_provider=os.getenv("LINE_AI_PROVIDER", DEFAULT_AI_PROVIDER).strip().casefold(),
             ollama_base_url=os.getenv("OLLAMA_BASE_URL", DEFAULT_OLLAMA_BASE_URL).rstrip("/"),

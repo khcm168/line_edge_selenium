@@ -149,6 +149,7 @@ def ingest_once(
     min_age_seconds: float,
     analyzer: Callable[..., VisionAnalysis] = analyze_material_image,
     audit_path: Path | None = None,
+    failed_registry_path: Path | None = None,
     should_stop: Callable[[], bool] | None = None,
 ) -> tuple[int, int]:
     catalog = load_catalog(catalog_path)
@@ -162,6 +163,13 @@ def ingest_once(
         catalog,
         folder=folder,
         min_age_seconds=min_age_seconds,
+    )
+    failure_path = failed_registry_path or (
+        pending_catalog_path.parent / "failed_images.json"
+    )
+    failed_hashes = _load_failed_hashes(failure_path)
+    candidates = tuple(
+        candidate for candidate in candidates if candidate[2] not in failed_hashes
     )
     if max_files > 0:
         candidates = candidates[:max_files]
@@ -203,6 +211,12 @@ def ingest_once(
             )
         except Exception as exc:
             failed += 1
+            _record_failed_image(
+                failure_path,
+                digest=digest,
+                relative_path=relative,
+                error=f"{type(exc).__name__}: {exc}",
+            )
             _audit(
                 audit_path,
                 status="error",
@@ -251,6 +265,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--watch", action="store_true")
     parser.add_argument("--list-new", action="store_true")
+    parser.add_argument("--retry-failed", action="store_true")
     parser.add_argument("--status", action="store_true")
     parser.add_argument("--stop", action="store_true")
     args = parser.parse_args(argv)
@@ -265,6 +280,8 @@ def main(argv: list[str] | None = None) -> int:
     catalog_path = Path(args.catalog or settings.material_catalog_path).resolve()
     state_dir = project_root / "data" / "material_ingest"
     state_path = state_dir / "worker_state.json"
+    notice_path = state_dir / "latest_notice.json"
+    failed_registry_path = state_dir / "failed_images.json"
     pending_catalog_path = Path(
         args.pending_catalog or state_dir / "pending_catalog.json"
     ).resolve()
@@ -281,6 +298,12 @@ def main(argv: list[str] | None = None) -> int:
         state_dir.mkdir(parents=True, exist_ok=True)
         stop_path.write_text("stop\n", encoding="ascii")
         print(f"material_watcher_stop_requested={stop_path}")
+        return 0
+    if args.retry_failed:
+        count = len(_load_failed_hashes(failed_registry_path))
+        if failed_registry_path.exists():
+            failed_registry_path.unlink()
+        print(f"material_failed_images_requeued={count}")
         return 0
     if args.list_new:
         catalog = load_catalog(catalog_path)
@@ -318,8 +341,18 @@ def main(argv: list[str] | None = None) -> int:
             max_files=cycle_limit,
             min_age_seconds=args.min_age_seconds,
             audit_path=audit_path,
+            failed_registry_path=failed_registry_path,
             should_stop=stop_path.exists,
         )
+        completed_at = datetime.now(timezone.utc).isoformat()
+        latest_event = _read_latest_audit_event(audit_path)
+        notice = _build_cycle_notice(
+            imported=imported,
+            failed=failed,
+            completed_at=completed_at,
+            latest_event=latest_event,
+        )
+        _write_json(notice_path, notice)
         if stop_path.exists():
             _write_state(state_path, status="stopped", root=str(root), model=args.model)
             stop_path.unlink()
@@ -333,6 +366,13 @@ def main(argv: list[str] | None = None) -> int:
             failed=failed,
             batch_size=max(1, args.batch_size),
             poll_seconds=max(1, args.poll_seconds),
+            last_cycle_at=completed_at,
+            last_result=notice["result"],
+            last_path=notice["path"],
+            last_material_id=notice["material_id"],
+            reviewed_catalog=str(catalog_path),
+            pending_catalog=str(pending_catalog_path),
+            quarantined=len(_load_failed_hashes(failed_registry_path)),
         )
         print(f"imported_count={imported}")
         print(f"failed_count={failed}")
@@ -367,6 +407,98 @@ def _audit(
     }
     with audit_path.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def _read_latest_audit_event(path: Path) -> dict[str, object]:
+    if not path.exists():
+        return {}
+    latest = ""
+    with path.open("r", encoding="utf-8") as handle:
+        for line in handle:
+            if line.strip():
+                latest = line
+    if not latest:
+        return {}
+    try:
+        value = json.loads(latest)
+    except json.JSONDecodeError:
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def _load_failed_hashes(path: Path) -> dict[str, dict[str, object]]:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    records = payload.get("records") if isinstance(payload, dict) else None
+    if not isinstance(records, list):
+        return {}
+    return {
+        str(record.get("sha256")): record
+        for record in records
+        if isinstance(record, dict) and record.get("sha256")
+    }
+
+
+def _record_failed_image(
+    path: Path,
+    *,
+    digest: str,
+    relative_path: str,
+    error: str,
+) -> None:
+    records = _load_failed_hashes(path)
+    previous = records.get(digest, {})
+    records[digest] = {
+        "sha256": digest,
+        "path": relative_path,
+        "attempts": int(previous.get("attempts") or 0) + 1,
+        "last_failed_at": datetime.now(timezone.utc).isoformat(),
+        "error": error,
+    }
+    _write_json(path, {"records": list(records.values())})
+
+
+def _build_cycle_notice(
+    *,
+    imported: int,
+    failed: int,
+    completed_at: str,
+    latest_event: dict[str, object],
+) -> dict[str, object]:
+    if failed:
+        result = "error"
+        message = f"Ollama metadata cycle finished with {failed} error(s)."
+    elif imported:
+        result = "success"
+        message = f"Ollama metadata finished for {imported} new image(s)."
+    else:
+        result = "idle"
+        message = "Scan finished; no new images needed metadata."
+    return {
+        "completed_at": completed_at,
+        "result": result,
+        "message": message,
+        "imported": imported,
+        "failed": failed,
+        "path": str(latest_event.get("path") or "") if imported or failed else "",
+        "material_id": (
+            str(latest_event.get("material_id") or "") if imported or failed else ""
+        ),
+    }
+
+
+def _write_json(path: Path, payload: dict[str, object]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    temporary.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    temporary.replace(path)
 
 
 def _write_state(path: Path, **values: object) -> None:

@@ -2,8 +2,9 @@
 
 ## Review Queue
 
-`LINE_Drafts` remains the only outbox. Picture rows append `Material_ID`,
-`Image_Path`, `Message_Kind`, and `Material_SHA256` to the legacy columns.
+`LINE_Drafts` remains the only outbox. Picture rows append the readable
+`Material_Label` plus technical `Material_ID`, `Image_Path`, `Message_Kind`,
+and `Material_SHA256` fields to the legacy columns.
 Only rows with `Status=approved`, `Send_Mode=live`, safe flags, and a material
 that is approved and sendable in the catalog can reach the live sender.
 

@@ -1,4 +1,3 @@
 @echo off
 setlocal
-cd /d "%~dp0\..\.."
-".venv\Scripts\python.exe" -m app.material_ingest --status
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0status.ps1"

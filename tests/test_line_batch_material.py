@@ -1,3 +1,4 @@
+import json
 import shutil
 import unittest
 import uuid
@@ -68,6 +69,30 @@ class LineBatchMaterialTest(unittest.TestCase):
         self.assertEqual(resolved["sha256"], self.record.sha256)
         self.assertEqual(Path(resolved["resolved_path"]), self.image.resolve())
 
+    def test_accepts_task_basename_for_nested_catalog_filename(self):
+        nested = self.material_root / "health_manager"
+        nested.mkdir()
+        image = nested / "slide2.jpg"
+        image.write_bytes(b"approved-nested-picture")
+        record = MaterialRecord(
+            **{
+                **self.record.__dict__,
+                "filename": "health_manager/slide2.jpg",
+                "sha256": sha256_file(image),
+            }
+        )
+        write_catalog(self.catalog_path, [record])
+
+        resolved = _resolve_task_material(
+            self.task(
+                image_path="slide2.jpg",
+                material_sha256=record.sha256,
+            ),
+            self.settings,
+        )
+
+        self.assertEqual(Path(resolved["resolved_path"]), image.resolve())
+
     def test_rejects_task_hash_mismatch(self):
         with self.assertRaisesRegex(ValueError, "Task hash"):
             _resolve_task_material(
@@ -105,6 +130,7 @@ class LineBatchMaterialTest(unittest.TestCase):
         )
         client = SimpleNamespace(
             driver=object(),
+            ensure_friends=lambda: None,
             visible_text=lambda: "",
         )
         snapshot_writer = Mock()
@@ -135,6 +161,75 @@ class LineBatchMaterialTest(unittest.TestCase):
                 )
 
         send_message.assert_not_called()
+
+    def test_profile_chat_button_fallback_is_audited_before_text_send(self):
+        candidate = LineCandidate("friend", "Abbie Jessica", 0)
+        decision = MatchDecision(
+            "matched",
+            "unique_contains_friend",
+            "abb",
+            candidate,
+            (candidate,),
+            "matched",
+        )
+        client = SimpleNamespace(
+            driver=object(),
+            ensure_friends=lambda: None,
+            visible_text=lambda: "profile page opened",
+        )
+        snapshot_writer = Mock()
+        snapshot_writer.write.return_value = self.root / "snapshot.json"
+        task = MessageTask(
+            action="send_message",
+            query="abb",
+            match_policy="unique_contains_friend",
+            message="hello",
+            customer_id="P100",
+            line_contact="abb",
+        )
+        audit_path = self.root / "audit.jsonl"
+
+        with (
+            patch("app.line_batch.resolve_match", return_value=decision),
+            patch(
+                "app.line_batch.open_chat",
+                return_value=SimpleNamespace(
+                    status="opened_profile_chat_button",
+                    detail="profile page chat button opened the composer",
+                    header="Abbie Jessica",
+                    evidence={
+                        "before_profile_chat_button": "before.json",
+                        "after_profile_chat_button": "after.json",
+                    },
+                ),
+            ),
+            patch(
+                "app.line_batch.check_composer",
+                return_value=SimpleNamespace(ok=True, status="ok", detail="ok"),
+            ),
+            patch("app.line_batch.send_message", return_value="shadow_dom"),
+        ):
+            status = _run_task(
+                client=client,
+                task=task,
+                send=True,
+                manual_approve=False,
+                settings=self.settings,
+                audit_path=audit_path,
+                snapshot_writer=snapshot_writer,
+            )
+
+        self.assertEqual(status, "sent")
+        records = [json.loads(line) for line in audit_path.read_text(encoding="utf-8").splitlines()]
+        self.assertIn("opened_profile_chat_button", [record["status"] for record in records])
+        fallback_record = next(record for record in records if record["status"] == "opened_profile_chat_button")
+        self.assertEqual(
+            fallback_record["source"]["profile_chat_button_evidence"],
+            {
+                "before_profile_chat_button": "before.json",
+                "after_profile_chat_button": "after.json",
+            },
+        )
 
 
 if __name__ == "__main__":

@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 from app.config import Settings
-from app.material_catalog import MaterialRecord
+from app.bmp_safety import sanitize_bmp_text
+from app.material_catalog import MaterialRecord, material_label
 from app.scenario_engine import (
     DRAFT_HEADERS,
     LOG_HEADERS,
@@ -35,6 +36,21 @@ class DraftSheetRow:
 
 
 class SheetGateway:
+    PRESENCE_PROFILE_HEADERS = (
+        "Enabled",
+        "Customer_ID",
+        "Clinic_Name",
+        "Line_Query",
+        "Line_Contact",
+        "Line_Message_Style",
+        "Interest_Tags",
+        "Cadence_Days",
+        "Preferred_Send_Time",
+        "Last_Category",
+        "Last_Generated_Date",
+        "Remark",
+    )
+
     MATERIAL_HEADERS = (
         "Material_ID",
         "Filename",
@@ -54,6 +70,7 @@ class SheetGateway:
         "Campaigns",
         "Trigger_Types",
         "Tags",
+        "Material_Label",
     )
 
     def __init__(
@@ -63,11 +80,13 @@ class SheetGateway:
         draft_sheet_name: str,
         log_sheet_name: str,
         material_sheet_name: str = "LINE_Material",
+        presence_profile_sheet_name: str = "LINE_Presence_Profiles",
     ) -> None:
         self.spreadsheet = spreadsheet
         self.draft_sheet_name = draft_sheet_name
         self.log_sheet_name = log_sheet_name
         self.material_sheet_name = material_sheet_name
+        self.presence_profile_sheet_name = presence_profile_sheet_name
 
     @classmethod
     def from_settings(cls, settings: Settings) -> "SheetGateway":
@@ -86,6 +105,7 @@ class SheetGateway:
             draft_sheet_name=settings.draft_sheet_name,
             log_sheet_name=settings.sheet_log_name,
             material_sheet_name=settings.material_sheet_name,
+            presence_profile_sheet_name=settings.presence_profile_sheet_name,
         )
 
     def fetch_sources(self, tab_names: tuple[str, ...]) -> dict[str, list[list[str]]]:
@@ -110,18 +130,22 @@ class SheetGateway:
         for draft in drafts:
             if draft.draft_id and (draft.draft_id in existing_ids or draft.draft_id in batch_ids):
                 continue
-            pending_rows.append(draft_to_row(draft))
+            pending_rows.append(draft_to_row(_sanitize_draft(draft)))
             if draft.draft_id:
                 batch_ids.add(draft.draft_id)
         if pending_rows:
-            worksheet.append_rows(pending_rows, value_input_option="USER_ENTERED")
+            append_managed_rows(worksheet, pending_rows, width=len(DRAFT_HEADERS))
         return len(pending_rows)
 
     def append_log_events(self, events: list[ScenarioEvent] | tuple[ScenarioEvent, ...]) -> int:
         if not events:
             return 0
         worksheet = self.ensure_log_sheet()
-        worksheet.append_rows([event_to_log_row(event) for event in events], value_input_option="USER_ENTERED")
+        append_managed_rows(
+            worksheet,
+            [event_to_log_row(event) for event in events],
+            width=len(LOG_HEADERS),
+        )
         return len(events)
 
     def replace_material_catalog(
@@ -148,6 +172,10 @@ class SheetGateway:
             }
             rows.append(DraftSheetRow(row_number=row_number, draft=draft_from_row(mapped), raw=mapped))
         return rows
+
+    def read_presence_profile_rows(self) -> list[dict[str, str]]:
+        worksheet = self.ensure_presence_profile_sheet()
+        return _worksheet_dict_rows(worksheet)
 
     def update_draft_result(
         self,
@@ -183,6 +211,9 @@ class SheetGateway:
     def ensure_material_sheet(self) -> Any:
         return self._ensure_sheet(self.material_sheet_name, self.MATERIAL_HEADERS)
 
+    def ensure_presence_profile_sheet(self) -> Any:
+        return self._ensure_sheet(self.presence_profile_sheet_name, self.PRESENCE_PROFILE_HEADERS)
+
     def _ensure_sheet(self, title: str, headers: tuple[str, ...]) -> Any:
         worksheet = self._maybe_worksheet(title)
         if worksheet is None:
@@ -209,6 +240,23 @@ def _header_positions(headers: list[str]) -> dict[str, int]:
     return {str(header).strip(): index for index, header in enumerate(headers, start=1) if str(header).strip()}
 
 
+def _worksheet_dict_rows(worksheet: Any) -> list[dict[str, str]]:
+    values = worksheet.get_all_values()
+    if len(values) < 2:
+        return []
+    headers = [str(cell).strip() for cell in values[0]]
+    rows = []
+    for raw in values[1:]:
+        rows.append(
+            {
+                headers[index]: str(value).strip()
+                for index, value in enumerate(raw)
+                if index < len(headers) and headers[index]
+            }
+        )
+    return rows
+
+
 def _a1(row: int, column: int) -> str:
     letters = ""
     current = column
@@ -223,6 +271,46 @@ def update_values(worksheet: Any, range_name: str, values: list[list[str]]) -> N
         worksheet.update(range_name, values, value_input_option="USER_ENTERED")
     except TypeError:
         worksheet.update(values, range_name=range_name, value_input_option="USER_ENTERED")
+
+
+def append_managed_rows(worksheet: Any, rows: list[list[str]], *, width: int) -> None:
+    if not rows:
+        return
+    values = [_fit_row(row, width) for row in rows]
+    existing_values = worksheet.get_all_values()
+    _shrink_blank_trailing_columns(worksheet, min_cols=width, existing_values=existing_values)
+    next_row = len(existing_values) + 1
+    last_row = next_row + len(values) - 1
+    row_count = int(getattr(worksheet, "row_count", 0) or 0)
+    if row_count and last_row > row_count:
+        worksheet.resize(rows=last_row)
+    update_values(worksheet, f"{_a1(next_row, 1)}:{_a1(last_row, width)}", values)
+
+
+def _fit_row(row: list[str], width: int) -> list[str]:
+    return (list(row) + [""] * width)[:width]
+
+
+def _shrink_blank_trailing_columns(
+    worksheet: Any,
+    *,
+    min_cols: int,
+    existing_values: list[list[str]],
+) -> None:
+    col_count = int(getattr(worksheet, "col_count", 0) or 0)
+    if not col_count or col_count <= min_cols:
+        return
+    content_width = max((len(row) for row in existing_values), default=0)
+    target_cols = max(min_cols, content_width)
+    if target_cols < col_count:
+        worksheet.resize(cols=target_cols)
+
+
+def _sanitize_draft(draft: ScenarioDraft) -> ScenarioDraft:
+    message = sanitize_bmp_text(draft.draft_message)
+    if message == draft.draft_message:
+        return draft
+    return replace(draft, draft_message=message)
 
 
 def _material_to_row(record: MaterialRecord) -> list[str]:
@@ -245,5 +333,6 @@ def _material_to_row(record: MaterialRecord) -> list[str]:
         "Campaigns": ",".join(record.campaigns),
         "Trigger_Types": ",".join(record.trigger_types),
         "Tags": ",".join(record.tags),
+        "Material_Label": material_label(record),
     }
     return [values[header] for header in SheetGateway.MATERIAL_HEADERS]

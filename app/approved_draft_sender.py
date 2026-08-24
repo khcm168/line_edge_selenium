@@ -5,11 +5,13 @@ from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
 
+from app.ai_drafter import has_unresolved_placeholder
 from app.audit import SnapshotWriter, append_jsonl, build_audit_record, utc_stamp
+from app.bmp_safety import sanitize_bmp_text
 from app.config import Settings
-from app.line_profile import is_line_contact_eligible
+from app.line_profile import is_line_contact_eligible, is_line_query_eligible
 from app.line_batch import _run_task
-from app.line_client import LineClient
+from app.line_client import LineClient, maybe_maximize_window
 from app.rate_limiter import MessageQuota, RandomDelay, RateLimitSettings
 from app.reminder_rules import ReminderRules
 from app.response_loop import append_follow_ups, schedule_follow_ups
@@ -39,6 +41,13 @@ class ApprovalSelection:
     skipped: tuple[ScenarioEvent, ...]
 
 
+ROUTINE_SKIP_RESULTS = {
+    "not approved",
+    "send mode is not live",
+    "already sent",
+}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Preview or send approved LINE_Drafts rows.")
     parser.add_argument("--send-approved", action="store_true", help="Live-send approved rows.")
@@ -46,6 +55,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--draft-id", default="", help="Process one exact Draft_ID only.")
     parser.add_argument("--write-tasks", help="Write approved rows to a local task JSON file and exit.")
     parser.add_argument("--keep-open", action="store_true", help="Leave Edge open after live send.")
+    parser.add_argument(
+        "--quota-profile",
+        default="default",
+        help="Use a named quota profile from reminder_rules.json, e.g. vaccine.",
+    )
     args = parser.parse_args(argv)
 
     settings = Settings.from_env(require_google=True)
@@ -58,7 +72,6 @@ def main(argv: list[str] | None = None) -> int:
         max_rows=args.max_rows,
         draft_ids=(args.draft_id,) if args.draft_id else (),
     )
-    gateway.append_log_events(selection.skipped)
 
     tasks = [item.task for item in selection.approved]
     if args.write_tasks:
@@ -73,6 +86,7 @@ def main(argv: list[str] | None = None) -> int:
         print("send_approved=false")
         return 0
 
+    gateway.append_log_events(loggable_skip_events(selection.skipped))
     if not tasks:
         print("approved_count=0")
         print("nothing_to_send=true")
@@ -80,19 +94,27 @@ def main(argv: list[str] | None = None) -> int:
 
     audit_path = settings.log_dir / f"approved_draft_sender_{utc_stamp()}.jsonl"
     rules = ReminderRules.load(settings.reminder_rules_path)
-    rate_settings = RateLimitSettings(
-        delay_min_seconds=rules.default_int("delay_min_seconds", 45),
-        delay_max_seconds=rules.default_int("delay_max_seconds", 120),
-        daily_message_quota=rules.default_int("daily_message_quota", 20),
-        per_recipient_daily_quota=rules.default_int("per_recipient_daily_quota", 1),
-    )
+    rate_settings = rate_limit_settings_for_profile(rules, args.quota_profile)
     quota = MessageQuota(settings.task_dir.parent / "handoff" / "quota.json", rate_settings)
     delay = RandomDelay(rate_settings)
     snapshot_writer = SnapshotWriter(settings.snapshot_dir)
-    client = LineClient.open()
+    client = LineClient.open_reuse_or_handoff()
     sent_events: list[ScenarioEvent] = []
+    skipped_events: list[ScenarioEvent] = []
     try:
-        client.driver.maximize_window()
+        append_jsonl(
+            audit_path,
+            build_audit_record(
+                action="quota_profile",
+                status="selected",
+                detail=(
+                    f"profile={args.quota_profile}; "
+                    f"daily_message_quota={rate_settings.daily_message_quota}; "
+                    f"per_recipient_daily_quota={rate_settings.per_recipient_daily_quota}"
+                ),
+            ),
+        )
+        maybe_maximize_window(client.driver)
         client.ensure_friends()
         for index, item in enumerate(selection.approved):
             allowed, detail = quota.check(item.task, day=date.today())
@@ -127,6 +149,23 @@ def main(argv: list[str] | None = None) -> int:
                     audit_path=audit_path,
                     snapshot_writer=snapshot_writer,
                 )
+                if not is_successful_send_status(status):
+                    gateway.update_draft_result(
+                        item.row_number,
+                        status=DRAFT_STATUS_ERROR,
+                        result=status,
+                        error_message=f"send skipped: {status}",
+                    )
+                    skipped_events.append(
+                        _send_event(
+                            item.draft,
+                            "skipped",
+                            item.draft.risk_level,
+                            status,
+                            f"send skipped: {status}",
+                        )
+                    )
+                    continue
                 sent_at = taipei_now_iso()
                 gateway.update_draft_result(
                     item.row_number,
@@ -156,12 +195,16 @@ def main(argv: list[str] | None = None) -> int:
                     error_message=error,
                 )
                 sent_events.append(_send_event(item.draft, "error", "medium", "send failed", error))
+                if can_continue_after_presend_failure(exc):
+                    continue
                 raise
     finally:
-        gateway.append_log_events(sent_events)
+        gateway.append_log_events([*sent_events, *skipped_events])
         if not args.keep_open:
             client.close()
     print(f"sent_count={len(sent_events)}")
+    if skipped_events:
+        print(f"skipped_count={len(skipped_events)}")
     print(f"audit={audit_path}")
     return 0
 
@@ -183,12 +226,13 @@ def select_approved_drafts(
         if reason:
             skipped.append(_send_event(row.draft, "skipped", row.draft.risk_level, reason, ""))
             continue
+        delivery_query = _delivery_query(row.draft, allowed_group_targets)
         task = MessageTask(
             action="send_message",
-            query=row.draft.line_query,
+            query=delivery_query,
             match_policy=_match_policy(row.draft, allowed_group_targets),
-            message=row.draft.draft_message,
-            allow_group=row.draft.line_query in allowed_group_targets,
+            message=sanitize_bmp_text(row.draft.draft_message),
+            allow_group=delivery_query in allowed_group_targets,
             customer_id=row.draft.customer_id,
             line_contact=row.draft.line_contact,
             line_message_style=row.draft.line_message_style,
@@ -215,6 +259,44 @@ def select_approved_drafts(
     return ApprovalSelection(tuple(approved), tuple(skipped))
 
 
+def loggable_skip_events(events: tuple[ScenarioEvent, ...]) -> tuple[ScenarioEvent, ...]:
+    return tuple(event for event in events if event.result not in ROUTINE_SKIP_RESULTS)
+
+
+def rate_limit_settings_for_profile(
+    rules: ReminderRules,
+    quota_profile: str = "default",
+) -> RateLimitSettings:
+    return RateLimitSettings(
+        delay_min_seconds=rules.default_int("delay_min_seconds", 45),
+        delay_max_seconds=rules.default_int("delay_max_seconds", 120),
+        daily_message_quota=rules.quota_profile_int(
+            quota_profile,
+            "daily_message_quota",
+            rules.default_int("daily_message_quota", 20),
+        ),
+        per_recipient_daily_quota=rules.default_int("per_recipient_daily_quota", 1),
+    )
+
+
+def is_successful_send_status(status: str) -> bool:
+    return status == "sent"
+
+
+def can_continue_after_presend_failure(exc: Exception) -> bool:
+    detail = f"{type(exc).__name__}: {exc}".casefold()
+    return any(
+        marker in detail
+        for marker in (
+            "profile page did not expose",
+            "unexpected chat",
+            "composer textbox was not visible",
+            "no current chat header was visible",
+            "current chat header was",
+        )
+    )
+
+
 def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] = ()) -> str:
     if draft.status.casefold() != DRAFT_STATUS_APPROVED:
         return "not approved"
@@ -224,12 +306,19 @@ def skip_reason(draft: ScenarioDraft, *, allowed_group_targets: tuple[str, ...] 
         return "already sent"
     if not draft.line_query.strip():
         return "missing line query"
+    if not is_line_query_eligible(draft.customer_id, draft.line_query):
+        return "missing eligible line query"
     if not is_line_contact_eligible(draft.customer_id, draft.line_contact):
         return "missing eligible line contact"
     if draft.message_kind not in {"text", "image", "image_text"}:
         return "unsupported message kind"
-    if draft.message_kind in {"text", "image_text"} and not draft.draft_message.strip():
+    sanitized_message = sanitize_bmp_text(draft.draft_message)
+    if draft.message_kind in {"text", "image_text"} and not sanitized_message.strip():
         return "blank message"
+    if draft.message_kind in {"text", "image_text"} and has_unresolved_placeholder(
+        sanitized_message
+    ):
+        return "unresolved message placeholder"
     if draft.message_kind in {"image", "image_text"}:
         if not draft.material_id.strip():
             return "missing material id"
@@ -249,6 +338,12 @@ def _match_policy(draft: ScenarioDraft, allowed_group_targets: tuple[str, ...]) 
     if draft.line_query in allowed_group_targets:
         return "unique_contains_group"
     return "unique_contains_friend"
+
+
+def _delivery_query(draft: ScenarioDraft, allowed_group_targets: tuple[str, ...]) -> str:
+    if draft.line_query in allowed_group_targets:
+        return draft.line_query
+    return draft.line_contact.strip() or draft.line_query
 
 
 def _looks_like_group(query: str) -> bool:

@@ -1,9 +1,14 @@
 {
   "defaults": {
-    "daily_message_quota": 20,
+    "daily_message_quota": 100,
     "per_recipient_daily_quota": 1,
     "delay_min_seconds": 45,
     "delay_max_seconds": 120
+  },
+  "quota_profiles": {
+    "vaccine": {
+      "daily_message_quota": 100
+    }
   },
   "reminders": {
     "shipping": {

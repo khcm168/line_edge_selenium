@@ -1,0 +1,70 @@
+{
+  "LINE_Presence_Profiles": [
+    [
+      "Enabled",
+      "Customer_ID",
+      "Clinic_Name",
+      "Line_Query",
+      "Line_Contact",
+      "Line_Message_Style",
+      "Interest_Tags",
+      "Cadence_Days",
+      "Preferred_Send_Time",
+      "Last_Category",
+      "Last_Generated_Date",
+      "Remark"
+    ],
+    [
+      "yes",
+      "P100",
+      "Clinic A",
+      "P100",
+      "Clinic A LINE",
+      "warm",
+      "sleep,nutrition",
+      "1",
+      "09:30",
+      "",
+      "",
+      "sample presence profile"
+    ]
+  ],
+  "LINE_Drafts": [
+    [
+      "Draft_ID",
+      "Created_At",
+      "Trigger_Type",
+      "Source_Sheets",
+      "Source_Refs",
+      "Customer_ID",
+      "Customer_Name",
+      "Line_Query",
+      "Product",
+      "Signal_Summary",
+      "Draft_Message",
+      "Risk_Level",
+      "Safety_Flags",
+      "Status",
+      "Send_Mode",
+      "Approved_By",
+      "Approved_At",
+      "Sent_At",
+      "Result",
+      "Error_Message",
+      "Line_Contact",
+      "Line_Message_Style",
+      "Material_ID",
+      "Image_Path",
+      "Message_Kind",
+      "Material_SHA256",
+      "Material_Label",
+      "Presence_Date",
+      "Presence_Category",
+      "Presence_Theme",
+      "Image_Suggestion",
+      "Hashtag",
+      "Preferred_Send_Time",
+      "Remark"
+    ]
+  ]
+}

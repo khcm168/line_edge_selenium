@@ -64,6 +64,12 @@ Start persistent handoff worker:
 .\.venv\Scripts\python.exe -m app.handoff_worker
 ```
 
+Safely reclaim only an abandoned handoff owner before starting a new worker:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.handoff_worker --reclaim-stale-owner
+```
+
 Submit manual-approval work to the worker:
 
 ```powershell
@@ -89,6 +95,18 @@ inspection, not later automation reuse. See
 `docs/line-picture-live-observations-2026-06-14.md`.
 
 Only one automation-controlled Edge window should use this project profile at a time. Close old controlled Edge windows before starting the persistent worker if the profile is locked or behavior becomes strange.
+
+The worker now writes `data/handoff/worker_owner.json` with its PID, command
+line, cwd, argv, profile path, and optional launcher source. `worker_status.cmd`
+prints that owner metadata so you can tell which launcher claimed the shared
+profile.
+
+`--reclaim-stale-owner` is intentionally conservative:
+
+- it only touches ownership metadata created by `app.handoff_worker`;
+- it refuses reclamation if that owner PID is still running;
+- it refuses reclamation if the worker heartbeat is still live;
+- it only clears stale profile markers when the DevTools endpoint is dead.
 
 ## Search And Match Behavior
 
